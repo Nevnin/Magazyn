@@ -2,6 +2,7 @@ import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Label;
 import java.awt.TextField;
 
@@ -40,15 +41,17 @@ public class Panel extends JPanel {
         if(numer==4) {
         	setLayout(new GridBagLayout());
 	        GridBagConstraints c = new GridBagConstraints();
+	        c.fill = GridBagConstraints.HORIZONTAL;
+	        c.insets = new Insets(0, 10, 0, 10);
 	        
 	        jlbNazwaSkrocona = new JLabel("Nazwa Skrócona");
 	        jtfNazwaSkrocona = new JTextField("",20);
 	        jlbNazwaPelna = new JLabel("Nazwa Pe³na");
-	        jtfNazwaPelna = new JTextField("",20);
+	        jtfNazwaPelna = new JTextField("");
 	        jlbNip = new JLabel("NIP");
-	        jtfNip = new JTextField("",10);
+	        jtfNip = new JTextField("");
 	        jlbTelefon1 = new JLabel("Telefon 1");
-	        jtfTelefon1 = new JTextField("",20);
+	        jtfTelefon1 = new JTextField("");
 	        jbtPrzycisk = new JButton("Zatwierdz");
 	        
 	        c.gridx = 0; c.gridy = 0;
@@ -67,7 +70,7 @@ public class Panel extends JPanel {
 	        add(jlbTelefon1,c);
 	        c.gridx = 1; c.gridy = 3;
 	        add(jtfTelefon1,c);
-	        c.gridx = 1; c.gridy = 4;
+	        c.gridx = 0; c.gridy = 4;
 	        add(jbtPrzycisk,c);
         }
     }   
