@@ -52,6 +52,7 @@ public class Magazyn extends JFrame implements ActionListener {
 	private void ustawNasluchZdarzen() {
 		menu.szukanietowarow.addActionListener(this);
 		menu.plik.addActionListener(this);
+		menu.zaklkartdostawcy.addActionListener(this);
 		
 	}
 	@Override

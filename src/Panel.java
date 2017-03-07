@@ -5,6 +5,8 @@ import java.awt.GridBagLayout;
 import java.awt.Label;
 import java.awt.TextField;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Panel extends JPanel {
