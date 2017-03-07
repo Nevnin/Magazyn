@@ -61,9 +61,16 @@ public class Magazyn extends JFrame implements ActionListener {
 		String label = e.getActionCommand();
         Object z= e.getSource();
         if(z==menu.szukanietowarow) {
-            remove(panel);
+            removeP();
             add(p1);
             validate();
+            dopasujSieDoZawartosci();
+            repaint();
+        }
+        if(z==menu.zaklkartdostawcy) {
+        	removeP();
+        	add(zaklkartdostawcy);
+        	validate();
             dopasujSieDoZawartosci();
             repaint();
         }
@@ -72,5 +79,10 @@ public class Magazyn extends JFrame implements ActionListener {
 		// TODO Auto-generated method stub
 		 pack();   
 	        setLocationRelativeTo(null); 
+	}
+	public void removeP(){
+		remove(panel);
+		remove(p1);
+		remove(zaklkartdostawcy);
 	}
 }
