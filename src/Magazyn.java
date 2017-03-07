@@ -12,6 +12,7 @@ import com.mysql.jdbc.Statement;
 public class Magazyn extends JFrame implements ActionListener {
 	Panel panel;
 	Panel p1;
+	Panel zaklkartdostawcy = new Panel(400,400,4);
 	Menu menu;
 	private final static String DBURL="jdbc:mysql://127.0.0.1:3306/magazyn";
 	private final static String DBUSER = "root";
