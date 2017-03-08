@@ -37,7 +37,9 @@ public class OknoLogowania extends JFrame implements ActionListener {
 	private Statement statement;
     
     public OknoLogowania() {
+    	
         super("Logowanie");
+        System.out.println("blsafvkdfkjsdfksfds");
         String query="Select * from uzytkownik";
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setPreferredSize(new Dimension(300,100));
