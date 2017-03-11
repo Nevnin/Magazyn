@@ -7,6 +7,8 @@ import java.awt.Label;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -14,6 +16,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -21,11 +24,11 @@ import javax.swing.JPasswordField;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
 
-public class OknoLogowania extends JFrame implements ActionListener {
+public class OknoLogowania extends JFrame implements ActionListener{
     Label log,login,haslo;
     TextField tflogin;
     JPasswordField tfhaslo;
-    Button zaloguj;
+    JButton zaloguj;
     GridBagConstraints gbc;
     
     private final static String DBURL="jdbc:mysql://localhost:3306/magazyn";
@@ -73,9 +76,10 @@ public class OknoLogowania extends JFrame implements ActionListener {
         add(tfhaslo);
         
         add(new Label());
-        zaloguj = new Button("Zaloguj");
+        zaloguj = new JButton("Zaloguj");
         add(zaloguj,gbc);
         nasluchZdarzen();
+        
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
                 zamykanieOkna(evt);
@@ -83,8 +87,7 @@ public class OknoLogowania extends JFrame implements ActionListener {
         });
         pack();
         setLocationRelativeTo(null);
-    }
-    
+    }   
     public void nasluchZdarzen() {	
     	zaloguj.addActionListener(this);
     }

@@ -52,6 +52,20 @@ public class Panel extends JPanel {
 	        jtfNip = new JTextField("");
 	        jlbTelefon1 = new JLabel("Telefon 1");
 	        jtfTelefon1 = new JTextField("");
+			jlbTelefon2 = new JLabel("Telefon 2");
+			jtfTelefon2 = new JTextField("");
+			jlbTelefon3 = new JLabel("Telefon 3");
+			jtfTelefon3 = new JTextField("");
+			jlbNazwaDzialu = new JLabel("Nazwa Dzia³u");
+			jtfNazwaDzialu = new JTextField("");
+			jlbNrKonta = new JLabel("Nr Konta");
+			jtfNrKonta = new JTextField("");
+			jlbAdres = new JLabel("Adres");
+			jtfAdres = new JTextField("");
+			jlbKodPocztowy = new JLabel("KodPoczowy");
+			jtfKodPocztowy = new JTextField("");
+			jlbPoczta = new JLabel("Poczta");
+			jtfPoczta = new JTextField("");
 	        jbtPrzycisk = new JButton("Zatwierdz");
 	        
 	        c.gridx = 0; c.gridy = 0;
@@ -71,6 +85,34 @@ public class Panel extends JPanel {
 	        c.gridx = 1; c.gridy = 3;
 	        add(jtfTelefon1,c);
 	        c.gridx = 0; c.gridy = 4;
+	        add(jlbTelefon2,c);
+	        c.gridx = 1; c.gridy = 4;
+	        add(jtfTelefon2,c);
+	        c.gridx = 0; c.gridy = 5;
+	        add(jlbTelefon3,c);
+	        c.gridx = 1; c.gridy = 5;
+	        add(jtfTelefon3,c);
+	        c.gridx = 0; c.gridy = 6;
+	        add(jlbNazwaDzialu,c);
+	        c.gridx = 1; c.gridy = 6;
+	        add(jtfNazwaDzialu,c);
+	        c.gridx = 0; c.gridy = 7;
+	        add(jlbNrKonta,c);
+	        c.gridx = 1; c.gridy = 7;
+	        add(jtfNrKonta,c);
+	        c.gridx = 0; c.gridy = 8;
+	        add(jlbAdres,c);
+	        c.gridx = 1; c.gridy = 8;
+	        add(jtfAdres,c);
+	        c.gridx = 0; c.gridy = 9;
+	        add(jlbKodPocztowy,c);
+	        c.gridx = 1; c.gridy = 9;
+	        add(jtfKodPocztowy,c);
+	        c.gridx = 0; c.gridy = 10;
+	        add(jlbPoczta,c);
+	        c.gridx = 1; c.gridy = 10;
+	        add(jtfPoczta,c);
+	        c.gridx = 0; c.gridy = 11;
 	        add(jbtPrzycisk,c);
         }
     }   
