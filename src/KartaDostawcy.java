@@ -16,8 +16,8 @@ public class KartaDostawcy {
     String username = "user";
     String password = "123456";
     public KartaDostawcy(){}
-    public boolean insert(String jtfNazwaSkrocona,String jtfNazwaPelna,String jtfNip,String jtfTelefon1,
-    						String jtfTelefon2,String jtfTelefon3,String jtfNazwaDzialu,String jtfNrKonta,
+    public boolean insert(String jtfNazwaSkrocona,String jtfNazwaPelna,String jtfNip,String jtfTelefon1, 
+    						String jtfTelefon2,String jtfTelefon3,String jtfNazwaDzialu,String jtfNrKonta, 
     						String jtfAdres,String jtfKodPocztowy,String jtfPoczta){
     	try{
     		Connection connection = DriverManager.getConnection(url, username, password);

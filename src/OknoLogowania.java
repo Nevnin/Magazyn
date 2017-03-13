@@ -24,7 +24,7 @@ import javax.swing.JPasswordField;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
 
-public class OknoLogowania extends JFrame implements ActionListener{
+public class OknoLogowania extends JFrame implements ActionListener, KeyListener{
     Label log,login,haslo;
     TextField tflogin;
     JPasswordField tfhaslo;
@@ -90,7 +90,28 @@ public class OknoLogowania extends JFrame implements ActionListener{
     }   
     public void nasluchZdarzen() {	
     	zaloguj.addActionListener(this);
+    	zaloguj.addKeyListener(this);
+    	tflogin.addKeyListener(this);
+    	tfhaslo.addKeyListener(this);
     }
+    @Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+    	if (e.getKeyCode()==KeyEvent.VK_ENTER){
+    		sprawdzanieUzytkownika();
+    	}
+		
+	}
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
     public void zamykanieOkna(WindowEvent evt) {
         dispose();
     }
@@ -98,55 +119,60 @@ public class OknoLogowania extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
     	Object logowanie = e.getSource();
     	if(logowanie==zaloguj) {
-    		boolean f = false;
-    		String query="Select * from uzytkownik";
-    		ResultSet rs = null;
-			try {
-				rs = statement.executeQuery(query);
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-    		try {
-    			String passText = new String(tfhaslo.getPassword());
-				while(rs.next()){
-					if(tflogin.getText().toString().equals(rs.getString("Login")) && passText.equals(rs.getString("Haslo"))) {
-						f = true;
-						dispose();
-				        EventQueue.invokeLater(new Runnable() {
-				            @Override
-				            public void run() {
-				                new Magazyn();
-				            }
-				            
-				        });
-				        break;
-					}
-				}
-				if(f==false) {
-					int dialogButton = JOptionPane.YES_NO_OPTION;
-					int dialogResult = JOptionPane.showConfirmDialog(null, "èle podane dane. Czy chcesz ponowiÊ logowanie?","Warning",dialogButton);
-					if(dialogResult == JOptionPane.NO_OPTION) {
-						dispose();
-					}
-					else {
-						dispose();
-						EventQueue.invokeLater(new Runnable()
-				        {
-				            @Override
-				            public void run()
-				            {
-				                new OknoLogowania();
-				            }
-				            
-				        });
-					}
-				}
-				
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+    		sprawdzanieUzytkownika();
     	}
+    }
+    public void glowneOkno() {
+    	dispose();
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new Magazyn();
+            }
+        });
+    }
+    public void oknoLogowania() {
+    	dispose();
+		EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new OknoLogowania();
+            }
+        });
+    }
+    public void sprawdzanieUzytkownika(){
+		boolean f = false;
+		String query="Select * from uzytkownik";
+		ResultSet rs = null;
+		try {
+			rs = statement.executeQuery(query);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			String passText = new String(tfhaslo.getPassword());
+			while(rs.next()){
+				if(tflogin.getText().toString().equals(rs.getString("Login")) && passText.equals(rs.getString("Haslo"))) {
+					f = true;
+					glowneOkno();
+			        break;
+				}
+			}
+			if(f==false) {
+				int dialogButton = JOptionPane.YES_NO_OPTION;
+				int dialogResult = JOptionPane.showConfirmDialog(null, "èle podane dane. Czy chcesz ponowiÊ logowanie?","Warning",dialogButton);
+				if(dialogResult == JOptionPane.NO_OPTION) {
+					dispose();
+				}
+				else {
+					oknoLogowania();
+				}
+			}
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
 }
