@@ -1,10 +1,13 @@
 import java.awt.Button;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.TextField;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -46,46 +49,178 @@ public class Panel extends JPanel {
 	         
 	        jlbNazwaSkrocona = new JLabel("Nazwa Skrócona");
 	        jtfNazwaSkrocona = new JTextField("",20);
+	        jtfNazwaSkrocona.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					jtfNazwaSkrocona.selectAll();
+					jtfNazwaSkrocona.setBackground(Color.WHITE);
+				}
+			});
 	        jlbNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : maksymalna d³ugoœæ to 100 znaków");
 	        jtfNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : maksymalna d³ugoœæ to 100 znaków");
 	        jlbNazwaPelna = new JLabel("Nazwa Pe³na");
 	        jtfNazwaPelna = new JTextField("");
+	        jtfNazwaPelna.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					jtfNazwaPelna.selectAll();
+					jtfNazwaPelna.setBackground(Color.WHITE);
+				}
+			});
 	        jlbNazwaPelna.setToolTipText(jlbNazwaPelna.getText()+" : maksymalna d³ugoœæ to 100 znaków");
 	        jtfNazwaPelna.setToolTipText(jlbNazwaPelna.getText()+" : maksymalna d³ugoœæ to 100 znaków");
 	        jlbNip = new JLabel("NIP");
 	        jtfNip = new JTextField("");
+	        jtfNip.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					jtfNip.selectAll();
+					jtfNip.setBackground(Color.WHITE);
+				}
+			});
 	        jlbNip.setToolTipText(jlbNip.getText()+" : maksymalna d³ugoœæ to 10 znaków");
 	        jtfNip.setToolTipText(jlbNip.getText()+" : maksymalna d³ugoœæ to 10 znaków");
 	        jlbTelefon1 = new JLabel("Telefon 1");
 	        jtfTelefon1 = new JTextField("");
+	        jtfTelefon1.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					jtfTelefon1.selectAll();
+					jtfTelefon1.setBackground(Color.WHITE);
+				}
+			});
 	        jlbTelefon1.setToolTipText(jlbTelefon1.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 	        jtfTelefon1.setToolTipText(jlbTelefon1.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 			jlbTelefon2 = new JLabel("Telefon 2");
 			jtfTelefon2 = new JTextField("");
+			jtfTelefon2.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					jtfTelefon2.selectAll();
+					jtfTelefon2.setBackground(Color.WHITE);
+				}
+			});
 			jlbTelefon2.setToolTipText(jlbTelefon2.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 			jtfTelefon2.setToolTipText(jlbTelefon2.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 			jlbTelefon3 = new JLabel("Telefon 3");
 			jtfTelefon3 = new JTextField("");
+			jtfTelefon3.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					jtfTelefon3.selectAll();
+					jtfTelefon3.setBackground(Color.WHITE);
+				}
+			});
 			jlbTelefon3.setToolTipText(jlbTelefon3.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 			jtfTelefon3.setToolTipText(jlbTelefon3.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 			jlbNazwaDzialu = new JLabel("Nazwa Dzia³u");
 			jtfNazwaDzialu = new JTextField("");
+			jtfNazwaDzialu.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					jtfNazwaDzialu.selectAll();
+					jtfNazwaDzialu.setBackground(Color.WHITE);
+				}
+			});
 			jlbNazwaDzialu.setToolTipText(jlbNazwaDzialu.getText()+" : maksymalna d³ugoœæ to 50 znaków");
 			jtfNazwaDzialu.setToolTipText(jlbNazwaDzialu.getText()+" : maksymalna d³ugoœæ to 50 znaków");
 	        jlbNrKonta = new JLabel("Nr Konta");
 			jtfNrKonta = new JTextField("");
+			jtfNrKonta.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					jtfNrKonta.selectAll();
+					jtfNrKonta.setBackground(Color.WHITE);
+				}
+			});
 			jlbNrKonta.setToolTipText(jlbNrKonta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
 			jtfNrKonta.setToolTipText(jlbNrKonta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
 			jlbAdres = new JLabel("Adres");
 			jtfAdres = new JTextField("");
+			jtfAdres.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					jtfAdres.selectAll();
+					jtfAdres.setBackground(Color.WHITE);
+				}
+			});
 			jlbAdres.setToolTipText(jlbAdres.getText()+" : maksymalna d³ugoœæ to 50 znaków");
 			jtfAdres.setToolTipText(jlbAdres.getText()+" : maksymalna d³ugoœæ to 50 znaków");
 			jlbKodPocztowy = new JLabel("KodPoczowy");
 			jtfKodPocztowy = new JTextField("");
+			jtfKodPocztowy.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					jtfKodPocztowy.selectAll();
+					jtfKodPocztowy.setBackground(Color.WHITE);
+				}
+			});
 			jlbKodPocztowy.setToolTipText(jlbKodPocztowy.getText()+" : maksymalna d³ugoœæ to 6 znaków");
 			jtfKodPocztowy.setToolTipText(jlbKodPocztowy.getText()+" : maksymalna d³ugoœæ to 6 znaków");
 			jlbPoczta = new JLabel("Poczta");
 			jtfPoczta = new JTextField("");
+			jtfPoczta.addFocusListener(new FocusListener() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					jtfPoczta.selectAll();
+					jtfPoczta.setBackground(Color.WHITE);
+				}
+			});
 			jlbPoczta.setToolTipText(jlbPoczta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
 			jtfPoczta.setToolTipText(jlbPoczta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
 	        jbtPrzycisk = new JButton("Zatwierdz");
