@@ -43,7 +43,7 @@ public class Panel extends JPanel {
 	        GridBagConstraints c = new GridBagConstraints();
 	        c.fill = GridBagConstraints.HORIZONTAL;
 	        c.insets = new Insets(0, 10, 0, 10);
-	        
+	         
 	        jlbNazwaSkrocona = new JLabel("Nazwa Skrócona");
 	        jtfNazwaSkrocona = new JTextField("",20);
 	        jlbNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : maksymalna d³ugoœæ to 100 znaków");

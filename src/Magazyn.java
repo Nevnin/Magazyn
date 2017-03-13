@@ -127,7 +127,7 @@ public class Magazyn extends JFrame implements ActionListener {
 									String jtfTelefon2,String jtfTelefon3,String jtfNazwaDzialu,String jtfNrKonta,
 									String jtfAdres,String jtfKodPocztowy,String jtfPoczta){
     	String error="";
-    	if(jtfNazwaSkrocona.length()>100){
+    	if(jtfNazwaSkrocona.length()>100){ 
     		error+="Nazwa Skrócona zosta³a podana zbyt d³uga(100max)\n";
     	}
     	if(jtfNazwaPelna.length()>100){

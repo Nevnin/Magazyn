@@ -26,7 +26,7 @@ public class KartaDostawcy {
 			String query = "INSERT INTO dostawca "
 					+ "(NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta)"
 			        + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+ 
 			// create the mysql insert preparedstatement
 			PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setString (1, jtfNazwaSkrocona);

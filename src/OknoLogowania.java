@@ -139,7 +139,7 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
                 new OknoLogowania();
             }
         });
-    }
+    } 
     public void sprawdzanieUzytkownika(){
 		boolean f = false;
 		String query="Select * from uzytkownik";
