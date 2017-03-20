@@ -18,12 +18,22 @@ public class Polaczenie{
 	private Statement statement;
 	
 	public Polaczenie() throws SQLException{
-		connection = (Connection) DriverManager.getConnection(DBURL, DBUSER, DBPASS);
-		statement = (Statement) connection.createStatement();
+		try {
+			Class.forName(DBDRIVER);
+			connection = (Connection) DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+			statement = (Statement) connection.createStatement();
+		} catch (ClassNotFoundException e) {
+			System.out.println("Problem ze sterownikiem ");
+		} catch (SQLException e) {
+			System.out.println("SQLException:" + e.getMessage());
+			System.out.println("SQLSTATE:" + e.getSQLState());
+			System.out.println("VendorError:"+e.getErrorCode());
+		}
+		
 	}
 	
-	public void sqlSelect(String query) throws SQLException{
-		ResultSet rs = statement.executeQuery(query);
+	public ResultSet sqlSelect(String query) throws SQLException{
+		return statement.executeQuery(query);
 	}
 	
 }

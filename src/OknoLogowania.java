@@ -31,17 +31,13 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
     JButton zaloguj;
     GridBagConstraints gbc;
     
-    private final static String DBURL="jdbc:mysql://localhost:3306/magazyn";
-	private final static String DBUSER = "root";
-	private final static String DBPASS = "";
-	private final static String DBDRIVER = "com.mysql.jdbc.Driver";
+    Polaczenie poloczenie;
 	
-	private Connection connection;
-	private Statement statement;
+	
     
     public OknoLogowania() {
         super("Logowanie");
-        String query="Select * from uzytkownik";
+        
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setPreferredSize(new Dimension(300,100));
         gbc= new GridBagConstraints();
@@ -49,22 +45,19 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
         setLayout(gl);
         setVisible(true);
         
-        try {
-			Class.forName(DBDRIVER);
-			connection = (Connection) DriverManager.getConnection(DBURL, DBUSER, DBPASS);
-			statement = (Statement) connection.createStatement();
-			ResultSet rs = statement.executeQuery(query);
-			while(rs.next()){
-				System.out.println(rs.getString(2));
-			}
-		} catch (ClassNotFoundException e) {
-			System.out.println("Problem ze sterownikiem ");
+       
+	
+		try {
+			poloczenie = new Polaczenie();
 		} catch (SQLException e) {
-			System.out.println("SQLException:" + e.getMessage());
-			System.out.println("SQLSTATE:" + e.getSQLState());
-			System.out.println("VendorError:"+e.getErrorCode());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
+		
+				
+	
+      
+		
         login =  new Label("Login:");
         add(login);
         tflogin= new TextField();
@@ -145,7 +138,7 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
 		String query="Select * from uzytkownik";
 		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(query);
+			rs = poloczenie.sqlSelect(query);
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
