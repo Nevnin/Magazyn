@@ -1,20 +1,7 @@
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseListener;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-import org.w3c.dom.events.MouseEvent;
-
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.Statement;
 
 public class Magazyn extends JFrame implements ActionListener {
 	Panel panel;
@@ -22,7 +9,6 @@ public class Magazyn extends JFrame implements ActionListener {
 	KartaDostawcy kartaDostawcy = new KartaDostawcy();
 	Menu menu;
 	Polaczenie polaczenie;
-	
 	
 	String query="Select * from uzytkownik";
 	public Magazyn() {
@@ -33,13 +19,11 @@ public class Magazyn extends JFrame implements ActionListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-			
+		//setMinimumSize(new Dimension(400, 350));	
 		menu = new Menu();
 		setJMenuBar(menu);
-		panel = new Panel(400,400,0);
-		p1 = new Panel(400,400,1);
-		add(panel);
+		p1 = new Panel(400,400);
+		add(p1);
 		ustawNasluchZdarzen();
 		pack();
 		setLocationRelativeTo(null);
@@ -71,14 +55,12 @@ public class Magazyn extends JFrame implements ActionListener {
             repaint();
         }
 	}
-	
 	private void dopasujSieDoZawartosci() {
 		// TODO Auto-generated method stub
 		 pack();   
-	        setLocationRelativeTo(null); 
+	     setLocationRelativeTo(null); 
 	}
 	public void removeP(){
-		remove(panel);
 		remove(p1);
 		remove(kartaDostawcy);
 	}

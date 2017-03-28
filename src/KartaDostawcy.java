@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -11,11 +12,18 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import jdk.internal.org.objectweb.asm.util.CheckAnnotationAdapter;
 
 public class KartaDostawcy extends JPanel implements ActionListener{
     String serverName = "localhost";
@@ -26,24 +34,25 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     
     JButton jbtPrzycisk;
     JLabel jlbNazwaSkrocona, jlbNazwaPelna, jlbNip, jlbTelefon1, jlbTelefon2, jlbTelefon3, jlbNazwaDzialu, jlbNrKonta, jlbAdres, jlbKodPocztowy, jlbPoczta;
-    JTextField jtfNazwaSkrocona, jtfNazwaPelna, jtfNip, jtfTelefon1, jtfTelefon2, jtfTelefon3, jtfNazwaDzialu, jtfNrKonta, jtfAdres, jtfKodPocztowy, jtfPoczta;
-    
+    JTextField jtfNip, jtfTelefon1, jtfTelefon2, jtfTelefon3, jtfNazwaDzialu, jtfNrKonta, jtfAdres, jtfKodPocztowy, jtfPoczta;
+    JTextArea jtfNazwaSkrocona, jtfNazwaPelna;
     public KartaDostawcy(){
     	setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(0, 10, 0, 10);
-         
+        c.insets = new Insets(0, 10, 0, 10);         
         jlbNazwaSkrocona = new JLabel("Nazwa Skrócona");
-        jtfNazwaSkrocona = new JTextField("",20);
+        jtfNazwaSkrocona = new JTextArea();
+        jtfNazwaSkrocona.setMinimumSize(new Dimension(100, 20));
+        jtfNazwaSkrocona.setPreferredSize(new Dimension(300, 20));
+        jtfNazwaSkrocona.setLineWrap(true);
+        Border border = BorderFactory.createLineBorder(Color.GRAY);
+        jtfNazwaSkrocona.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 2, 0, 0)));
         jtfNazwaSkrocona.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-			}
+			public void focusLost(FocusEvent e) {}
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
 				jtfNazwaSkrocona.selectAll();
 				jtfNazwaSkrocona.setBackground(Color.WHITE);
 			}
@@ -51,18 +60,25 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         jlbNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : maksymalna d³ugoœæ to 100 znaków");
         jtfNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : maksymalna d³ugoœæ to 100 znaków");
         jlbNazwaPelna = new JLabel("Nazwa Pe³na");
-        jtfNazwaPelna = new JTextField("");
+        jtfNazwaPelna = new JTextArea();
+        jtfNazwaPelna.setLineWrap(true);
+        jtfNazwaPelna.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 2, 0, 0)));
         jtfNazwaPelna.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-			}
+			public void focusLost(FocusEvent e) {}
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
 				jtfNazwaPelna.selectAll();
 				jtfNazwaPelna.setBackground(Color.WHITE);
 			}
+		});
+        jtfNazwaPelna.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void removeUpdate(DocumentEvent e) { check(); }
+			@Override
+			public void insertUpdate(DocumentEvent e) { check(); }
+			@Override
+			public void changedUpdate(DocumentEvent e) { check(); }
 		});
         jlbNazwaPelna.setToolTipText(jlbNazwaPelna.getText()+" : maksymalna d³ugoœæ to 100 znaków");
         jtfNazwaPelna.setToolTipText(jlbNazwaPelna.getText()+" : maksymalna d³ugoœæ to 100 znaków");
@@ -70,12 +86,9 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         jtfNip = new JTextField("");
         jtfNip.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-			}
+			public void focusLost(FocusEvent e) {}
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
 				jtfNip.selectAll();
 				jtfNip.setBackground(Color.WHITE);
 			}
@@ -86,12 +99,9 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         jtfTelefon1 = new JTextField("");
         jtfTelefon1.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-			}
+			public void focusLost(FocusEvent e) {}
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
 				jtfTelefon1.selectAll();
 				jtfTelefon1.setBackground(Color.WHITE);
 			}
@@ -102,12 +112,9 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfTelefon2 = new JTextField("");
 		jtfTelefon2.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-			}
+			public void focusLost(FocusEvent e) {}
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
 				jtfTelefon2.selectAll();
 				jtfTelefon2.setBackground(Color.WHITE);
 			}
@@ -118,12 +125,9 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfTelefon3 = new JTextField("");
 		jtfTelefon3.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-			}
+			public void focusLost(FocusEvent e) {}
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
 				jtfTelefon3.selectAll();
 				jtfTelefon3.setBackground(Color.WHITE);
 			}
@@ -134,12 +138,9 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfNazwaDzialu = new JTextField("");
 		jtfNazwaDzialu.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-			}
+			public void focusLost(FocusEvent e) {}
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
 				jtfNazwaDzialu.selectAll();
 				jtfNazwaDzialu.setBackground(Color.WHITE);
 			}
@@ -150,12 +151,9 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfNrKonta = new JTextField("");
 		jtfNrKonta.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-			}
+			public void focusLost(FocusEvent e) {}
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
 				jtfNrKonta.selectAll();
 				jtfNrKonta.setBackground(Color.WHITE);
 			}
@@ -166,12 +164,9 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfAdres = new JTextField("");
 		jtfAdres.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-			}
+			public void focusLost(FocusEvent e) {}
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
 				jtfAdres.selectAll();
 				jtfAdres.setBackground(Color.WHITE);
 			}
@@ -182,12 +177,9 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfKodPocztowy = new JTextField("");
 		jtfKodPocztowy.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-			}
+			public void focusLost(FocusEvent e) {}
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
 				jtfKodPocztowy.selectAll();
 				jtfKodPocztowy.setBackground(Color.WHITE);
 			}
@@ -198,12 +190,9 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfPoczta = new JTextField("");
 		jtfPoczta.addFocusListener(new FocusListener() {
 			@Override
-			public void focusLost(FocusEvent e) {
-				// TODO Auto-generated method stub
-			}
+			public void focusLost(FocusEvent e) {}
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
 				jtfPoczta.selectAll();
 				jtfPoczta.setBackground(Color.WHITE);
 			}
@@ -261,10 +250,9 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         
         ustawNasluchZdarzen();
     }
-
 	private void ustawNasluchZdarzen(){
-    	jtfNazwaSkrocona.addActionListener(this);
-    	jtfNazwaPelna.addActionListener(this);
+    	//jtfNazwaSkrocona.addActionListener(this);
+    	//jtfNazwaPelna.addActionListener(this);
 		jtfNip.addActionListener(this);
 		jtfTelefon1.addActionListener(this);
 		jtfTelefon2.addActionListener(this);
@@ -301,7 +289,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		try{
 			Connection connection = DriverManager.getConnection(url, username, password);
 			Statement myStmt = connection.createStatement();
-			
 			String query = "INSERT INTO dostawca "
 				+ "(NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta)"
 			    + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -322,7 +309,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 			
 			// execute the preparedstatement
 			preparedStmt.execute();
-			
 			connection.close();
 		}catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -343,9 +329,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	String Adres = jtfAdres.getText().toString();
     	String KodPocztowy = jtfKodPocztowy.getText().toString();
     	String Poczta  = jtfPoczta.getText().toString();
-    	String walidacja = walidacja(NazwaSkrocona, NazwaPelna, Nip, Telefon1,
-											 Telefon2, Telefon3, NazwaDzialu, NrKonta,
-											 Adres, KodPocztowy, Poczta);
+    	String walidacja = walidacja(NazwaSkrocona, NazwaPelna, Nip, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta);
     	if(walidacja.length()>0){
     		int dialogButton = JOptionPane.INFORMATION_MESSAGE;
     		JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
@@ -420,5 +404,10 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     		jtfPoczta.setBackground(Color.RED);
     	}
     	return error;
+    }
+    public void check() {
+    	if (jtfNazwaPelna.getText().length()>100){//make sure no more than 4 lines
+    		JOptionPane.showMessageDialog(null,"", "Error: Cant have more than 4 lines", JOptionPane.ERROR_MESSAGE);
+    	}
     }
 }
