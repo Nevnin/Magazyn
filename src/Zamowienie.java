@@ -19,6 +19,7 @@ public class Zamowienie extends JPanel implements ListSelectionListener {
 	String[] tablica;
 	String[] tablica1;
 	JSplitPane splitPane;
+	
 	public Zamowienie() {
 		//setPreferredSize(new Dimension(400,400));
 		try {
