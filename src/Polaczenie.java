@@ -32,7 +32,7 @@ public class Polaczenie{
 		
 	}
 	
-	public void prit(){
+	public void print(){
 	
 }
 }
