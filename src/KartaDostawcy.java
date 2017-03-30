@@ -44,7 +44,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         c.insets = new Insets(0, 10, 0, 10);        
         Border border = BorderFactory.createLineBorder(Color.GRAY);
         
-        
         jlbNazwaSkrocona = new JLabel("Nazwa Skrócona");
         jtfNazwaSkrocona = new JTextArea();
         jtfNazwaSkrocona.setPreferredSize(new Dimension(400, 40));
