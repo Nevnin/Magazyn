@@ -31,11 +31,7 @@ public class Polaczenie{
 		}
 		
 	}
-	
-	public void print(){
-		System.out.println("13");
-		System.out.println("15");
-		System.out.println("200");
-		System.out.println("200");
-}
+	public ResultSet sqlSelect(String query) throws SQLException{
+		return statement.executeQuery(query);
+	} 
 }
