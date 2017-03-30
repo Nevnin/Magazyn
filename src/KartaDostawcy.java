@@ -40,163 +40,57 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(0, 10, 0, 10);         
+        c.insets = new Insets(0, 10, 0, 10);        
+        Border border = BorderFactory.createLineBorder(Color.GRAY);
+        
         jlbNazwaSkrocona = new JLabel("Nazwa Skrócona");
         jtfNazwaSkrocona = new JTextArea();
-        jtfNazwaSkrocona.setMinimumSize(new Dimension(100, 20));
-        jtfNazwaSkrocona.setPreferredSize(new Dimension(300, 20));
+        jtfNazwaSkrocona.setPreferredSize(new Dimension(400, 40));
         jtfNazwaSkrocona.setLineWrap(true);
-        Border border = BorderFactory.createLineBorder(Color.GRAY);
-        jtfNazwaSkrocona.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 2, 0, 0)));
-        jtfNazwaSkrocona.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfNazwaSkrocona.selectAll();
-				jtfNazwaSkrocona.setBackground(Color.WHITE);
-			}
-		});
+        jtfNazwaSkrocona.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 2, 0, 0)));        
         jlbNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : maksymalna d³ugoœæ to 100 znaków");
         jtfNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : maksymalna d³ugoœæ to 100 znaków");
         jlbNazwaPelna = new JLabel("Nazwa Pe³na");
         jtfNazwaPelna = new JTextArea();
+        jtfNazwaPelna.setPreferredSize(new Dimension(400, 40));
         jtfNazwaPelna.setLineWrap(true);
         jtfNazwaPelna.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 2, 0, 0)));
-        jtfNazwaPelna.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfNazwaPelna.selectAll();
-				jtfNazwaPelna.setBackground(Color.WHITE);
-			}
-		});
-        jtfNazwaPelna.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void removeUpdate(DocumentEvent e) { check(); }
-			@Override
-			public void insertUpdate(DocumentEvent e) { check(); }
-			@Override
-			public void changedUpdate(DocumentEvent e) { check(); }
-		});
         jlbNazwaPelna.setToolTipText(jlbNazwaPelna.getText()+" : maksymalna d³ugoœæ to 100 znaków");
         jtfNazwaPelna.setToolTipText(jlbNazwaPelna.getText()+" : maksymalna d³ugoœæ to 100 znaków");
         jlbNip = new JLabel("NIP");
         jtfNip = new JTextField("");
-        jtfNip.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfNip.selectAll();
-				jtfNip.setBackground(Color.WHITE);
-			}
-		});
         jlbNip.setToolTipText(jlbNip.getText()+" : maksymalna d³ugoœæ to 10 znaków");
         jtfNip.setToolTipText(jlbNip.getText()+" : maksymalna d³ugoœæ to 10 znaków");
         jlbTelefon1 = new JLabel("Telefon 1");
         jtfTelefon1 = new JTextField("");
-        jtfTelefon1.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfTelefon1.selectAll();
-				jtfTelefon1.setBackground(Color.WHITE);
-			}
-		});
         jlbTelefon1.setToolTipText(jlbTelefon1.getText()+" : maksymalna d³ugoœæ to 20 znaków");
         jtfTelefon1.setToolTipText(jlbTelefon1.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 		jlbTelefon2 = new JLabel("Telefon 2");
 		jtfTelefon2 = new JTextField("");
-		jtfTelefon2.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfTelefon2.selectAll();
-				jtfTelefon2.setBackground(Color.WHITE);
-			}
-		});
 		jlbTelefon2.setToolTipText(jlbTelefon2.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 		jtfTelefon2.setToolTipText(jlbTelefon2.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 		jlbTelefon3 = new JLabel("Telefon 3");
 		jtfTelefon3 = new JTextField("");
-		jtfTelefon3.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfTelefon3.selectAll();
-				jtfTelefon3.setBackground(Color.WHITE);
-			}
-		});
 		jlbTelefon3.setToolTipText(jlbTelefon3.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 		jtfTelefon3.setToolTipText(jlbTelefon3.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 		jlbNazwaDzialu = new JLabel("Nazwa Dzia³u");
 		jtfNazwaDzialu = new JTextField("");
-		jtfNazwaDzialu.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfNazwaDzialu.selectAll();
-				jtfNazwaDzialu.setBackground(Color.WHITE);
-			}
-		});
 		jlbNazwaDzialu.setToolTipText(jlbNazwaDzialu.getText()+" : maksymalna d³ugoœæ to 50 znaków");
 		jtfNazwaDzialu.setToolTipText(jlbNazwaDzialu.getText()+" : maksymalna d³ugoœæ to 50 znaków");
         jlbNrKonta = new JLabel("Nr Konta");
 		jtfNrKonta = new JTextField("");
-		jtfNrKonta.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfNrKonta.selectAll();
-				jtfNrKonta.setBackground(Color.WHITE);
-			}
-		});
 		jlbNrKonta.setToolTipText(jlbNrKonta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
 		jtfNrKonta.setToolTipText(jlbNrKonta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
 		jlbAdres = new JLabel("Adres");
 		jtfAdres = new JTextField("");
-		jtfAdres.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfAdres.selectAll();
-				jtfAdres.setBackground(Color.WHITE);
-			}
-		});
 		jlbAdres.setToolTipText(jlbAdres.getText()+" : maksymalna d³ugoœæ to 50 znaków");
 		jtfAdres.setToolTipText(jlbAdres.getText()+" : maksymalna d³ugoœæ to 50 znaków");
 		jlbKodPocztowy = new JLabel("KodPoczowy");
 		jtfKodPocztowy = new JTextField("");
-		jtfKodPocztowy.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfKodPocztowy.selectAll();
-				jtfKodPocztowy.setBackground(Color.WHITE);
-			}
-		});
 		jlbKodPocztowy.setToolTipText(jlbKodPocztowy.getText()+" : maksymalna d³ugoœæ to 6 znaków");
 		jtfKodPocztowy.setToolTipText(jlbKodPocztowy.getText()+" : maksymalna d³ugoœæ to 6 znaków");
 		jlbPoczta = new JLabel("Poczta");
 		jtfPoczta = new JTextField("");
-		jtfPoczta.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfPoczta.selectAll();
-				jtfPoczta.setBackground(Color.WHITE);
-			}
-		});
 		jlbPoczta.setToolTipText(jlbPoczta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
 		jtfPoczta.setToolTipText(jlbPoczta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
         jbtPrzycisk = new JButton("Zatwierdz");
@@ -249,6 +143,8 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         add(jbtPrzycisk,c);
         
         ustawNasluchZdarzen();
+        documentListener();
+        focusListener();
     }
 	private void ustawNasluchZdarzen(){
     	//jtfNazwaSkrocona.addActionListener(this);
@@ -264,7 +160,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfPoczta.addActionListener(this);
 		jbtPrzycisk.addActionListener(this);
 	}
-    @Override
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
         Object z= e.getSource();
@@ -360,54 +256,212 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     private String walidacja(String NazwaSkrocona, String NazwaPelna, String Nip, String Telefon1, String Telefon2, String Telefon3, String NazwaDzialu, String NrKonta, String Adres, String KodPocztowy, String Poczta){
     	String error="";
     	if(NazwaSkrocona.length()>100){ 
-    		error+="Nazwa Skrócona zosta³a podana zbyt d³uga(100max)\n";
+    		error+="Nazwa Skrócona zosta³a podana nieprawid³owa(100max znaków)\n";
     		jtfNazwaSkrocona.setBackground(Color.RED);
     	}
+    	if(NazwaSkrocona.matches("^\\s*$")){
+    		error+="Nazwa Skrócona zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
+    		jtfNazwaSkrocona.setBackground(Color.RED);
+    	}    	
     	if(NazwaPelna.length()>100){
-    		error+="Nazwa Pe³na zosta³a podana zbyt d³uga(100max)\n";
+    		error+="Nazwa Pe³na zosta³a podana nieprawid³owa(100max znaków)\n";
     		jtfNazwaPelna.setBackground(Color.RED);
     	}
+    	if(NazwaPelna.matches("^\\s*$")){
+    		error+="Nazwa Pe³na zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
+    		jtfNazwaPelna.setBackground(Color.RED);
+    	} 
     	if(Nip.length()!=10){
-    		error+="D³ugoœæ Nip'u zosta³a podana nieprawid³owa(10)\n";
+    		error+="D³ugoœæ Nip'u musi byc 10(cyfr)\n";
+    		jtfNip.setBackground(Color.RED);
+    	} 
+    	else if(!Nip.matches("[0-9]{10}")){
+    		error+="Nip mo¿e zawieraæ tylko cyfry(10)\n";
     		jtfNip.setBackground(Color.RED);
     	}
-    	if(Telefon1.length()>20 || Telefon1.length()<9 && Telefon1.length()>0){
-    		error+="D³ugoœæ Numeu Telefon1 zosta³a podana nieprawid³owa(9-20)\n";
+    	if(!Telefon1.isEmpty() && !Telefon1.matches("[0-9]{9,20}")){
+    		error+="Numer Telefon1 mo¿e sk³adaæ siê tylko z cyfr(o d³ugoœci od 9 do 20)\n";
     		jtfTelefon1.setBackground(Color.RED);
     	}
-    	if(Telefon2.length()>20 || Telefon2.length()<9 && Telefon2.length()>0){
-    		error+="D³ugoœæ Numeu Telefon2 zosta³a podana nieprawid³owa(9-20)\n";
+    	if(!Telefon2.isEmpty() && !Telefon2.matches("[0-9]{9,20}")){
+    		error+="Numer Telefon2 mo¿e sk³adaæ siê tylko z cyfr(o d³ugoœci od 9 do 20)\n";
     		jtfTelefon2.setBackground(Color.RED);
     	}
-    	if(Telefon3.length()>20 || Telefon3.length()<9 && Telefon3.length()>0){
-    		error+="D³ugoœæ Numeu Telefon3 zosta³a podana nieprawid³owa(9-20)\n";
+    	if(!Telefon3.isEmpty() && !Telefon3.matches("[0-9]{9,20}")){
+    		error+="Numer Telefon3 mo¿e sk³adaæ siê tylko z cyfr(o d³ugoœci od 9 do 20)\n";
     		jtfTelefon3.setBackground(Color.RED);
     	}
     	if(NazwaDzialu.length()>50){
     		error+="Nazwa Dzia³u zosta³a podana zbyt d³uga(50max)\n";
     		jtfNazwaDzialu.setBackground(Color.RED);
     	}
+    	if(NazwaDzialu.matches("^\\s*$")){
+    		error+="Nazwa Dzialu zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
+    		jtfNazwaDzialu.setBackground(Color.RED);
+    	} 
     	if(NrKonta.length()>30){
     		error+="Nr Konta zosta³ podany zbyt d³ugi(30max)\n";
+    		jtfNrKonta.setBackground(Color.RED);
+    	} 
+    	if(NrKonta.matches("^\\s*$")){
+    		error+="Nr Konta zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)\n";
     		jtfNrKonta.setBackground(Color.RED);
     	}
     	if(Adres.length()>50){
     		error+="Adres zosta³ podany zbyt d³ugi(50max)\n";
     		jtfAdres.setBackground(Color.RED);
     	}
+    	if(Adres.matches("^\\s*$")){
+    		error+="Adres zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)\n";
+    		jtfAdres.setBackground(Color.RED);
+    	}
     	if(KodPocztowy.length()>6){
     		error+="Kod Pocztowy zosta³ podany zbyt d³ugi(6max)\n";
+    		jtfKodPocztowy.setBackground(Color.RED);
+    	}
+    	else if(!KodPocztowy.matches("[0-9]{2}\\-[0-9]{3}")){
+    		error+="Kod Pocztowy zosta³ podany nieprawid³owy(00-000)\n";
     		jtfKodPocztowy.setBackground(Color.RED);
     	}
     	if(Poczta.length()>30){
     		error+="Poczta zosta³a podana zbyt d³uga(30max)\n";
     		jtfPoczta.setBackground(Color.RED);
     	}
+    	if(Poczta.matches("^\\s*$")){
+    		error+="Poczta zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
+    		jtfPoczta.setBackground(Color.RED);
+    	}
     	return error;
     }
-    public void check() {
-    	if (jtfNazwaPelna.getText().length()>100){//make sure no more than 4 lines
-    		JOptionPane.showMessageDialog(null,"", "Error: Cant have more than 4 lines", JOptionPane.ERROR_MESSAGE);
-    	}
+    private void documentListener(){
+        jtfNazwaSkrocona.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void removeUpdate(DocumentEvent e) { check(); }
+			@Override
+			public void insertUpdate(DocumentEvent e) { check(); }
+			@Override
+			public void changedUpdate(DocumentEvent e) { check(); }
+
+		    public void check() {
+		    	if (jtfNazwaSkrocona.getText().length()>10){//make sure no more than 4 lines
+		    		JOptionPane.showMessageDialog(null, "Nie mo¿na wprowadzic wiêcej ni¿ 100 znaków!", "B³¹d!", JOptionPane.ERROR_MESSAGE);
+		    	}
+		    }
+		});
+        jtfNazwaPelna.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void removeUpdate(DocumentEvent e) { check(); }
+			@Override
+			public void insertUpdate(DocumentEvent e) { check(); }
+			@Override
+			public void changedUpdate(DocumentEvent e) { check(); }
+
+		    public void check() {
+		    	if (jtfNazwaPelna.getText().length()>100){//make sure no more than 4 lines
+		    		JOptionPane.showMessageDialog(null, "Nie mo¿na wprowadzic wiêcej ni¿ 100 znaków!", "B³¹d!", JOptionPane.ERROR_MESSAGE);
+		    	}
+		    }
+		});
     }
+    private void focusListener(){
+        jtfNazwaSkrocona.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfNazwaSkrocona.selectAll();
+				jtfNazwaSkrocona.setBackground(Color.WHITE);
+			}
+		});
+        jtfNazwaPelna.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfNazwaPelna.selectAll();
+				jtfNazwaPelna.setBackground(Color.WHITE);
+			}
+		});
+        jtfNip.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfNip.selectAll();
+				jtfNip.setBackground(Color.WHITE);
+			}
+		});
+        jtfTelefon1.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfTelefon1.selectAll();
+				jtfTelefon1.setBackground(Color.WHITE);
+			}
+		});
+		jtfTelefon2.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfTelefon2.selectAll();
+				jtfTelefon2.setBackground(Color.WHITE);
+			}
+		});
+		jtfTelefon3.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfTelefon3.selectAll();
+				jtfTelefon3.setBackground(Color.WHITE);
+			}
+		});
+		jtfNazwaDzialu.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfNazwaDzialu.selectAll();
+				jtfNazwaDzialu.setBackground(Color.WHITE);
+			}
+		});
+		jtfNrKonta.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfNrKonta.selectAll();
+				jtfNrKonta.setBackground(Color.WHITE);
+			}
+		});
+		jtfAdres.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfAdres.selectAll();
+				jtfAdres.setBackground(Color.WHITE);
+			}
+		});
+		jtfKodPocztowy.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfKodPocztowy.selectAll();
+				jtfKodPocztowy.setBackground(Color.WHITE);
+			}
+		});
+		jtfPoczta.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfPoczta.selectAll();
+				jtfPoczta.setBackground(Color.WHITE);
+			}
+		});
+	}
 }
