@@ -33,6 +33,6 @@ public class Polaczenie{
 	}
 	
 	public void print(){
-	
+		System.out.println("13");
 }
 }
