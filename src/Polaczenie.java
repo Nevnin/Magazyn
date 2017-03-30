@@ -35,5 +35,6 @@ public class Polaczenie{
 	public void print(){
 		System.out.println("13");
 		System.out.println("15");
+		System.out.println("200");
 }
 }
