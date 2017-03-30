@@ -30,7 +30,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     String mydatabase = "magazyn";
     String url = "jdbc:mysql://" + serverName + "/" + mydatabase; 
     String username = "root";
-    String password = "";
+    String password = "maciejchuj";
     
     JButton jbtPrzycisk;
     JLabel jlbNazwaSkrocona, jlbNazwaPelna, jlbNip, jlbTelefon1, jlbTelefon2, jlbTelefon3, jlbNazwaDzialu, jlbNrKonta, jlbAdres, jlbKodPocztowy, jlbPoczta;
