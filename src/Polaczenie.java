@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
 
+
+
 public class Polaczenie{
 
 	private final static String DBURL="jdbc:mysql://localhost:3306/magazyn";

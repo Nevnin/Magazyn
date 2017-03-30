@@ -21,8 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.Statement;
+
 
 public class OknoLogowania extends JFrame implements ActionListener, KeyListener{
     Label log,login,haslo;
