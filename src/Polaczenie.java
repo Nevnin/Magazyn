@@ -34,4 +34,7 @@ public class Polaczenie{
 	public ResultSet sqlSelect(String query) throws SQLException{
 		return statement.executeQuery(query);
 	} 
+	public void print(){
+		
+	}
 }
