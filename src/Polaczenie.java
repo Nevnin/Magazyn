@@ -35,6 +35,6 @@ public class Polaczenie{
 		return statement.executeQuery(query);
 	} 
 	public void print(){
-		
+		System.out.println("test");
 	}
 }
