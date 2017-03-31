@@ -23,6 +23,7 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+
 import jdk.internal.org.objectweb.asm.util.CheckAnnotationAdapter;
 
 public class KartaDostawcy extends JPanel implements ActionListener{
