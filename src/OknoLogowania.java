@@ -1,4 +1,3 @@
-import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
@@ -11,8 +10,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -21,18 +18,13 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-
-
 public class OknoLogowania extends JFrame implements ActionListener, KeyListener{
     Label log,login,haslo;
     TextField tflogin;
     JPasswordField tfhaslo;
     JButton zaloguj;
     GridBagConstraints gbc;
-    
     Polaczenie poloczenie;
-	
-	
     
     public OknoLogowania() {
         super("Logowanie");
@@ -43,19 +35,12 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
         GridLayout gl =  new GridLayout(3,2);
         setLayout(gl);
         setVisible(true);
-        
-       
-	
 		try {
 			poloczenie = new Polaczenie();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-				
-	
-      
 		
         login =  new Label("Login:");
         add(login);
