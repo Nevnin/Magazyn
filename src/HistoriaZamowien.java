@@ -15,7 +15,7 @@ import javax.swing.JList;
 public class HistoriaZamowien extends JPanel implements ListSelectionListener{
 Polaczenie polaczenie;
 public JList list1,list2;
-String[] tablica,tablica1;
+String[] tablica,tablica1,tablica3;
 JSplitPane splitPane;
 public HistoriaZamowien()
 {
