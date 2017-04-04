@@ -143,9 +143,10 @@ public class Zamowienie extends JPanel implements ActionListener {
 								{
 									p = new PanelDoZam(0);
 									add(p,g);
+									ustawNasluchZdarzen();
 									validate();
 									repaint();
-									ustawNasluchZdarzen();
+									
 								}
 								
 							}});
@@ -158,24 +159,13 @@ public class Zamowienie extends JPanel implements ActionListener {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					tablica1[i]=rs.getString(1);
-					i++;
-					
 				}
-				System.out.println(list_2.getSelectedValue());
-				list_2 = new JList(tablica1);
-				list_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-				list_2.addListSelectionListener(this);
-				splitPane.setRightComponent(list_2);
-				 list_2.setAlignmentX(CENTER_ALIGNMENT);
-				validate();
-				}}});
+				}});
 		splitPane.setLeftComponent(list_1_2);
 	}
 	private void ustawNasluchZdarzen() 
 	{
 		p.zamow.addActionListener(this);
-		p.DodajDoZamowienia.addActionListener(this);
 	}
 	public void Zamowienie(Date TerminRealizacji, Date DataRealizacji,float KosztZamowienia , int IdDostawcy , String NumerZamowienia, String SposobDostawy , float KosztDostawy) throws SQLException
 	{
