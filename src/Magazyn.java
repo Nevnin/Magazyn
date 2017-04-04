@@ -8,9 +8,10 @@ public class Magazyn extends JFrame implements ActionListener {
 	Panel p1;
 	KartaDostawcy kartaDostawcy = new KartaDostawcy();
 	Zamowienie zamowienie = new Zamowienie();
+	HistoriaZamowien hs = new HistoriaZamowien();
 	Menu menu;
 	Polaczenie polaczenie;
-	
+	StanMagazynowy stanMag = new StanMagazynowy();
 	String query="Select * from uzytkownik";
 	public Magazyn() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,6 +36,8 @@ public class Magazyn extends JFrame implements ActionListener {
 		menu.plik.addActionListener(this);
 		menu.zaklkartdostawcy.addActionListener(this);
 		menu.zamowienietowaru.addActionListener(this);
+		menu.stanmagazynowy.addActionListener(this);
+		menu.historiazamowien.addActionListener(this);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -47,19 +50,33 @@ public class Magazyn extends JFrame implements ActionListener {
             validate();
             dopasujSieDoZawartosci();
             repaint();
-        }
-        else if(z==menu.zaklkartdostawcy) {
+        } else if(z==menu.stanmagazynowy){
+        	removeP();
+        	stanMag = new StanMagazynowy();
+        	add(stanMag);
+        	validate();
+            dopasujSieDoZawartosci();
+            repaint();
+        	
+        } else if(z==menu.zaklkartdostawcy) {
         	removeP();
         	kartaDostawcy = new KartaDostawcy();
         	add(kartaDostawcy);
         	validate();
             dopasujSieDoZawartosci();
             repaint();
-        }else if(z==menu.zamowienietowaru)
-        {
+        } else if(z==menu.zamowienietowaru) {
         	removeP();
         	zamowienie = new Zamowienie();
         	add(zamowienie);
+        	validate();
+        	dopasujSieDoZawartosci();
+        	repaint();
+        }else if(z==menu.historiazamowien)
+        {
+        	removeP();
+        	hs = new HistoriaZamowien();
+        	add(hs);
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
@@ -74,5 +91,7 @@ public class Magazyn extends JFrame implements ActionListener {
 		remove(p1);
 		remove(kartaDostawcy);
 		remove(zamowienie);
+		remove(hs);
+		remove(stanMag);
 	}
 }

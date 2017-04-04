@@ -118,7 +118,6 @@ public class Zamowienie extends JPanel implements ActionListener {
 				if(e.getValueIsAdjusting()==true)
 				{
 					String query = "SELECT dostawca.NazwaSkrocona FROM `towar` INNER JOIN dostawcatowar ON dostawcatowar.IdTowar=towar.IdTowar INNER JOIN dostawca ON dostawca.IdDostawca= dostawcatowar.IdDostawca WHERE towar.NazwaTowaru ='"+list_1_2.getSelectedValue()+"'GROUP BY dostawca.NazwaSkrocona";
-					
 					try {
 						ResultSet rs = poloczenie.sqlSelect(query);
 						rs.last();
@@ -159,11 +158,19 @@ public class Zamowienie extends JPanel implements ActionListener {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-				
+					tablica1[i]=rs.getString(1);
+					i++;
+					
+				}
+				System.out.println(list_2.getSelectedValue());
+				list_2 = new JList(tablica1);
+				list_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				list_2.addListSelectionListener(this);
+				splitPane.setRightComponent(list_2);
+				 list_2.setAlignmentX(CENTER_ALIGNMENT);
+				validate();
 				}}});
-
 		splitPane.setLeftComponent(list_1_2);
-			
 	}
 	private void ustawNasluchZdarzen() 
 	{
