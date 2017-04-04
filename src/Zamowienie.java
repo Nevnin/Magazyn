@@ -92,6 +92,7 @@ public class Zamowienie extends JPanel implements ListSelectionListener {
 					i++;
 					
 				}
+				System.out.println(list_2.getSelectedValue());
 				list_2 = new JList(tablica1);
 				list_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				list_2.addListSelectionListener(this);

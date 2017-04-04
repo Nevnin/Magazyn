@@ -160,7 +160,6 @@ public void valueChanged(ListSelectionEvent arg0) {
 		String sel = list.getSelectedValue().toString();
 		//String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia, dostawca.NazwaSkrocona FROM zamowienie INNER JOIN dostawca ON dostawca.IdDostawca=zamowienie.IdDostawcy WHERE NazwaTowaru='"+sel+"'";
 		String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia FROM zamowienie WHERE NazwaTowaru='"+sel+"'";
-		
 		try {
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			tabPom = new String[8];

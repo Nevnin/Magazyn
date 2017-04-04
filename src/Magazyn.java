@@ -92,5 +92,6 @@ public class Magazyn extends JFrame implements ActionListener {
 		remove(kartaDostawcy);
 		remove(zamowienie);
 		remove(hs);
+		remove(stanMag);
 	}
 }
