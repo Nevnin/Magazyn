@@ -14,6 +14,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -21,7 +22,7 @@ import javax.swing.event.ListSelectionListener;
 
 public class HistoriaZamowien extends JPanel implements ListSelectionListener, KeyListener{
 	private Polaczenie polaczenie;
-	private JList list;
+	private JList list,list1;
 	private String[] tab;
 	private JSplitPane splitPane;
 	private JScrollPane scrollPane;
@@ -60,6 +61,7 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 		list.setPreferredSize(new Dimension(150, 150));
 		list.setAlignmentX(CENTER_ALIGNMENT);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list1 = new JList();
 		scrollPane.setViewportView(list);
 		panel.add(search);
 		search.setMaximumSize(new Dimension(200, 20));
@@ -102,6 +104,7 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 		jtfDostawca.setEditable(false);
 		
 		
+		
 		c.gridx = 0; c.gridy = 0;
         p.add(jlbNrZam,c);
         c.gridx += 2;
@@ -138,6 +141,11 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
         p.add(jlbDostawca,c);
         c.gridx += 2;
         p.add(jtfDostawca,c);
+        c.gridx = 0; c.gridy = 10;
+        p.add(list1,c);
+        
+        
+        
         splitPane.setRightComponent(p);
         
         add(splitPane);
@@ -157,27 +165,50 @@ public void valueChanged(ListSelectionEvent arg0) {
 	if(arg0.getValueIsAdjusting())
 	{
 		String[] tabPom;
+		String[][] towary;
 		String sel = list.getSelectedValue().toString();
-		//String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia, dostawca.NazwaSkrocona FROM zamowienie INNER JOIN dostawca ON dostawca.IdDostawca=zamowienie.IdDostawcy WHERE NazwaTowaru='"+sel+"'";
-		String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia FROM zamowienie WHERE NazwaTowaru='"+sel+"'";
+		String sql = "SELECT IdZamowienie, NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia, dostawca.NazwaSkrocona FROM zamowienie INNER JOIN dostawca ON dostawca.IdDostawca=zamowienie.IdDostawcy WHERE NumerZamowienia='"+sel+"'";
+		//int id = 0;
+		//String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia FROM zamowienie WHERE NumerZamowienia='"+sel+"'";
 		
 		try {
 			ResultSet rs = polaczenie.sqlSelect(sql);
-			tabPom = new String[8];
+			tabPom = new String[10];
+			
 			rs.next();
 			for(int i = 0;i<tabPom.length;i++)
 			{
 				tabPom[i]=rs.getString(i+1);
 			}
-			jtfNrZam.setText(tabPom[0]);
-			jtfTermin.setText(tabPom[1]);
-			jtfDataReal.setText(tabPom[2]);
-			jtfDataWys.setText(tabPom[3]);
-			jtfSposDos.setText(tabPom[4]);
-			jtfKosztDos.setText(tabPom[5]);
-			jtfWartoscTow.setText(tabPom[6]);
-			jtfKosztZam.setText(tabPom[7]);
-			//jtfDostawca.setText(tabPom[8]);
+			jtfNrZam.setText(tabPom[1]);
+			jtfTermin.setText(tabPom[2]);
+			jtfDataReal.setText(tabPom[3]);
+			jtfDataWys.setText(tabPom[4]);
+			jtfSposDos.setText(tabPom[5]);
+			jtfKosztDos.setText(tabPom[6]);
+			jtfWartoscTow.setText(tabPom[7]);
+			jtfKosztZam.setText(tabPom[8]);
+			jtfDostawca.setText(tabPom[9]);
+			int id = Integer.parseInt(tabPom[0]);
+
+			String query1 = "SELECT Lp,towar.NazwaTowaru,Cena,Ilosc,WartoscNetto FROM zamowienietowar INNER JOIN towar ON towar.IdTowar = zamowienietowar.IdTowar WHERE zamowienietowar.IdZamowienie = '"+id+"'";
+			ResultSet result = polaczenie.sqlSelect(query1);
+			result.last();
+			int rozmiar = result.getRow();
+			result.beforeFirst();
+			towary = new String[rozmiar][5]; 
+			int j=0;
+			while(result.next())
+			{
+				towary[j][0]=result.getString(1);
+				towary[j][1]=result.getString(2);
+				towary[j][2]=result.getString(3);
+				towary[j][3]=result.getString(4);
+				towary[j][4]=result.getString(5);
+				j++;
+			}
+			
+			list1.setListData(towary);
 			
 		} catch (Exception e) {
 			// TODO: handle exception
