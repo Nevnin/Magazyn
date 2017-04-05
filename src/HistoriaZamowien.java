@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -25,7 +26,7 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 	private JList list,list1;
 	private String[] tab;
 	private JSplitPane splitPane;
-	private JScrollPane scrollPane;
+	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbLp,jlbNazwaTowaru, jlbCena,jlbIlosc, jlbWartosc, jlbNrZam,jlbTermin,jlbDataReal,jlbDataWys,jlbSposDos,jlbKosztDos,jlbWartoscTow,jlbKosztZam,jlbDostawca;
 	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
 	private JTextArea area;
@@ -55,18 +56,21 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		scrollPane = new JScrollPane();
+		scrollPane1 = new JScrollPane();
 		search = new JTextField();
 		list = new JList(tab);
 		list.setMinimumSize(new Dimension(150,150));
 		list.setPreferredSize(new Dimension(150, 150));
 		list.setAlignmentX(CENTER_ALIGNMENT);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list1 = new JList();
+		list1 = new <String>JList();
 		scrollPane.setViewportView(list);
 		panel.add(search);
 		search.setMaximumSize(new Dimension(200, 20));
 		panel.add(scrollPane);
 		splitPane.setLeftComponent(panel);
+		//scrollPane1.setViewportView(list1);
+		
 		
 		JPanel p = new JPanel();
 		p.setLayout(new GridBagLayout());
@@ -107,44 +111,44 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 //		jlbCena = new JLabel("Cena");
 //		jlbIlosc = new JLabel("Ilosc");
 //		jlbWartosc = new JLabel("Wartosc");
-		area = new JTextArea();
-	
+		//area = new JTextArea();
 		
 		
 		
-		c.gridx = 1; c.gridy = 0;
+		
+		c.gridx = 0; c.gridy = 0;
         p.add(jlbNrZam,c);
         c.gridx += 3;
         p.add(jtfNrZam,c);
-        c.gridx = 1; c.gridy++;
+        c.gridx = 0; c.gridy++;
         p.add(jlbTermin,c);
         c.gridx += 3;
         p.add(jtfTermin,c);
-        c.gridx = 1; c.gridy = 2;
+        c.gridx = 0; c.gridy = 2;
         p.add(jlbDataReal,c);
         c.gridx += 3;
         p.add(jtfDataReal,c);
-        c.gridx = 1; c.gridy++;
+        c.gridx = 0; c.gridy++;
         p.add(jlbDataWys,c);
         c.gridx += 3;
         p.add(jtfDataWys,c);
-        c.gridx = 1; c.gridy = 4;
+        c.gridx = 0; c.gridy = 4;
         p.add(jlbSposDos,c);
         c.gridx += 3;
         p.add(jtfSposDos,c);
-        c.gridx = 1; c.gridy++;
+        c.gridx = 0; c.gridy++;
         p.add(jlbKosztDos,c);
         c.gridx += 3;
         p.add(jtfKosztDos,c);
-        c.gridx = 1; c.gridy = 6;
+        c.gridx = 0; c.gridy = 6;
         p.add(jlbWartoscTow,c);
         c.gridx += 3;
         p.add(jtfWartoscTow,c);
-        c.gridx = 1; c.gridy++;
+        c.gridx = 0; c.gridy++;
         p.add(jlbKosztZam,c);
         c.gridx += 3;
         p.add(jtfKosztZam,c);
-        c.gridx = 1; c.gridy = 8;
+        c.gridx = 0; c.gridy = 8;
         p.add(jlbDostawca,c);
         c.gridx += 3;
         p.add(jtfDostawca,c);
@@ -160,10 +164,8 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 //        p.add(jlbWartosc,c);
         c.gridx = 0; c.gridy = 11;
         p.add(list1,c);
-        c.gridx = 0; c.gridy = 12;
-        p.add(area,c);
-        
-        
+
+//        
         
         splitPane.setRightComponent(p);
         
@@ -182,7 +184,7 @@ public void valueChanged(ListSelectionEvent arg0) {
 	
 	if(arg0.getValueIsAdjusting())
 	{
-		String[] tabPom;
+		String[] tabPom,t;
 		String[][] towary;
 		String sel = list.getSelectedValue().toString();
 		String sql = "SELECT IdZamowienie, NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia, dostawca.NazwaSkrocona FROM zamowienie INNER JOIN dostawca ON dostawca.IdDostawca=zamowienie.IdDostawcy WHERE NumerZamowienia='"+sel+"'";
@@ -215,19 +217,35 @@ public void valueChanged(ListSelectionEvent arg0) {
 			int rozmiar = result.getRow();
 			result.beforeFirst();
 			towary = new String[rozmiar][5]; 
+//			towary[0][0] = "LP";
+//			towary[0][1] = "Nazwa";
+//			towary[0][2] = "Cena";
+//			towary[0][3] = "Ilosc";
+//			towary[0][4] = "Wartosc";
+			t = new String[rozmiar];
 			int j=0;
 			while(result.next())
 			{
-				towary[j][0]=result.getString("Lp");
-				towary[j][1]=result.getString("NazwaTowaru");
+				towary[j][0]=result.getString(1);
+				towary[j][1]=result.getString(2);
 				towary[j][2]=result.getString(3);
 				towary[j][3]=result.getString(4);
 				towary[j][4]=result.getString(5);
+				
 				j++;
 			}
+			//String s = Arrays.deepToString(towary);
+			for (int i = 0;i<rozmiar;i++)
+			{
+				t[i] = Arrays.deepToString(towary[i]);
+			}
+				
 			
-			//list1.setListData(towary);
-			area.setText(towary.toString());
+			
+			list1.setListData(t);
+			//area.setText(s);
+			//area=setText();
+			//System.out.println(s);
 			
 			
 		} catch (Exception e) {
