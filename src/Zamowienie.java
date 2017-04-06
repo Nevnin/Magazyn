@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +25,8 @@ import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -54,16 +57,19 @@ public class Zamowienie extends JPanel implements ActionListener {
 	    String username = "root";
 	    String password = "";
 	Polaczenie poloczenie;
-	public JList list_1,list_2;
-	private JList list_1_2;
-	private JList list_1_1;
+	public JList dostawcy;
+	private JList towar;
 	String[] tablica;
 	String[] tablica1;
+	String[] tabtowar;
+	String[] tabdostawca;
+	String[] tabzamowienie;
 	JButton zamow ;
 	JSplitPane splitPane;
 	PanelDoZam p;
+	boolean btowar=false;
+	boolean bdostawcy = false;
 	public Zamowienie() {
-		setBorder(new LineBorder(new Color(0, 0, 0)));
 		setPreferredSize(new Dimension(400,300));
 		GridLayout g= new GridLayout(2,1);
 		setLayout(g);
@@ -101,23 +107,22 @@ public class Zamowienie extends JPanel implements ActionListener {
 		// splitPane.setMinimumSize(new Dimension(400, 200));
 		add(splitPane,g);
 		
-		 list_2 = new JList(); 
-		 list_2.setPreferredSize(new Dimension(200,200));
-		 list_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		 dostawcy = new JList(); 
+		 dostawcy.setPreferredSize(new Dimension(200,200));
+		 dostawcy.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		 
-		 splitPane.setRightComponent(list_2);
-		list_1_2 = new JList(tablica);
-		 list_1_2.setSize(new Dimension(200,200));
-		 
-	//	list_1.setPreferredSize(new Dimension(200, 10));
-		list_1_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list_1_2.addListSelectionListener(new ListSelectionListener(){
+		 splitPane.setRightComponent(dostawcy);
+		towar = new JList(tablica);
+		 towar.setSize(new Dimension(200,200));
+		towar.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		towar.addListSelectionListener(new ListSelectionListener(){
 
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if(e.getValueIsAdjusting()==true)
 				{
-					String query = "SELECT dostawca.NazwaSkrocona FROM `towar` INNER JOIN dostawcatowar ON dostawcatowar.IdTowar=towar.IdTowar INNER JOIN dostawca ON dostawca.IdDostawca= dostawcatowar.IdDostawca WHERE towar.NazwaTowaru ='"+list_1_2.getSelectedValue()+"'GROUP BY dostawca.NazwaSkrocona";
+					btowar=true;
+					String query = "SELECT dostawca.NazwaSkrocona FROM `towar` INNER JOIN dostawcatowar ON dostawcatowar.IdTowar=towar.IdTowar INNER JOIN dostawca ON dostawca.IdDostawca= dostawcatowar.IdDostawca WHERE towar.NazwaTowaru ='"+towar.getSelectedValue()+"'GROUP BY dostawca.NazwaSkrocona";
 					try {
 						ResultSet rs = poloczenie.sqlSelect(query);
 						rs.last();
@@ -132,18 +137,34 @@ public class Zamowienie extends JPanel implements ActionListener {
 							i++;
 							
 						}
-						list_2 = new JList(tablica1);
-						list_2.setPreferredSize(new Dimension(200,200));
-						list_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-						list_2.addListSelectionListener(new ListSelectionListener(){
-
+						String zapytanietowar = "Select * from towar WHERE NazwaTowaru="+towar.getSelectedValue();
+						ResultSet ztowar =poloczenie.sqlSelect(zapytanietowar);
+						tabtowar = new String[10];
+						for(int j=0; j<tabtowar.length; j++){
+							tabtowar[j] = rs.getString(j+1);
+						}
+						dostawcy = new JList(tablica1);
+						dostawcy.setPreferredSize(new Dimension(200,200));
+						dostawcy.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						dostawcy.addListSelectionListener(new ListSelectionListener(){
+						
 							@Override
 							public void valueChanged(ListSelectionEvent e) {
 								if(e.getValueIsAdjusting()==true)
 								{
-									p = new PanelDoZam(0);
-									add(p,g);
-									ustawNasluchZdarzen();
+									bdostawcy=true;
+									String zapytaniedostawca = "Select * from dostawca WHERE NazwaSkrocona="+dostawcy.getSelectedValue();
+									try {
+										ResultSet zdostawca =poloczenie.sqlSelect(zapytaniedostawca);
+										tabdostawca = new String[12];
+										for(int j=0; j<tabdostawca.length; j++){
+											tabdostawca[j] = rs.getString(j+1);
+										}
+									} catch (SQLException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									
 									validate();
 									repaint();
 									
@@ -151,8 +172,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 								
 							}});
 						
-						splitPane.setRightComponent(list_2);
-						 list_2.setAlignmentX(CENTER_ALIGNMENT);
+						splitPane.setRightComponent(dostawcy);
 						validate();
 						repaint();
 					} catch (SQLException e1) {
@@ -161,11 +181,50 @@ public class Zamowienie extends JPanel implements ActionListener {
 					}
 				}
 				}});
-		splitPane.setLeftComponent(list_1_2);
+		splitPane.setLeftComponent(towar);
+		p = new PanelDoZam(0);
+		add(p,g);
+		ustawNasluchZdarzen();
+		
 	}
 	private void ustawNasluchZdarzen() 
 	{
 		p.zamow.addActionListener(this);
+	}
+	private String walidacja(String TerminRealizacji, String DataRealizacji) throws ParseException
+	{
+		String error="";
+		if(btowar!=true)
+		{
+			error+="Towar nie zosta³ wybrany z listy\n";
+		}
+		if(bdostawcy!=true)
+		{
+			error+="Dostawca nie zosta³ wybrany z listy\n";
+		}
+		if(TerminRealizacji.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
+			String walidacjaDaty = sprawdzenieDaty(TerminRealizacji);
+			if(walidacjaDaty.length()>0)
+				{
+					error+=walidacjaDaty;	
+				}
+		}else
+			{
+				error+="Niepoprawny format daty przy Termin Realizacji \n";}
+		if(DataRealizacji.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
+			String walidacjaDatydr = sprawdzenieDaty(DataRealizacji);
+			if(walidacjaDatydr.length()>0)
+			{
+				error+=walidacjaDatydr;	
+			}
+		
+		}
+		else
+		{
+			error+="Niepoprawny format daty przy Data Realizacji \n";
+		}
+		
+		return error;
 	}
 	public void Zamowienie(Date TerminRealizacji, Date DataRealizacji,float KosztZamowienia , int IdDostawcy , String NumerZamowienia, String SposobDostawy , float KosztDostawy) throws SQLException
 	{
@@ -239,9 +298,69 @@ public class Zamowienie extends JPanel implements ActionListener {
 		Object z= e.getSource();
 		if(z==p.zamow)
 		{
-			
+			String TerminRealizacji = p.tfTerminRealizacji.getText().toString();
+			String DataRealizacji = p.tfDataRealizacji.getText().toString();
+			try {
+				 String walidacja = walidacja(TerminRealizacji,DataRealizacji);
+				 if(walidacja.length()>0)
+				 {
+					 int dialogButton = JOptionPane.INFORMATION_MESSAGE;
+			    	JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+				 }else
+				 {
+					 
+				 }
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
+	} 
+	public String sprawdzenieDaty(String data) throws ParseException
+	{
+		
+		String error="";
+		String[] podzial= null;
+		podzial = data.split("-");
+		int miesiac = Integer.parseInt(podzial[1]);
+		int rok = Integer.parseInt(podzial[0]);
+		int dzien = Integer.parseInt(podzial[2]);
+		System.out.println(rok+" "+miesiac+" "+dzien);
+		if(miesiac>12){
+			error+="Zosta³ podany niepoprawny miesi¹c , nie powinien byæ wiêkszy ni¿ 12.\n"; }
+		else{
+		 if(miesiac==1 ||miesiac==3 || miesiac==5 || miesiac==7 || miesiac==8 || miesiac==10 || miesiac==12)
+		 {
+			 if(dzien>31)
+			 {
+				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 31.\n";
+			 }
+		 }
+		 else if(miesiac==4 || miesiac==6 || miesiac==9 || miesiac==11)
+		 {
+			 if(dzien>30)
+			 {
+				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 30.\n";
+			 }
+		 }
+		 else
+		 {
+			 if(((rok%4== 0) && (rok%100!= 0)) || (rok%400 == 0))
+			 {
+				 if(dzien>29)
+				 {
+					 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 29.\n";
+				 }
+			 }
+			 else
+			 {
+				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 28.\n";
+			 }
+		 }
+		 }
+		
+		return error;
 	} 
 }
 

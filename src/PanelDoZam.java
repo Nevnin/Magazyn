@@ -39,16 +39,15 @@ public class PanelDoZam extends JPanel {
 	    	tfDataRealizacji.setToolTipText("Podaj date w formacie: yyyy-mm-dd");
 	    	add(tfDataRealizacji);
 	    	tfDataRealizacji.setColumns(10);
-	    	
 	    	zamow = new JButton("Zamow");
 	    	zamow.setBounds(301, 61, 89, 23);
 	    	add(zamow);
 	    	}
 	    	else
 	    	{
-	    		DodajDoZamowienia = new JButton("Dodaj do zamowienia");
-		    	DodajDoZamowienia.setBounds(257, 66, 133, 23);
-		    	add(DodajDoZamowienia);
+	    		zamow = new JButton("Dodaj do zamowienia");
+		    	zamow.setBounds(257, 66, 133, 23);
+		    	add(zamow);
 	    	}
 	    }   
 }
