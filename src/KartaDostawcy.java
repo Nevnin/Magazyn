@@ -30,7 +30,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     String username = "root";
     String password = "";
     
-    JButton jbtPrzycisk;
+    JButton jbtPrzycisk, jbtTowary;
     JLabel jlbNazwaSkrocona, jlbNazwaPelna, jlbNip, jlbTelefon1, jlbTelefon2, jlbTelefon3, jlbNazwaDzialu, jlbNrKonta, jlbAdres, jlbKodPocztowy, jlbPoczta;
     JTextField jtfNip, jtfTelefon1, jtfTelefon2, jtfTelefon3, jtfNazwaDzialu, jtfNrKonta, jtfAdres, jtfKodPocztowy, jtfPoczta;
     JTextArea jtfNazwaSkrocona, jtfNazwaPelna;
@@ -91,6 +91,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfPoczta = new JTextField("");
 		jlbPoczta.setToolTipText(jlbPoczta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
 		jtfPoczta.setToolTipText(jlbPoczta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
+		
         jbtPrzycisk = new JButton("Zatwierdz");
         
         c.gridx = 0; c.gridy = 0;
