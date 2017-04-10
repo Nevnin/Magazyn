@@ -163,6 +163,7 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 //        c.gridx = 4; c.gridy = 10;
 //        p.add(jlbWartosc,c);
         c.gridx = 0; c.gridy = 11;
+   
         p.add(list1,c);
 
 //        
