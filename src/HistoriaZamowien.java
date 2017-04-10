@@ -266,34 +266,28 @@ public void valueChanged(ListSelectionEvent arg0) {
 			}
 			data=towary;
 			repaint();
-			//tableModel.fireTableRowsInserted(firstRow, lastRow);
-//			for (int i = 0; i < towary.length; i++) {
-//				String[] data = new String[5];
-//				for(int z = 0;z<5;z++){
-//				
-//				data[z]= towary[i][z];
-//			
-//				
-//
-//				}
-//		        tableModel.addRow(data);
-//		        
-//		    }
-//			tabela.setModel(tableModel);
+			//tableModel.fireTableDataChanged();
+			for (int i = 0; i < towary.length; i++) {
+				String[] data = new String[5];
+				for(int z = 0;z<5;z++){
+				
+				data[z]= towary[i][z];
+			
+				
+
+				}
+		        tableModel.addRow(data);
+		        
+	    }
+			tabela.setModel(tableModel);
 			
 			//String s = Arrays.deepToString(towary);
 //			for (int i = 0;i<rozmiar;i++)
 //			{
 //				t[i] = Arrays.deepToString(towary[i]);
 //			}
-		String[] columnNames = 
-			{"Lp",
-	            "Nazwa Towaru",
-	            "Cena",
-	            "Ilosc",
-	            "Wartosc Netto"};	
+	
 			
-			tabela = new JTable(towary, columnNames);
 			
 			//area.setText(s);
 			//area=setText();

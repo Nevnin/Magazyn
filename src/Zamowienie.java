@@ -36,11 +36,14 @@ import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+//<<<<<<< HEAD
 //import org.eclipse.wb.swing.FocusTraversalOnArray;
 //import org.jdatepicker.impl.JDatePanelImpl;
 //import org.jdatepicker.impl.JDatePickerImpl;
 //import org.jdatepicker.impl.UtilDateModel;
 
+//=======
+//>>>>>>> branch 'master' of https://github.com/Nevnin/Magazyn.git
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.VBox;
