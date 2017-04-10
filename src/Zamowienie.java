@@ -67,12 +67,24 @@ public class Zamowienie extends JPanel implements ActionListener {
 	JButton zamow ;
 	JSplitPane splitPane;
 	PanelDoZam p;
+	PanelDoZam p2;
 	boolean btowar=false;
 	boolean bdostawcy = false;
-	public Zamowienie() {
+	String nazwaZamowienia;
+	String teraz;
+	public Zamowienie(){
 		setPreferredSize(new Dimension(400,300));
 		GridLayout g= new GridLayout(2,1);
 		setLayout(g);
+		SimpleDateFormat dt= new SimpleDateFormat("yyyy-MM-dd"); 
+		 Date data = new Date(); 
+		 teraz = dt.format(data);
+		 try {
+			nazwaZamowienia = tworzenieNazwyZam();
+		} catch (SQLException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 		try {
 			poloczenie = new Polaczenie();
 		} catch (SQLException e) {
@@ -97,11 +109,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-//		SimpleDateFormat dt= new SimpleDateFormat("yyyy-MM-dd"); 
-//		 Date data = new Date(); 
-//		System.out.println(dt.format(data));
-		splitPane = new JSplitPane();
+		}splitPane = new JSplitPane();
 		 splitPane.setBounds(85, 5, 207, 202);
 		// splitPane.setPreferredSize(new Dimension(400, 400));
 		// splitPane.setMinimumSize(new Dimension(400, 200));
@@ -137,11 +145,13 @@ public class Zamowienie extends JPanel implements ActionListener {
 							i++;
 							
 						}
-						String zapytanietowar = "Select * from towar WHERE NazwaTowaru="+towar.getSelectedValue();
+						String zapytanietowar = "Select * from towar WHERE NazwaTowaru='"+towar.getSelectedValue()+"'";
 						ResultSet ztowar =poloczenie.sqlSelect(zapytanietowar);
 						tabtowar = new String[10];
+						while(ztowar.next()){
 						for(int j=0; j<tabtowar.length; j++){
-							tabtowar[j] = rs.getString(j+1);
+							tabtowar[j] = ztowar.getString(j+1);
+						}
 						}
 						dostawcy = new JList(tablica1);
 						dostawcy.setPreferredSize(new Dimension(200,200));
@@ -153,20 +163,38 @@ public class Zamowienie extends JPanel implements ActionListener {
 								if(e.getValueIsAdjusting()==true)
 								{
 									bdostawcy=true;
-									String zapytaniedostawca = "Select * from dostawca WHERE NazwaSkrocona="+dostawcy.getSelectedValue();
+									String zapytaniedostawca = "Select * from dostawca WHERE NazwaSkrocona='"+dostawcy.getSelectedValue()+"'";
 									try {
 										ResultSet zdostawca =poloczenie.sqlSelect(zapytaniedostawca);
 										tabdostawca = new String[12];
+										while(zdostawca.next()){
 										for(int j=0; j<tabdostawca.length; j++){
-											tabdostawca[j] = rs.getString(j+1);
+											tabdostawca[j] = zdostawca.getString(j+1);
+										}
 										}
 									} catch (SQLException e1) {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
+									try {
+										if(sprawdzenieCzyJestZam(nazwaZamowienia,Integer.parseInt(tabdostawca[0]))==true){
+										remove(p);
+										p2= new PanelDoZam(1);
+										validate();
+										repaint();
+										}
+										else
+										{
+											remove(p2);
+											p= new PanelDoZam(1);
+											validate();
+											repaint();	
+										}
+									} catch (NumberFormatException | SQLException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
 									
-									validate();
-									repaint();
 									
 								}
 								
@@ -190,8 +218,25 @@ public class Zamowienie extends JPanel implements ActionListener {
 	private void ustawNasluchZdarzen() 
 	{
 		p.zamow.addActionListener(this);
+		p2.zamow.addActionListener(this);
 	}
-	private String walidacja(String TerminRealizacji, String DataRealizacji) throws ParseException
+	private String walidacjaDat(String TerminRealizacji) throws ParseException
+	{
+		String error="";
+		
+		if(TerminRealizacji.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
+			String walidacjaDaty = sprawdzenieDaty(TerminRealizacji);
+			if(walidacjaDaty.length()>0)
+				{
+					error+=walidacjaDaty;	
+				}
+		}else
+			{
+				error+="Niepoprawny format daty przy Termin Realizacji \n";}
+		
+		return error;
+	}
+	private String walidacjaList() throws ParseException
 	{
 		String error="";
 		if(btowar!=true)
@@ -202,31 +247,126 @@ public class Zamowienie extends JPanel implements ActionListener {
 		{
 			error+="Dostawca nie zosta³ wybrany z listy\n";
 		}
-		if(TerminRealizacji.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
-			String walidacjaDaty = sprawdzenieDaty(TerminRealizacji);
-			if(walidacjaDaty.length()>0)
-				{
-					error+=walidacjaDaty;	
-				}
-		}else
-			{
-				error+="Niepoprawny format daty przy Termin Realizacji \n";}
-		if(DataRealizacji.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
-			String walidacjaDatydr = sprawdzenieDaty(DataRealizacji);
-			if(walidacjaDatydr.length()>0)
-			{
-				error+=walidacjaDatydr;	
-			}
-		
-		}
-		else
+			return error;
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object z= e.getSource();
+		if(z=="Zamow")
 		{
-			error+="Niepoprawny format daty przy Data Realizacji \n";
+			String TerminRealizacji = p.tfTerminRealizacji.getText().toString();
+			
+			
+			 
+			try {
+				 String walidacja = walidacjaDat(TerminRealizacji);
+				 walidacja+=walidacjaList();
+				 if(walidacja.length()>0)
+				 {
+			    	JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+				 }else
+				 {
+					 
+				 }
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
+		if(z=="Dodaj do zamowienia")
+		{
+			String walidacja;
+			try {
+				walidacja = walidacjaList();
+				if(walidacja.length()>0)
+				 {
+			    	JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+				 }else
+				 {
+					 
+				 }
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+		}
+		
+	} 
+	public String sprawdzenieDaty(String data) throws ParseException
+	{
+		
+		String error="";
+		String[] podzial= null;
+		podzial = data.split("-");
+		int miesiac = Integer.parseInt(podzial[1]);
+		int rok = Integer.parseInt(podzial[0]);
+		int dzien = Integer.parseInt(podzial[2]);
+		System.out.println(rok+" "+miesiac+" "+dzien);
+		if(miesiac>12){
+			error+="Zosta³ podany niepoprawny miesi¹c , nie powinien byæ wiêkszy ni¿ 12.\n"; }
+		else{
+		 if(miesiac==1 ||miesiac==3 || miesiac==5 || miesiac==7 || miesiac==8 || miesiac==10 || miesiac==12)
+		 {
+			 if(dzien>31)
+			 {
+				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 31.\n";
+			 }
+		 }
+		 else if(miesiac==4 || miesiac==6 || miesiac==9 || miesiac==11)
+		 {
+			 if(dzien>30)
+			 {
+				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 30.\n";
+			 }
+		 }
+		 else
+		 {
+			 if(((rok%4== 0) && (rok%100!= 0)) || (rok%400 == 0))
+			 {
+				 if(dzien>29)
+				 {
+					 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 29.\n";
+				 }
+			 }
+			 else
+			 {
+				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 28.\n";
+			 }
+		 }
+		 }
 		
 		return error;
+	} 
+	public int sprawdzenieIlosciZam() 
+	{
+		int k=0;
+		String count = "SELECT count(*) from zamowienie WHERE DataWystawienia='"+teraz+"'";
+		System.out.println(count);
+		try {
+			 ResultSet rs = poloczenie.sqlSelect(count);
+			while(rs.next())
+			{
+				 k =rs.getInt(1);
+			}
+			return k;
+		} catch (SQLException e) {
+			return 0;
+		}
+		
 	}
-	public void Zamowienie(Date TerminRealizacji, Date DataRealizacji,float KosztZamowienia , int IdDostawcy , String NumerZamowienia, String SposobDostawy , float KosztDostawy) throws SQLException
+	public boolean sprawdzenieCzyJestZam(String nazwaZam,int IdDostawcy) throws SQLException
+	{
+		String zapytanie="SELECT * from zamowienie WHERE NumerZamowienia='"+nazwaZam+"' AND IdDostawcy='"+IdDostawcy+"'";
+		ResultSet rs = poloczenie.sqlSelect(zapytanie);
+		if(rs.getRow()==0)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public void Zamowienie(Date TerminRealizacji,float KosztZamowienia , int IdDostawcy , String NumerZamowienia, String SposobDostawy , float KosztDostawy) throws SQLException
 	{
 		Connection connection = DriverManager.getConnection(url, username, password);
 		String query = "INSERT INTO zamowienie "
@@ -234,11 +374,10 @@ public class Zamowienie extends JPanel implements ActionListener {
 			    + " values (?, ?, ?, ?, ?, ?,?,?,?)";
 		PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 		preparedStmt.setDate (1,(java.sql.Date) TerminRealizacji);
-		preparedStmt.setDate (2,(java.sql.Date) DataRealizacji);
+		preparedStmt.setString (2,"NULL");
 		preparedStmt.setFloat (3,KosztZamowienia);
 		preparedStmt.setInt (4,IdDostawcy);
-		Date dzis = new Date();
-		preparedStmt.setDate (5,(java.sql.Date) dzis);
+		preparedStmt.setString (5, teraz);
 		preparedStmt.setString (6,NumerZamowienia);
 		preparedStmt.setString (7,SposobDostawy);
 		preparedStmt.setFloat (8,KosztDostawy);
@@ -293,75 +432,13 @@ public class Zamowienie extends JPanel implements ActionListener {
 		
 		return LP;
 	}
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object z= e.getSource();
-		if(z==p.zamow)
-		{
-			String TerminRealizacji = p.tfTerminRealizacji.getText().toString();
-			String DataRealizacji = p.tfDataRealizacji.getText().toString();
-			try {
-				 String walidacja = walidacja(TerminRealizacji,DataRealizacji);
-				 if(walidacja.length()>0)
-				 {
-					 int dialogButton = JOptionPane.INFORMATION_MESSAGE;
-			    	JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
-				 }else
-				 {
-					 
-				 }
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-		
-	} 
-	public String sprawdzenieDaty(String data) throws ParseException
+	public String tworzenieNazwyZam() throws SQLException
 	{
-		
-		String error="";
-		String[] podzial= null;
-		podzial = data.split("-");
-		int miesiac = Integer.parseInt(podzial[1]);
-		int rok = Integer.parseInt(podzial[0]);
-		int dzien = Integer.parseInt(podzial[2]);
-		System.out.println(rok+" "+miesiac+" "+dzien);
-		if(miesiac>12){
-			error+="Zosta³ podany niepoprawny miesi¹c , nie powinien byæ wiêkszy ni¿ 12.\n"; }
-		else{
-		 if(miesiac==1 ||miesiac==3 || miesiac==5 || miesiac==7 || miesiac==8 || miesiac==10 || miesiac==12)
-		 {
-			 if(dzien>31)
-			 {
-				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 31.\n";
-			 }
-		 }
-		 else if(miesiac==4 || miesiac==6 || miesiac==9 || miesiac==11)
-		 {
-			 if(dzien>30)
-			 {
-				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 30.\n";
-			 }
-		 }
-		 else
-		 {
-			 if(((rok%4== 0) && (rok%100!= 0)) || (rok%400 == 0))
-			 {
-				 if(dzien>29)
-				 {
-					 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 29.\n";
-				 }
-			 }
-			 else
-			 {
-				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 28.\n";
-			 }
-		 }
-		 }
-		
-		return error;
-	} 
+		String nazwa="";
+		String[] tablica = teraz.split("-");
+		nazwa+=tablica[0]+"/"+tablica[1]+"/"+tablica[2]+"/"+sprawdzenieIlosciZam()+1;
+		return nazwa;
+	}
 }
 
 
