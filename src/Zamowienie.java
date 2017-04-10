@@ -1,10 +1,6 @@
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -15,36 +11,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Properties;
 
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
-import javax.swing.JLabel;
 import javax.swing.JList;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Label;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import org.eclipse.wb.swing.FocusTraversalOnArray;
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
-
-import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.layout.VBox;
-
-import java.awt.Button;
 import java.awt.Color;
-import java.awt.Component;
 import javax.swing.border.LineBorder;
 
 public class Zamowienie extends JPanel implements ActionListener {
