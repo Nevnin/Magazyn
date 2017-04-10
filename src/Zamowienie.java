@@ -1,13 +1,8 @@
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import java.awt.Dimension;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,10 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Properties;
-
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;

@@ -8,22 +8,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.sun.prism.paint.Color;
-
 public class StanMagazynowy extends JPanel implements ListSelectionListener, KeyListener {
-	private JList list;
+	private JList<String> list;
 	private String[] tab;
 	private Polaczenie polaczenie;
 	private JSplitPane splitPane;
@@ -42,8 +40,8 @@ public class StanMagazynowy extends JPanel implements ListSelectionListener, Key
 			int i = 0;
 			tab = new String[rozmiar];
 			while(rs.next()){
-				if(Integer.parseInt(rs.getString(3)) > Integer.parseInt(rs.getString(4)))
-					list.setForeground(java.awt.Color.RED);
+//				if(Integer.parseInt(rs.getString(3)) > Integer.parseInt(rs.getString(4)))
+//					list.setForeground(java.awt.Color.RED);
 				tab[i] = rs.getString("NazwaTowaru");
 				i++;
 			}
@@ -52,11 +50,12 @@ public class StanMagazynowy extends JPanel implements ListSelectionListener, Key
 		}
 		splitPane = new JSplitPane();
 		JPanel panel = new JPanel();
+		JTable table = new JTable();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		scrollPane = new JScrollPane();
 		search = new JTextField();
-		list = new JList(tab);
-		list.setMaximumSize(new Dimension(100, 100));
+		list = new JList<String>(tab);
+		//list.setMaximumSize(new Dimension(100, 100));
 		list.setAlignmentX(CENTER_ALIGNMENT);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(list);
@@ -175,8 +174,11 @@ public class StanMagazynowy extends JPanel implements ListSelectionListener, Key
 				jpbStanDys.setValue(dys);
 				jtfStanMax.setText(tabPom[2]);
 				jtfStanMax2.setText(tabPom[2]);
-				if(real<=min)
+				if(real<=min){
 					jpbStanReal.setForeground(java.awt.Color.RED);
+					jtfStanReal.setForeground(java.awt.Color.RED);
+					jtfStanMin2.setForeground(java.awt.Color.RED);
+				}
 				else 
 					jpbStanReal.setForeground(new java.awt.Color(163, 184, 204));
 				if(dys<=min)
@@ -210,18 +212,9 @@ public class StanMagazynowy extends JPanel implements ListSelectionListener, Key
 		}
 	}
 	@Override
-	public void keyPressed(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void keyPressed(KeyEvent arg0) {	 }
 	@Override
-	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		szukaj(search.getText());
-	}
+	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
 	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void keyTyped(KeyEvent arg0) { }
 }
