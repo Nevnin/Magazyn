@@ -242,15 +242,7 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 					}
 					tableModel.addRow(data);
 				}
-				//tableModel.fireTableDataChanged();
-				//String s = Arrays.deepToString(towary);
-	//			for (int i = 0;i<rozmiar;i++)
-	//			{
-	//				t[i] = Arrays.deepToString(towary[i]);
-	//			}
-				//area.setText(s);
-				//area=setText();
-				//System.out.println(s);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
