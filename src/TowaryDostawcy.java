@@ -1,3 +1,4 @@
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -19,7 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class HistoriaZamowien extends JPanel implements ListSelectionListener, KeyListener{
+public class TowaryDostawcy extends JPanel implements ListSelectionListener, KeyListener{
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private JTable tabela;
@@ -28,11 +29,11 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbNrZam,jlbTermin,jlbDataReal,jlbDataWys,jlbSposDos,jlbKosztDos,jlbWartoscTow,jlbKosztZam,jlbDostawca;
 	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
-	public HistoriaZamowien()
+	public TowaryDostawcy()
 	{
 		try {
 			polaczenie = new Polaczenie();
-			String sql = "SELECT * FROM zamowienie";
+			String sql = "SELECT * FROM dostawca";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
 			int rozmiar = rs.getRow();
@@ -41,7 +42,7 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 			tab = new String [rozmiar];
 			while(rs.next())
 			{
-				tab[i] = rs.getString("NumerZamowienia");
+				tab[i] = rs.getString("NazwaSkrocona");
 				i++;
 			}
 		} catch (SQLException e) {
@@ -52,7 +53,7 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.setPreferredSize(new Dimension(200,600));
-		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		splitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		
 		scrollPane = new JScrollPane();
 		
@@ -283,4 +284,5 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 	@Override
 	public void keyTyped(KeyEvent arg0) { }
 }
+
 

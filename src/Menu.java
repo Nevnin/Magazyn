@@ -5,7 +5,7 @@ import javax.swing.JMenuItem;
 public class Menu extends JMenuBar {
     JMenuBar menuBar;
     JMenu plik , pomoc ,towar , dostawcy ,zamowienie;
-    JMenuItem zaklkartdostawcy, wykazdostawcow, szukanietowarow, historiazamowien, zamowienietowaru, stanmagazynowy , reklamacja;  
+    JMenuItem zaklkartdostawcy, wykazdostawcow, szukanietowarow, historiazamowien, zamowienietowaru, stanmagazynowy , reklamacja,towarydostawcy;  
     
     public Menu() {
         menuBar =  new JMenuBar();
@@ -26,7 +26,9 @@ public class Menu extends JMenuBar {
         zamowienietowaru = new JMenuItem("Zamówienie towaru");
         stanmagazynowy = new JMenuItem("Stan magazynowy");
         reklamacja = new JMenuItem("Reklamacja towaru");
+        towarydostawcy = new JMenuItem("Szukanie towarów u dostawców");
         towar.add(szukanietowarow);
+        towar.add(towarydostawcy);
         towar.add(stanmagazynowy);
         towar.add(reklamacja);
         dostawcy.add(zaklkartdostawcy);
