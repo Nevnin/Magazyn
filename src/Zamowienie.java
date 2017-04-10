@@ -66,8 +66,8 @@ public class Zamowienie extends JPanel implements ActionListener {
 	String[] tabzamowienie;
 	JButton zamow ;
 	JSplitPane splitPane;
-	PanelDoZam p;
-	PanelDoZam p2;
+	PanelDoZam p = new PanelDoZam(0);
+	PanelDoZam p2 = new PanelDoZam(0);
 	boolean btowar=false;
 	boolean bdostawcy = false;
 	String nazwaZamowienia;
@@ -338,23 +338,23 @@ public class Zamowienie extends JPanel implements ActionListener {
 		
 		return error;
 	} 
-	public int sprawdzenieIlosciZam() 
-	{
-		int k=0;
-		String count = "SELECT count(*) from zamowienie WHERE DataWystawienia='"+teraz+"'";
-		System.out.println(count);
-		try {
-			 ResultSet rs = poloczenie.sqlSelect(count);
-			while(rs.next())
-			{
-				 k =rs.getInt(1);
-			}
-			return k;
-		} catch (SQLException e) {
-			return 0;
-		}
-		
-	}
+//	public int sprawdzenieIlosciZam() 
+//	{
+//		int k=0;
+//		String count = "SELECT count(*) from zamowienie WHERE DataWystawienia='"+teraz+"'";
+//		System.out.println(count);
+//		try {
+//			 ResultSet rs = poloczenie.sqlSelect(count);
+//			while(rs.next())
+//			{
+//				 k =rs.getInt(1);
+//			}
+//			return k;
+//		} catch (SQLException e) {
+//			return 0;
+//		}
+//		
+//	}
 	public boolean sprawdzenieCzyJestZam(String nazwaZam,int IdDostawcy) throws SQLException
 	{
 		String zapytanie="SELECT * from zamowienie WHERE NumerZamowienia='"+nazwaZam+"' AND IdDostawcy='"+IdDostawcy+"'";
@@ -436,7 +436,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 	{
 		String nazwa="";
 		String[] tablica = teraz.split("-");
-		nazwa+=tablica[0]+"/"+tablica[1]+"/"+tablica[2]+"/"+sprawdzenieIlosciZam()+1;
+		//nazwa+=tablica[0]+"/"+tablica[1]+"/"+tablica[2]+"/"+sprawdzenieIlosciZam()+1;
 		return nazwa;
 	}
 }
