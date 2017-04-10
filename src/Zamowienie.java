@@ -37,7 +37,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 	JButton zamow ;
 	JSplitPane splitPane;
 	PanelDoZam p = new PanelDoZam(0);
-	PanelDoZam p2 = new PanelDoZam(0);
+	PanelDoZam p2 = new PanelDoZam(1);
 	boolean btowar=false;
 	boolean bdostawcy = false;
 	String nazwaZamowienia;
@@ -49,12 +49,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 		SimpleDateFormat dt= new SimpleDateFormat("yyyy-MM-dd"); 
 		 Date data = new Date(); 
 		 teraz = dt.format(data);
-		 try {
-			nazwaZamowienia = tworzenieNazwyZam();
-		} catch (SQLException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		
 		try {
 			poloczenie = new Polaczenie();
 		} catch (SQLException e) {
@@ -147,7 +142,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 										e1.printStackTrace();
 									}
 									try {
-										if(sprawdzenieCzyJestZam(nazwaZamowienia,Integer.parseInt(tabdostawca[0]))==true){
+										if(sprawdzenieCzyJestZam(Integer.parseInt(tabdostawca[0]))==true){
 										remove(p);
 										p2= new PanelDoZam(1);
 										validate();
@@ -222,12 +217,9 @@ public class Zamowienie extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object z= e.getSource();
-		if(z=="Zamow")
+		if(z==p.zamow)
 		{
 			String TerminRealizacji = p.tfTerminRealizacji.getText().toString();
-			
-			
-			 
 			try {
 				 String walidacja = walidacjaDat(TerminRealizacji);
 				 walidacja+=walidacjaList();
@@ -243,7 +235,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 				e1.printStackTrace();
 			}
 		}
-		if(z=="Dodaj do zamowienia")
+		if(z==p2.zamow)
 		{
 			String walidacja;
 			try {
@@ -272,7 +264,6 @@ public class Zamowienie extends JPanel implements ActionListener {
 		int miesiac = Integer.parseInt(podzial[1]);
 		int rok = Integer.parseInt(podzial[0]);
 		int dzien = Integer.parseInt(podzial[2]);
-		System.out.println(rok+" "+miesiac+" "+dzien);
 		if(miesiac>12){
 			error+="Zosta³ podany niepoprawny miesi¹c , nie powinien byæ wiêkszy ni¿ 12.\n"; }
 		else{
@@ -308,26 +299,24 @@ public class Zamowienie extends JPanel implements ActionListener {
 		
 		return error;
 	} 
-//	public int sprawdzenieIlosciZam() 
-//	{
-//		int k=0;
-//		String count = "SELECT count(*) from zamowienie WHERE DataWystawienia='"+teraz+"'";
-//		System.out.println(count);
-//		try {
-//			 ResultSet rs = poloczenie.sqlSelect(count);
-//			while(rs.next())
-//			{
-//				 k =rs.getInt(1);
-//			}
-//			return k;
-//		} catch (SQLException e) {
-//			return 0;
-//		}
-//		
-//	}
-	public boolean sprawdzenieCzyJestZam(String nazwaZam,int IdDostawcy) throws SQLException
+	public int sprawdzenieIlosciZam() throws SQLException 
 	{
-		String zapytanie="SELECT * from zamowienie WHERE NumerZamowienia='"+nazwaZam+"' AND IdDostawcy='"+IdDostawcy+"'";
+		int k=0;
+		Connection connection = DriverManager.getConnection(url, username, password);
+		String count = "SELECT count(*) from zamowienie WHERE DataWystawienia='"+teraz+"'";
+		PreparedStatement ps= connection.prepareStatement(count);
+		ResultSet rsc= ps.executeQuery();
+		while(rsc.next())
+		{
+			k=rsc.getInt(1);
+		}
+		return k;
+		
+		
+	}
+	public boolean sprawdzenieCzyJestZam(int IdDostawcy) throws SQLException
+	{
+		String zapytanie="SELECT * from zamowienie WHERE DataWystawienia='"+teraz+"' AND IdDostawcy='"+IdDostawcy+"'";
 		ResultSet rs = poloczenie.sqlSelect(zapytanie);
 		if(rs.getRow()==0)
 		{
@@ -336,7 +325,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 		return true;
 	}
 
-	public void Zamowienie(Date TerminRealizacji,float KosztZamowienia , int IdDostawcy , String NumerZamowienia, String SposobDostawy , float KosztDostawy) throws SQLException
+	public void Zamowienie(Date TerminRealizacji, int IdDostawcy, int SposobDostawy , float KosztDostawy) throws SQLException
 	{
 		Connection connection = DriverManager.getConnection(url, username, password);
 		String query = "INSERT INTO zamowienie "
@@ -345,13 +334,14 @@ public class Zamowienie extends JPanel implements ActionListener {
 		PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 		preparedStmt.setDate (1,(java.sql.Date) TerminRealizacji);
 		preparedStmt.setString (2,"NULL");
-		preparedStmt.setFloat (3,KosztZamowienia);
+		preparedStmt.setFloat (3,0.00f);
 		preparedStmt.setInt (4,IdDostawcy);
 		preparedStmt.setString (5, teraz);
-		preparedStmt.setString (6,NumerZamowienia);
-		preparedStmt.setString (7,SposobDostawy);
+		nazwaZamowienia = tworzenieNazwyZam();
+		preparedStmt.setString (6,nazwaZamowienia);
+		preparedStmt.setInt (7,SposobDostawy);
 		preparedStmt.setFloat (8,KosztDostawy);
-		float WartoscDostawy = KosztDostawy+KosztZamowienia;
+		float WartoscDostawy = KosztDostawy+0.00f;
 		preparedStmt.setFloat (9,WartoscDostawy);
 		preparedStmt.execute();
 		connection.close();
@@ -374,7 +364,6 @@ public class Zamowienie extends JPanel implements ActionListener {
 		preparedStmt.execute();
 		String query2= "UPDATE zamowienie set KosztZamowienia =KosztZamowienia + ? WHERE IdZamowienie=?";
 		PreparedStatement preparedStmt2 = connection.prepareStatement(query2);
-		
 		preparedStmt2.setDouble(1,wartosc);
 		preparedStmt2.setInt(2,idZam);
 		preparedStmt.execute();
