@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -15,22 +16,27 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 public class HistoriaZamowien extends JPanel implements ListSelectionListener, KeyListener{
 	private Polaczenie polaczenie;
-	private JList list,list1;
+	private JList list;
+	private JTable tabela;
 	private String[] tab;
-	private JSplitPane splitPane;
+	private JSplitPane splitPane,splitPane1;
 	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbLp,jlbNazwaTowaru, jlbCena,jlbIlosc, jlbWartosc, jlbNrZam,jlbTermin,jlbDataReal,jlbDataWys,jlbSposDos,jlbKosztDos,jlbWartoscTow,jlbKosztZam,jlbDostawca;
 	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
 	private JTextArea area;
-
+	private String[][] data;
+	
 	public HistoriaZamowien()
 	{
 		try {
@@ -55,15 +61,18 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 		splitPane = new JSplitPane();
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		panel.setPreferredSize(new Dimension(200,600));
+		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		
 		scrollPane = new JScrollPane();
-		scrollPane1 = new JScrollPane();
+		
 		search = new JTextField();
 		list = new JList(tab);
 		list.setMinimumSize(new Dimension(150,150));
 		list.setPreferredSize(new Dimension(150, 150));
 		list.setAlignmentX(CENTER_ALIGNMENT);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list1 = new <String>JList();
+		
 		scrollPane.setViewportView(list);
 		panel.add(search);
 		search.setMaximumSize(new Dimension(200, 20));
@@ -71,11 +80,25 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 		splitPane.setLeftComponent(panel);
 		//scrollPane1.setViewportView(list1);
 		
+		String[] columnNames = 
+			{"Lp",
+            "Nazwa Towaru",
+            "Cena",
+            "Ilosc",
+            "Wartosc Netto"};
 		
+		String[][] data = {
+			    {"", "", "", "", ""}
+			    
+			   };
+		
+		tabela = new JTable(data, columnNames);
+	
+		scrollPane1 = new JScrollPane(tabela);
 		JPanel p = new JPanel();
 		p.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		p.setPreferredSize(new Dimension(600, 300));
+		p.setPreferredSize(new Dimension(600, 200));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(0, 10, 0, 10);
 		
@@ -162,14 +185,20 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 //        p.add(jlbIlosc,c);
 //        c.gridx = 4; c.gridy = 10;
 //        p.add(jlbWartosc,c);
-        c.gridx = 0; c.gridy = 11;
-        p.add(list1,c);
+        //c.gridx = 0; c.gridy = 12;
+   
+       // scrollPane.add(tabela);
 
-//        
+//      
         
-        splitPane.setRightComponent(p);
+        splitPane1.setTopComponent(p);
+        splitPane1.setBottomComponent(scrollPane1);
+        splitPane.setRightComponent(splitPane1);
+        //splitPane1.
+     
         
         add(splitPane);
+        add(splitPane1);
         
         ustawNasluchZdarzen();
         
@@ -188,6 +217,7 @@ public void valueChanged(ListSelectionEvent arg0) {
 		String[][] towary;
 		String sel = list.getSelectedValue().toString();
 		String sql = "SELECT IdZamowienie, NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia, dostawca.NazwaSkrocona FROM zamowienie INNER JOIN dostawca ON dostawca.IdDostawca=zamowienie.IdDostawcy WHERE NumerZamowienia='"+sel+"'";
+		DefaultTableModel tableModel = (DefaultTableModel) tabela.getModel();
 		//int id = 0;
 		//String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia FROM zamowienie WHERE NumerZamowienia='"+sel+"'";
 		
@@ -234,15 +264,31 @@ public void valueChanged(ListSelectionEvent arg0) {
 				
 				j++;
 			}
-			//String s = Arrays.deepToString(towary);
-			for (int i = 0;i<rozmiar;i++)
-			{
-				t[i] = Arrays.deepToString(towary[i]);
-			}
+			data=towary;
+			repaint();
+			//tableModel.fireTableDataChanged();
+			for (int i = 0; i < towary.length; i++) {
+				String[] data = new String[5];
+				for(int z = 0;z<5;z++){
 				
+				data[z]= towary[i][z];
+			
+				
+
+				}
+		        tableModel.addRow(data);
+		        
+	    }
+			tabela.setModel(tableModel);
+			
+			//String s = Arrays.deepToString(towary);
+//			for (int i = 0;i<rozmiar;i++)
+//			{
+//				t[i] = Arrays.deepToString(towary[i]);
+//			}
+	
 			
 			
-			list1.setListData(t);
 			//area.setText(s);
 			//area=setText();
 			//System.out.println(s);

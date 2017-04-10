@@ -12,19 +12,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Color;
-import javax.swing.border.LineBorder;
 
 public class Zamowienie extends JPanel implements ActionListener {
 	 String serverName = "localhost";
@@ -317,20 +311,19 @@ public class Zamowienie extends JPanel implements ActionListener {
 //	public int sprawdzenieIlosciZam() 
 //	{
 //		int k=0;
-//		String count = "SELECT * from zamowienie";
+//		String count = "SELECT count(*) from zamowienie WHERE DataWystawienia='"+teraz+"'";
 //		System.out.println(count);
-//		ResultSet rs;
 //		try {
-//			rs = poloczenie.sqlSelect(count);
+//			 ResultSet rs = poloczenie.sqlSelect(count);
 //			while(rs.next())
 //			{
-//				 k = rs.getRow();
+//				 k =rs.getInt(1);
 //			}
+//			return k;
 //		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
+//			return 0;
 //		}
-//		return k;		
+//		
 //	}
 	public boolean sprawdzenieCzyJestZam(String nazwaZam,int IdDostawcy) throws SQLException
 	{
