@@ -23,9 +23,6 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-
-import jdk.internal.org.objectweb.asm.util.CheckAnnotationAdapter;
-
 public class KartaDostawcy extends JPanel implements ActionListener{
     String serverName = "localhost";
     String mydatabase = "magazyn";
@@ -163,7 +160,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
         Object z= e.getSource();
     	if(z==jbtPrzycisk){
     		kartaWalidacja();
@@ -185,7 +181,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     private boolean insert(String NazwaSkrocona, String NazwaPelna, String Nip, String Telefon1, String Telefon2, String Telefon3, String NazwaDzialu, String NrKonta, String Adres, String KodPocztowy, String Poczta){
 		try{
 			Connection connection = DriverManager.getConnection(url, username, password);
-			Statement myStmt = connection.createStatement();
+			connection.createStatement();
 			String query = "INSERT INTO dostawca "
 				+ "(NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta)"
 			    + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -214,7 +210,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		return true;
 	}
     private void kartaWalidacja() {
-		// TODO Auto-generated method stub
     	String NazwaSkrocona = jtfNazwaSkrocona.getText().toString();
     	String NazwaPelna = jtfNazwaPelna.getText().toString();
     	String Nip = jtfNip.getText().toString();
@@ -228,13 +223,11 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	String Poczta  = jtfPoczta.getText().toString();
     	String walidacja = walidacja(NazwaSkrocona, NazwaPelna, Nip, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta);
     	if(walidacja.length()>0){
-    		int dialogButton = JOptionPane.INFORMATION_MESSAGE;
     		JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
     	}else {
 	    	boolean spr = insert(NazwaSkrocona, NazwaPelna, Nip, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta);
 	    	//JFrame frame = new JFrame("JOptionPane showMessageDialog example");
 	    	if(spr == true){
-	    		int dialogButton = JOptionPane.INFORMATION_MESSAGE;
 	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone powodzeniem","", JOptionPane.INFORMATION_MESSAGE);
 	    		jtfNazwaSkrocona.setText("");
 	    		jtfNazwaPelna.setText("");
@@ -249,7 +242,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 	    		jtfPoczta.setText("");
 	    	}
 	    	else {
-	    		int dialogButton = JOptionPane.ERROR_MESSAGE;
 	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone niepowodzeniem","Uwaga!", JOptionPane.ERROR_MESSAGE);
 	    	}
     	}
