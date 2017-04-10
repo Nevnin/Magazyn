@@ -1,3 +1,4 @@
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,11 +14,12 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class StanMagazynowy extends JPanel  implements ListSelectionListener, KeyListener {
+public class StanMagazynowy extends JPanel  implements ListSelectionListener, KeyListener, ListCellRenderer<Object> {
 	private JList<String> list;
 	private String[] tab;
 	private Polaczenie polaczenie;
@@ -215,4 +217,26 @@ public class StanMagazynowy extends JPanel  implements ListSelectionListener, Ke
 	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
 	@Override
 	public void keyTyped(KeyEvent arg0) { }
+	@Override
+	public Component getListCellRendererComponent(JList<? extends Object> list, Object value, int index,
+			boolean isSelected, boolean cellHasFocus) {
+		try {
+			polaczenie = new Polaczenie();
+			String sql = "SELECT * FROM towar";
+			ResultSet rs = polaczenie.sqlSelect(sql);
+			rs.last();
+			int rozmiar = rs.getRow();
+			rs.beforeFirst();
+			int i = 0;
+			tab = new String[rozmiar];
+			while(rs.next()){
+				tab[i] = rs.getString("NazwaTowaru");
+				i++;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
