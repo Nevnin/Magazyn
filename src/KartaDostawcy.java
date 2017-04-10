@@ -164,19 +164,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	if(z==jbtPrzycisk){
     		kartaWalidacja();
     	}
-        else if(z==jtfNazwaSkrocona || z==jtfNazwaPelna || z==jtfNip || z==jtfTelefon1 || z==jtfTelefon2 || z==jtfTelefon3 || z==jtfNazwaDzialu || z==jtfNrKonta || z==jtfAdres || z==jtfKodPocztowy || z==jtfPoczta){
-        	jtfNazwaSkrocona.setBackground(Color.WHITE);
-    		jtfNazwaPelna.setBackground(Color.WHITE);
-    		jtfNip.setBackground(Color.WHITE);
-    		jtfTelefon1.setBackground(Color.WHITE);
-    		jtfTelefon2.setBackground(Color.WHITE);
-    		jtfTelefon3.setBackground(Color.WHITE);
-    		jtfNazwaDzialu.setBackground(Color.WHITE);
-    		jtfNrKonta.setBackground(Color.WHITE);
-    		jtfAdres.setBackground(Color.WHITE);
-    		jtfKodPocztowy.setBackground(Color.WHITE);
-    		jtfPoczta.setBackground(Color.WHITE);
-    	}
 	}
     private boolean insert(String NazwaSkrocona, String NazwaPelna, String Nip, String Telefon1, String Telefon2, String Telefon3, String NazwaDzialu, String NrKonta, String Adres, String KodPocztowy, String Poczta){
 		try{
