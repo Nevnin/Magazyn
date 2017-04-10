@@ -22,7 +22,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 public class HistoriaZamowien extends JPanel implements ListSelectionListener, KeyListener{
-	private Polaczenie polaczenie;
+	private Polaczenie polaczenie,pol;
 	private JList list,list1;
 	private String[] tab;
 	private JSplitPane splitPane;
