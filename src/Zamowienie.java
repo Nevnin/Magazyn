@@ -314,7 +314,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 		
 		
 	}
-	public boolean sprawdzenieCzyJestZam(String nazwaZam,int IdDostawcy) throws SQLException
+	public boolean sprawdzenieCzyJestZam(int IdDostawcy) throws SQLException
 	{
 		String zapytanie="SELECT * from zamowienie WHERE DataWystawienia='"+teraz+"' AND IdDostawcy='"+IdDostawcy+"'";
 		ResultSet rs = poloczenie.sqlSelect(zapytanie);
