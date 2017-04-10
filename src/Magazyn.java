@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 public class Magazyn extends JFrame implements ActionListener {
 	Panel panel;
 	Panel p1;
+	WykazDostawcow wykazDostawcow = new WykazDostawcow();
 	KartaDostawcy kartaDostawcy = new KartaDostawcy();
 	Zamowienie zamowienie = new Zamowienie();
 	HistoriaZamowien hs = new HistoriaZamowien();
@@ -38,6 +39,7 @@ public class Magazyn extends JFrame implements ActionListener {
 		menu.zamowienietowaru.addActionListener(this);
 		menu.stanmagazynowy.addActionListener(this);
 		menu.historiazamowien.addActionListener(this);
+		menu.wykazdostawcow.addActionListener(this);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -80,6 +82,13 @@ public class Magazyn extends JFrame implements ActionListener {
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
+        }else if(z==menu.wykazdostawcow){
+        	removeP();
+        	wykazDostawcow = new WykazDostawcow();
+        	add(wykazDostawcow);
+        	validate();
+        	dopasujSieDoZawartosci();
+        	repaint();
         }
 	}
 	private void dopasujSieDoZawartosci() {
@@ -93,5 +102,6 @@ public class Magazyn extends JFrame implements ActionListener {
 		remove(zamowienie);
 		remove(hs);
 		remove(stanMag);
+		remove(wykazDostawcow);
 	}
 }

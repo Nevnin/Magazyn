@@ -1,10 +1,8 @@
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import java.awt.Dimension;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -316,7 +314,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 		
 		
 	}
-	public boolean sprawdzenieCzyJestZam(int IdDostawcy) throws SQLException
+	public boolean sprawdzenieCzyJestZam(String nazwaZam,int IdDostawcy) throws SQLException
 	{
 		String zapytanie="SELECT * from zamowienie WHERE DataWystawienia='"+teraz+"' AND IdDostawcy='"+IdDostawcy+"'";
 		ResultSet rs = poloczenie.sqlSelect(zapytanie);
@@ -397,7 +395,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 	{
 		String nazwa="";
 		String[] tablica = teraz.split("-");
-		nazwa+=tablica[0]+"/"+tablica[1]+"/"+tablica[2]+"/"+sprawdzenieIlosciZam()+1;
+		//nazwa+=tablica[0]+"/"+tablica[1]+"/"+tablica[2]+"/"+sprawdzenieIlosciZam()+1;
 		return nazwa;
 	}
 }
