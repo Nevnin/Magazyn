@@ -16,11 +16,11 @@ public class Magazyn extends JFrame implements ActionListener {
 	StanMagazynowy stanMag = new StanMagazynowy();
 	String query="Select * from uzytkownik";
 	public Magazyn() {
+		super("Magazyn");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try {
 			 polaczenie = new Polaczenie();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//setMinimumSize(new Dimension(400, 350));	
@@ -45,9 +45,7 @@ public class Magazyn extends JFrame implements ActionListener {
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		String label = e.getActionCommand();
-        Object z= e.getSource();
+		Object z= e.getSource();
         if(z==menu.szukanietowarow) {
             removeP();
             add(p1);
@@ -101,7 +99,6 @@ public class Magazyn extends JFrame implements ActionListener {
         }
 	}
 	private void dopasujSieDoZawartosci() {
-		// TODO Auto-generated method stub
 		 pack();   
 	     setLocationRelativeTo(null); 
 	}
