@@ -3,6 +3,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,18 +16,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
+
+import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory.Default;
 
 public class KartaDostawcy extends JPanel implements ActionListener{
     String serverName = "localhost";
@@ -37,12 +45,15 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     
     private JButton jbtPrzycisk, jbtNowyTowar;
     private JLabel jlbTytul, jlbNazwaSkrocona, jlbNazwaPelna, jlbNip, jlbTelefon1, jlbTelefon2, jlbTelefon3, jlbNazwaDzialu, jlbNrKonta, jlbAdres, jlbKodPocztowy, jlbPoczta, jlbTowary, jlbCena, jlbDataOd, jlbDataDo, jlbKodWgDos, jlbNazwaWgDos;
-    private JTextField jtfNip, jtfTelefon1, jtfTelefon2, jtfTelefon3, jtfNazwaDzialu, jtfNrKonta, jtfAdres, jtfKodPocztowy, jtfPoczta, jtfTowary, jtfCena, jtfDataOd, jtfDataDo, jtfKodWgDos, jtfNazwaWgDos;
+    private JTextField jtfNip, jtfTelefon1, jtfTelefon2, jtfTelefon3, jtfNazwaDzialu, jtfNrKonta, jtfAdres, jtfKodPocztowy, jtfPoczta, jtfCena, jtfDataOd, jtfDataDo, jtfKodWgDos, jtfNazwaWgDos;
     private JTextArea jtfNazwaSkrocona, jtfNazwaPelna;
     private JTabbedPane tabbedPane;
-    private JSplitPane splitPane;
+    private JSplitPane splitPane, splitPaneDolny;
     private JComboBox<String> jcbTowary;
 	private String[] tab;
+	private JTable tablicaTowarow;
+	private JScrollPane scrollPane;
+	private DefaultTableModel tablemodel;
 	Polaczenie polaczenie;
     public KartaDostawcy(){     
     	setLayout(new GridBagLayout());
@@ -51,6 +62,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         c.insets = new Insets(0, 10, 1, 10);  
         
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        splitPaneDolny = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         
         JPanel panelGlDane = new JPanel();
         panelGlDane.setLayout(new GridBagLayout());
@@ -127,6 +139,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         GridBagConstraints cPanelTowary = new GridBagConstraints();
         cPanelTowary.insets = new Insets(0, 10, 1, 10);
         cPanelTowary.fill = GridBagConstraints.HORIZONTAL;  
+        String[] tabNazwyKol = null;
         try {
 			polaczenie = new Polaczenie();
 			String sql = "SELECT * FROM towar";
@@ -143,23 +156,45 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+        try{
+			polaczenie = new Polaczenie();
+			String sql = "SELECT * FROM dostawcatowar";
+			ResultSet rs = polaczenie.sqlSelect(sql);
+        	int rozmiarKol = rs.getMetaData().getColumnCount();
+			tabNazwyKol = new String[rozmiarKol-2];
+			tabNazwyKol[0] = "Nazwa Towaru";
+			for(int i=1; i<rozmiarKol-2; i++){
+				tabNazwyKol[i] = rs.getMetaData().getColumnName(i+3);
+			}
+        }catch (SQLException e) {
+			e.printStackTrace();
+        }
         jbtNowyTowar = new JButton("Nowy Towar");
         jlbTowary = new JLabel("Nazwa towaru");
 		jcbTowary = new JComboBox<String>(tab);
-		jtfTowary = new JTextField();
-		jtfTowary.setVisible(false);
         jlbCena = new JLabel("Cena");
         jtfCena = new JTextField("");
         jtfCena.setMinimumSize(new Dimension(400, 20));
         jtfCena.setPreferredSize(new Dimension(400, 20));
-        jlbDataOd = new JLabel("Dana od");
+        jlbDataOd = new JLabel("Data od");
         jtfDataOd = new JTextField("");
-        jlbDataDo = new JLabel("Dana do");
+        jlbDataDo = new JLabel("Data do");
         jtfDataDo = new JTextField("");
         jlbKodWgDos = new JLabel("Kod towaru wed³ug dostacy");
         jtfKodWgDos = new JTextField("");
         jlbNazwaWgDos = new JLabel("Nazwa towaru wed³ug dostacy");
-        jtfNazwaWgDos = new JTextField("");        
+        jtfNazwaWgDos = new JTextField("");
+        
+        JPanel panelTowaryDolny = new JPanel();
+        panelTowaryDolny.setLayout(new GridLayout(0,1));
+        tablemodel = new DefaultTableModel(0,0);
+    	tablemodel.setColumnIdentifiers(tabNazwyKol);
+    	tablicaTowarow = new JTable();
+    	tablicaTowarow.getTableHeader().setReorderingAllowed(false);
+    	tablicaTowarow.setModel(tablemodel);
+        scrollPane = new JScrollPane(tablicaTowarow);
+        //scrollPane.setMinimumSize(new Dimension(400, 200));
+        //scrollPane.setViewportView(tablicaTowarow);
         
         cPanelGlDane.gridx = 1; cPanelGlDane.gridy = 0;
         panelGlDane.add(jlbTytul,cPanelGlDane);
@@ -216,7 +251,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         panelTowary.add(jlbTowary, cPanelTowary);
         cPanelTowary.gridx++;
         panelTowary.add(jcbTowary, cPanelTowary);
-        panelTowary.add(jtfTowary, cPanelTowary);
         cPanelTowary.gridx++;
         panelTowary.add(jbtNowyTowar, cPanelTowary);
         cPanelTowary.gridx = 0; cPanelTowary.gridy++;
@@ -239,7 +273,11 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         panelTowary.add(jlbNazwaWgDos, cPanelTowary);
         cPanelTowary.gridx++;
         panelTowary.add(jtfNazwaWgDos, cPanelTowary);
-        tabbedPane.addTab("Towary Dostawcy", null, panelTowary, "Formularz do towarów dostawcy");
+		panelTowaryDolny.add(scrollPane);  
+        
+        splitPaneDolny.setTopComponent(panelTowary);
+        splitPaneDolny.setBottomComponent(panelTowaryDolny);
+        tabbedPane.addTab("Towary Dostawcy", null, splitPaneDolny, "Formularz do towarów dostawcy");
         splitPane.setBottomComponent(tabbedPane);
         
         c.gridx = 0; c.gridy = 0;
@@ -261,19 +299,15 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	if(z==jbtPrzycisk){
     		kartaWalidacja();
     	}else if(z==jbtNowyTowar){
-    		if(jbtNowyTowar.getText()=="Nowy Towar"){
-    			jbtNowyTowar.setText("Towar z listy");
-    			jcbTowary.setVisible(false);
-    			jtfTowary.setVisible(true);
-    		}
-    		else if(jbtNowyTowar.getText()=="Towar z listy"){
-    			jbtNowyTowar.setText("Nowy Towar");
-    			jcbTowary.setVisible(true);
-    			jtfTowary.setVisible(false);
-    		}
+    		dodajNowyTowar();
     	}
 	}
-    private boolean insert(String NazwaSkrocona, String NazwaPelna, String Nip, String Telefon1, String Telefon2, String Telefon3, String NazwaDzialu, String NrKonta, String Adres, String KodPocztowy, String Poczta){
+    private void dodajNowyTowar() {
+    	String[] tabPom = {jcbTowary.getSelectedItem().toString(),jtfCena.getText(),jtfDataOd.getText(),jtfDataDo.getText(),jtfKodWgDos.getText(),jtfNazwaWgDos.getText()};
+    	tablemodel.addRow(tabPom);
+    	tablicaTowarow.setModel(tablemodel);
+	}
+	private boolean insertDostawca(String NazwaSkrocona, String NazwaPelna, String Nip, String Telefon1, String Telefon2, String Telefon3, String NazwaDzialu, String NrKonta, String Adres, String KodPocztowy, String Poczta){
 		try{
 			Connection connection = DriverManager.getConnection(url, username, password);
 			connection.createStatement();
@@ -304,6 +338,17 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		}
 		return true;
 	}
+	private boolean insertTowaryDostawcy(){
+		try {
+			polaczenie = new Polaczenie();
+			String sql = "Insert INTO dostawcatowar";
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}		
+		return true;
+	}
     private void kartaWalidacja() {
     	String NazwaSkrocona = jtfNazwaSkrocona.getText().toString();
     	String NazwaPelna = jtfNazwaPelna.getText().toString();
@@ -320,7 +365,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	if(walidacja.length()>0){
     		JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
     	}else {
-	    	boolean spr = insert(NazwaSkrocona, NazwaPelna, Nip, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta);
+	    	boolean spr = insertDostawca(NazwaSkrocona, NazwaPelna, Nip, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta);
 	    	//JFrame frame = new JFrame("JOptionPane showMessageDialog example");
 	    	if(spr == true){
 	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone powodzeniem","", JOptionPane.INFORMATION_MESSAGE);
