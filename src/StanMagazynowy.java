@@ -1,4 +1,4 @@
-import java.awt.Dimension;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -14,13 +13,13 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class StanMagazynowy extends JPanel implements ListSelectionListener, KeyListener {
+public class StanMagazynowy extends JPanel  implements ListSelectionListener, KeyListener, ListCellRenderer<Object> {
 	private JList<String> list;
 	private String[] tab;
 	private Polaczenie polaczenie;
@@ -40,8 +39,6 @@ public class StanMagazynowy extends JPanel implements ListSelectionListener, Key
 			int i = 0;
 			tab = new String[rozmiar];
 			while(rs.next()){
-//				if(Integer.parseInt(rs.getString(3)) > Integer.parseInt(rs.getString(4)))
-//					list.setForeground(java.awt.Color.RED);
 				tab[i] = rs.getString("NazwaTowaru");
 				i++;
 			}
@@ -50,11 +47,11 @@ public class StanMagazynowy extends JPanel implements ListSelectionListener, Key
 		}
 		splitPane = new JSplitPane();
 		JPanel panel = new JPanel();
-		JTable table = new JTable();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		scrollPane = new JScrollPane();
 		search = new JTextField();
 		list = new JList<String>(tab);
+		
 		//list.setMaximumSize(new Dimension(100, 100));
 		list.setAlignmentX(CENTER_ALIGNMENT);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -63,7 +60,6 @@ public class StanMagazynowy extends JPanel implements ListSelectionListener, Key
 		panel.add(scrollPane);
 		splitPane.setLeftComponent(panel);
 		
-
 		JPanel p = new JPanel();
 		p.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -177,15 +173,19 @@ public class StanMagazynowy extends JPanel implements ListSelectionListener, Key
 				if(real<=min){
 					jpbStanReal.setForeground(java.awt.Color.RED);
 					jtfStanReal.setForeground(java.awt.Color.RED);
-					jtfStanMin2.setForeground(java.awt.Color.RED);
 				}
-				else 
+				else{ 
 					jpbStanReal.setForeground(new java.awt.Color(163, 184, 204));
-				if(dys<=min)
+					jtfStanReal.setForeground(java.awt.Color.BLACK);
+				}
+				if(dys<=min){
 					jpbStanDys.setForeground(java.awt.Color.RED);
-				else 
+					jtfStanDys.setForeground(java.awt.Color.RED);
+				}
+				else{ 
 					jpbStanDys.setForeground(new java.awt.Color(163, 184, 204));
-				
+					jtfStanDys.setForeground(java.awt.Color.BLACK);
+				}				
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -217,4 +217,26 @@ public class StanMagazynowy extends JPanel implements ListSelectionListener, Key
 	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
 	@Override
 	public void keyTyped(KeyEvent arg0) { }
+	@Override
+	public Component getListCellRendererComponent(JList<? extends Object> list, Object value, int index,
+			boolean isSelected, boolean cellHasFocus) {
+		try {
+			polaczenie = new Polaczenie();
+			String sql = "SELECT * FROM towar";
+			ResultSet rs = polaczenie.sqlSelect(sql);
+			rs.last();
+			int rozmiar = rs.getRow();
+			rs.beforeFirst();
+			int i = 0;
+			tab = new String[rozmiar];
+			while(rs.next()){
+				tab[i] = rs.getString("NazwaTowaru");
+				i++;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
