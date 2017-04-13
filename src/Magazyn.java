@@ -8,7 +8,7 @@ public class Magazyn extends JFrame implements ActionListener {
 	Panel p1;
 	WykazDostawcow wykazDostawcow = new WykazDostawcow();
 	KartaDostawcy kartaDostawcy = new KartaDostawcy();
-	Zamowienie zamowienie = new Zamowienie();
+	Zamowieniev2 zamowienie = new Zamowieniev2();
 	HistoriaZamowien hs = new HistoriaZamowien();
 	TowaryDostawcy td = new TowaryDostawcy();
 	Menu menu;
@@ -69,7 +69,7 @@ public class Magazyn extends JFrame implements ActionListener {
             repaint();
         } else if(z==menu.zamowienietowaru) {
         	removeP();
-        	zamowienie = new Zamowienie();
+        	zamowienie = new Zamowieniev2();
         	add(zamowienie);
         	validate();
         	dopasujSieDoZawartosci();
