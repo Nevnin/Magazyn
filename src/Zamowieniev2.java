@@ -1,11 +1,14 @@
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -35,6 +38,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Zamowieniev2 extends JPanel implements ActionListener {
+	String serverName = "localhost";
+    String mydatabase = "magazyn";
+    String url = "jdbc:mysql://" + serverName + "/" + mydatabase; 
+    String username = "root";
+    String password = "";
 		JTabbedPane tabbedPane;
 		JLabel jlbTytulZamowienie,jlbTerminRealizacji,jlbDataRealizacji,jlbKosztZamowienia,jlbDostawca,jlbDataWystawienia,jlbNumerZamowienia,jlbSposobDostawy,jlbKosztDostawy,jlbWartoscTowarow;
 		JTextField jtfTerminRealizacji,jtfDostawca,jtfSposobDostawy,jtfDataRealizacji,jtfKosztZamowienia,jtfDataWystawienia,jtfNumerZamowienia,jtfKosztDostawy,jtfWartoscTowarow;
@@ -44,9 +52,16 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 		Polaczenie poloczenie;
 		String[] tabDostawca,tabSposobDostawy,tabTowar;
 		JPanel panelDaneZam,panelZamTow;
+		String teraz,nazwaZam;
+		double kosztZam,cena,wartoscNetto;
+		int ilosc;
+		JSplitPane splitPane;
+		DefaultTableModel tablemodel;
+		JTable tablicaTowarow;
+		JScrollPane scrollPane;
 		public Zamowieniev2()
 		{
-			
+			splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 			tabbedPane = new JTabbedPane();
 			panelDaneZam = new JPanel();
 			panelDaneZam.setLayout(new GridBagLayout());
@@ -76,7 +91,9 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jtfKosztZamowienia.setPreferredSize(new Dimension(400,20));
 			jlbKosztZamowienia.setToolTipText(jlbKosztZamowienia.getText()+" :prosze wpisywac liczby");
 			jtfKosztZamowienia.setToolTipText(jlbKosztZamowienia.getText()+" :prosze wpisywac liczby");
-			
+			jtfKosztZamowienia.setEditable(false);
+			kosztZam=0;
+			jtfKosztZamowienia.setText(Double.toString(kosztZam));
 			String sqlDostawca = "SELECT * from dostawca";
 			String sqlSposobDostawy = "SELECT * from sposobdostawy";
 			
@@ -122,13 +139,26 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jtfDataWystawienia.setPreferredSize(new Dimension(400,20));
 			jlbDataWystawienia.setToolTipText(jlbDataWystawienia.getText()+" :format daty yyyy-mm-dd(2016-10-06)");
 			jtfDataWystawienia.setToolTipText(jlbDataWystawienia.getText()+" :format daty yyyy-mm-dd(2016-10-06)");
-			
+			jtfDataWystawienia.setEditable(false);
+			SimpleDateFormat dt= new SimpleDateFormat("yyyy-MM-dd"); 
+			 Date data = new Date(); 
+			 teraz = dt.format(data);
+			jtfDataWystawienia.setText(teraz);
+			 
 			jlbNumerZamowienia = new JLabel("Numer Zamowienia");
 			jtfNumerZamowienia = new JTextField("");
 			jtfNumerZamowienia.setMaximumSize(new Dimension(100,20));
 			jtfNumerZamowienia.setPreferredSize(new Dimension(400,20));
 			jlbNumerZamowienia.setToolTipText(jlbNumerZamowienia.getText()+" :prosze wpisywac liczby");
 			jtfNumerZamowienia.setToolTipText(jlbNumerZamowienia.getText()+" :prosze wpisywac liczby");
+			jtfNumerZamowienia.setEditable(false);
+			try {
+				nazwaZam= tworzenieNazwyZam();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			jtfNumerZamowienia.setText(nazwaZam);
 			
 			jlbSposobDostawy = new JLabel("Sposob Dostawy");
 			jcbSposobDostawy = new JComboBox<String>(tabSposobDostawy);
@@ -232,6 +262,19 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jcbTowar = new JComboBox<String>(tabTowar);
 			jtfTowar = new JTextField();
 			jtfTowar.setVisible(false);
+			jcbTowar.addActionListener(this);
+			
+			String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTowar=dostawcatowar.IdTowar  INNER JOIN dostawca on dostawca.IdDostawca=dostawcatowar.IdDostawca WHERE towar.NazwaTowaru = '"+jcbTowar.getSelectedItem()+"' AND dostawca.NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"'  ORDER BY DataDo DESC";
+			
+			try {
+				ResultSet rs=poloczenie.sqlSelect(zapytanie);
+				rs.first();
+				cena = rs.getDouble("Cena");
+				ilosc = rs.getInt("MaxStanMagazynowy")-rs.getInt("StanMagazynowyDysponowany");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			jlCena = new JLabel("Cena");
 			jtfCena = new JTextField("");
@@ -239,6 +282,8 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jtfCena.setPreferredSize(new Dimension(400,20));
 			jlCena.setToolTipText(jlCena.getText()+" :prosze podac liczbe");
 			jtfCena.setToolTipText(jlCena.getText()+" :prosze podac liczbe");
+			jtfCena.setEditable(false);
+			jtfCena.setText(Double.toString(cena));
 			
 			jlIlosc = new JLabel("Ilosc");
 			jtfIlosc = new JTextField("");
@@ -246,13 +291,15 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jtfIlosc.setPreferredSize(new Dimension(400,20));
 			jlIlosc.setToolTipText(jlIlosc.getText()+" :prosze podac liczbe");
 			jtfIlosc.setToolTipText(jlIlosc.getText()+" :prosze podac liczbe");
-			
+			jtfIlosc.setEditable(false);
+			jtfIlosc.setText(Integer.toString(ilosc));
 			jlWartoscNetto = new JLabel("Wartosc Netto");
 			jtfWartoscNetto = new JTextField("");
 			jtfWartoscNetto.setMaximumSize(new Dimension(100,20));
 			jtfWartoscNetto.setPreferredSize(new Dimension(400,20));
-			jlWartoscNetto.setToolTipText(jlWartoscNetto.getText()+" :prosze podac liczbe");
-			jtfWartoscNetto.setToolTipText(jlWartoscNetto.getText()+" :prosze podac liczbe");
+			jtfWartoscNetto.setEditable(false);
+			wartoscNetto = ilosc * cena;
+			jtfWartoscNetto.setText(Double.toString(wartoscNetto));
 			
 			jlZamowienie = new JLabel("Zamowienie");
 			jtfZamowienie = new JTextField("");
@@ -260,6 +307,8 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jtfZamowienie.setPreferredSize(new Dimension(400,20));
 			jlZamowienie.setToolTipText(jlZamowienie.getText()+" :prosze podac liczbe");
 			jtfZamowienie.setToolTipText(jlZamowienie.getText()+" :prosze podac liczbe");
+			jtfZamowienie.setEditable(false);
+			jtfZamowienie.setText(nazwaZam);
 			
 			cPanelZamTow.gridx = 1; cPanelZamTow.gridy=0;
 			panelZamTow.add(jlTytulZamTow,cPanelZamTow);
@@ -290,8 +339,20 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			panelZamTow.add(jtfZamowienie, cPanelZamTow);
 			
 			tabbedPane.addTab("Dodanie Towaru",null,panelZamTow,"Formularz do zamowienieTowar");
-			
-			add(tabbedPane);
+			 splitPane.setTopComponent(tabbedPane);
+			 
+//			 JPanel panelTablicaTowarow = new JPanel();
+//		        panelTablicaTowarow.setLayout(new GridLayout(0,1));
+//		         tablemodel = new DefaultTableModel(0,0);
+//		    	tablemodel.setColumnIdentifiers(tabNazwyKol);
+//		    	tablicaTowarow = new JTable();
+//		    	tablicaTowarow.getTableHeader().setReorderingAllowed(false);
+//		    	tablicaTowarow.setModel(tablemodel);
+//		        scrollPane = new JScrollPane(tablicaTowarow);
+//		        //scrollPane.setMinimumSize(new Dimension(400, 200));
+//		        //scrollPane.setViewportView(tablicaTowarow);
+//		       // splitPane.setBottomComponent(panelTowaryDolny);
+			add(splitPane);
 		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -300,7 +361,6 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			{
 				
 				String sqlTowar="SELECT * from towar INNER JOIN dostawcatowar ON dostawcatowar.IdTowar=towar.IdTowar INNER JOIN dostawca ON dostawcatowar.IdDostawca=dostawca.IdDostawca WHERE NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"' GROUP BY NazwaTowaru";
-				System.out.println(sqlTowar);
 				try {
 					ResultSet rsT = poloczenie.sqlSelect(sqlTowar);
 					rsT.last();
@@ -311,11 +371,24 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 					while(rsT.next())
 					{
 						tabTowar[k] = rsT.getString("NazwaTowaru");
-						System.out.println(tabTowar[k]);
 						k++;
 					}
 					jcbTowar.setModel(new DefaultComboBoxModel<String>(tabTowar));
+					String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTowar=dostawcatowar.IdTowar  INNER JOIN dostawca on dostawca.IdDostawca=dostawcatowar.IdDostawca WHERE towar.NazwaTowaru = '"+jcbTowar.getSelectedItem()+"' AND dostawca.NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"'  ORDER BY DataDo DESC";
 					
+					try {
+						ResultSet rs=poloczenie.sqlSelect(zapytanie);
+						rs.first();
+						cena = rs.getDouble("Cena");
+						ilosc = rs.getInt("MaxStanMagazynowy")-rs.getInt("StanMagazynowyDysponowany");
+						jtfCena.setText(Double.toString(cena));
+						jtfIlosc.setText(Integer.toString(ilosc));
+						wartoscNetto = cena*ilosc;
+						jtfWartoscNetto.setText(Double.toString(wartoscNetto));
+					} catch (SQLException d) {
+						// TODO Auto-generated catch block
+						d.printStackTrace();
+					}
 					
 				} catch (SQLException d) {
 					// TODO Auto-generated catch block
@@ -323,6 +396,46 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 				}
 				
 			}
+			if(z==jcbTowar)
+			{
+				String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTowar=dostawcatowar.IdTowar  INNER JOIN dostawca on dostawca.IdDostawca=dostawcatowar.IdDostawca WHERE towar.NazwaTowaru = '"+jcbTowar.getSelectedItem()+"' AND dostawca.NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"'  ORDER BY DataDo DESC";
+				
+				try {
+					ResultSet rs=poloczenie.sqlSelect(zapytanie);
+					rs.first();
+					cena = rs.getDouble("Cena");
+					ilosc = rs.getInt("MaxStanMagazynowy")-rs.getInt("StanMagazynowyDysponowany");
+					jtfCena.setText(Double.toString(cena));
+					jtfIlosc.setText(Integer.toString(ilosc));
+					wartoscNetto = cena*ilosc;
+					jtfWartoscNetto.setText(Double.toString(wartoscNetto));
+				} catch (SQLException d) {
+					// TODO Auto-generated catch block
+					d.printStackTrace();
+				}
+			}
+			
+		}
+		public String tworzenieNazwyZam() throws SQLException
+		{
+			String nazwa="";
+			String[] tablica = teraz.split("-");
+			nazwa+=tablica[0]+"/"+tablica[1]+"/"+tablica[2]+"/"+sprawdzenieIlosciZam()+1;
+			return nazwa;
+		}
+		public int sprawdzenieIlosciZam() throws SQLException 
+		{
+			int k=0;
+			Connection connection = DriverManager.getConnection(url, username, password);
+			String count = "SELECT count(*) from zamowienie WHERE DataWystawienia='"+teraz+"'";
+			PreparedStatement ps= connection.prepareStatement(count);
+			ResultSet rsc= ps.executeQuery();
+			while(rsc.next())
+			{
+				k=rsc.getInt(1);
+			}
+			return k;
+			
 			
 		}
 	 }
