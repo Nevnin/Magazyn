@@ -50,15 +50,16 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 		JLabel jlTytulZamTow,jlLP,jlTowar,jlCena,jlIlosc,jlWartoscNetto,jlZamowienie;
 		JTextField jtfLP,jtfTowar,jtfCena,jtfIlosc,jtfWartoscNetto,jtfZamowienie;
 		Polaczenie poloczenie;
-		String[] tabDostawca,tabSposobDostawy,tabTowar;
+		String[] tabDostawca,tabSposobDostawy,tabTowar,tabNazwyKol;
 		JPanel panelDaneZam,panelZamTow;
 		String teraz,nazwaZam;
 		double kosztZam,cena,wartoscNetto;
-		int ilosc;
+		int ilosc,lp;
 		JSplitPane splitPane;
 		DefaultTableModel tablemodel;
 		JTable tablicaTowarow;
 		JScrollPane scrollPane;
+		JButton jbdodajTowar; 
 		public Zamowieniev2()
 		{
 			splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -251,12 +252,16 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jlTytulZamTow = new JLabel("Dodawanie towarow");
 			jlTytulZamTow.setFont(new Font("Calibri", Font.BOLD, 30));
 			
+			jbdodajTowar =  new JButton("Dodaj Towar");
+			jbdodajTowar.addActionListener(this);
+			
 			jlLP = new JLabel("Liczba porzadkowa");
 			jtfLP = new JTextField("");
 			jtfLP.setMaximumSize(new Dimension(100,20));
 			jtfLP.setPreferredSize(new Dimension(400,20));
-			jlLP.setToolTipText(jlLP.getText()+" :prosze podac liczbe");
-			jtfLP.setToolTipText(jlLP.getText()+" :prosze podac liczbe");
+			jtfLP.setEditable(false);
+			lp=1;
+			jtfLP.setText(Integer.toString(lp));
 			
 			jlTowar = new JLabel("Towar");
 			jcbTowar = new JComboBox<String>(tabTowar);
@@ -310,6 +315,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jtfZamowienie.setEditable(false);
 			jtfZamowienie.setText(nazwaZam);
 			
+			
 			cPanelZamTow.gridx = 1; cPanelZamTow.gridy=0;
 			panelZamTow.add(jlTytulZamTow,cPanelZamTow);
 			cPanelZamTow.gridx = 0; cPanelZamTow.gridy++;
@@ -337,21 +343,47 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			panelZamTow.add(jlZamowienie, cPanelZamTow);
 			cPanelZamTow.gridx++; 
 			panelZamTow.add(jtfZamowienie, cPanelZamTow);
+			cPanelZamTow.gridy++;
+			panelZamTow.add(jbdodajTowar, cPanelZamTow);
 			
 			tabbedPane.addTab("Dodanie Towaru",null,panelZamTow,"Formularz do zamowienieTowar");
 			 splitPane.setTopComponent(tabbedPane);
 			 
-//			 JPanel panelTablicaTowarow = new JPanel();
-//		        panelTablicaTowarow.setLayout(new GridLayout(0,1));
-//		         tablemodel = new DefaultTableModel(0,0);
-//		    	tablemodel.setColumnIdentifiers(tabNazwyKol);
-//		    	tablicaTowarow = new JTable();
-//		    	tablicaTowarow.getTableHeader().setReorderingAllowed(false);
-//		    	tablicaTowarow.setModel(tablemodel);
-//		        scrollPane = new JScrollPane(tablicaTowarow);
-//		        //scrollPane.setMinimumSize(new Dimension(400, 200));
-//		        //scrollPane.setViewportView(tablicaTowarow);
-//		       // splitPane.setBottomComponent(panelTowaryDolny);
+			 try{
+					poloczenie = new Polaczenie();
+					String sql = "SELECT * FROM zamowienietowar";
+					ResultSet rs = poloczenie.sqlSelect(sql);
+		        	int rozmiarKol = rs.getMetaData().getColumnCount();
+					tabNazwyKol = new String[rozmiarKol-2];
+					
+					for(int i=0; i<rozmiarKol-2; i++){
+						if(i!=1)
+						{
+							tabNazwyKol[i] = rs.getMetaData().getColumnName(i+2);
+						}
+						else
+						{
+							tabNazwyKol[1] = "Nazwa Towaru";
+						}
+					}
+		        }catch (SQLException e) {
+					e.printStackTrace();
+		        }
+		        
+			 
+			 JPanel panelTablicaTowarow = new JPanel();
+		        panelTablicaTowarow.setLayout(new GridLayout(0,1));
+		         tablemodel = new DefaultTableModel(0,0);
+		    	tablemodel.setColumnIdentifiers(tabNazwyKol);
+		    	tablicaTowarow = new JTable();
+		    	tablicaTowarow.getTableHeader().setReorderingAllowed(false);
+		    	tablicaTowarow.setModel(tablemodel);
+		        scrollPane = new JScrollPane(tablicaTowarow);
+		        scrollPane.setMinimumSize(new Dimension(400, 200));
+		        scrollPane.setMaximumSize(new Dimension(400,300));
+		        scrollPane.setViewportView(tablicaTowarow);
+		        panelTablicaTowarow.add(scrollPane);
+		        splitPane.setBottomComponent(panelTablicaTowarow);
 			add(splitPane);
 		}
 		@Override
@@ -396,6 +428,12 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 				}
 				
 			}
+			if(z==jbdodajTowar)
+			{
+				dodajNowyTowar();
+				lp++;
+				jtfLP.setText(Integer.toString(lp));
+			}
 			if(z==jcbTowar)
 			{
 				String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTowar=dostawcatowar.IdTowar  INNER JOIN dostawca on dostawca.IdDostawca=dostawcatowar.IdDostawca WHERE towar.NazwaTowaru = '"+jcbTowar.getSelectedItem()+"' AND dostawca.NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"'  ORDER BY DataDo DESC";
@@ -438,6 +476,12 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			
 			
 		}
+		private void dodajNowyTowar() {
+	    	String[] tabPom = {jtfLP.getText(),jcbTowar.getSelectedItem().toString(),jtfCena.getText(),jtfIlosc.getText(),jtfWartoscNetto.getText()};
+	    	tablemodel.addRow(tabPom);
+	    	tablicaTowarow.setModel(tablemodel);
+		}
+		
 	 }
 
 
