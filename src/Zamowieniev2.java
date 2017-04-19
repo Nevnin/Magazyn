@@ -391,7 +391,11 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			Object z = e.getSource();
 			if(z==jcbDostawca)
 			{
-				
+				tablemodel = new DefaultTableModel(0,0);
+		    	tablemodel.setColumnIdentifiers(tabNazwyKol);
+				tablicaTowarow.setModel(tablemodel);
+				lp=1;
+				jtfLP.setText(Integer.toString(lp));
 				String sqlTowar="SELECT * from towar INNER JOIN dostawcatowar ON dostawcatowar.IdTowar=towar.IdTowar INNER JOIN dostawca ON dostawcatowar.IdDostawca=dostawca.IdDostawca WHERE NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"' GROUP BY NazwaTowaru";
 				try {
 					ResultSet rsT = poloczenie.sqlSelect(sqlTowar);
@@ -481,6 +485,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 	    	tablemodel.addRow(tabPom);
 	    	tablicaTowarow.setModel(tablemodel);
 		}
+		
 		
 	 }
 
