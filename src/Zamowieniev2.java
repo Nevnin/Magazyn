@@ -53,15 +53,18 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 		String[] tabDostawca,tabSposobDostawy,tabTowar,tabNazwyKol;
 		JPanel panelDaneZam,panelZamTow;
 		String teraz,nazwaZam;
-		double kosztZam,cena,wartoscNetto;
+		double kosztZam,cena,wartoscNetto,wartoscTowarow,kosztDostawy;
 		int ilosc,lp;
 		JSplitPane splitPane;
 		DefaultTableModel tablemodel;
 		JTable tablicaTowarow;
 		JScrollPane scrollPane;
-		JButton jbdodajTowar; 
+		JButton jbdodajTowar,jbZamow; 
 		public Zamowieniev2()
 		{
+			setLayout(new GridBagLayout());
+			GridBagConstraints c= new GridBagConstraints();
+			c.insets= new Insets(0,10,1,10);
 			splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 			tabbedPane = new JTabbedPane();
 			panelDaneZam = new JPanel();
@@ -93,7 +96,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jlbKosztZamowienia.setToolTipText(jlbKosztZamowienia.getText()+" :prosze wpisywac liczby");
 			jtfKosztZamowienia.setToolTipText(jlbKosztZamowienia.getText()+" :prosze wpisywac liczby");
 			jtfKosztZamowienia.setEditable(false);
-			kosztZam=0;
+			kosztZam=wartoscTowarow+kosztDostawy;
 			jtfKosztZamowienia.setText(Double.toString(kosztZam));
 			String sqlDostawca = "SELECT * from dostawca";
 			String sqlSposobDostawy = "SELECT * from sposobdostawy";
@@ -130,7 +133,6 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			
 			jlbDostawca = new JLabel("Dostawca");
 			jcbDostawca = new JComboBox<String>(tabDostawca);
-			jcbDostawca.addActionListener(this);
 			jtfDostawca = new JTextField();
 			jtfDostawca.setVisible(false);
 			
@@ -179,7 +181,9 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jtfWartoscTowarow.setPreferredSize(new Dimension(400,20));
 			jlbWartoscTowarow.setToolTipText(jlbWartoscTowarow.getText()+" :prosze wpisywac liczby");
 			jtfWartoscTowarow.setToolTipText(jlbWartoscTowarow.getText()+" :prosze wpisywac liczby");
-			
+			jtfWartoscTowarow.setEditable(false);
+			wartoscTowarow= 0.0;
+			jtfWartoscTowarow.setText(Double.toString(wartoscTowarow));
 			
 			cPanelDaneZam.gridx = 1; cPanelDaneZam.gridy=0;
 			panelDaneZam.add(jlbTytulZamowienie,cPanelDaneZam);
@@ -187,10 +191,6 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			panelDaneZam.add(jlbTerminRealizacji, cPanelDaneZam);
 			cPanelDaneZam.gridx++; 
 			panelDaneZam.add(jtfTerminRealizacji, cPanelDaneZam);
-			cPanelDaneZam.gridx = 0; cPanelDaneZam.gridy++;
-			panelDaneZam.add(jlbDataRealizacji, cPanelDaneZam);
-			cPanelDaneZam.gridx++;
-			panelDaneZam.add(jtfDataRealizacji, cPanelDaneZam);
 			cPanelDaneZam.gridx = 0; cPanelDaneZam.gridy++;
 			panelDaneZam.add(jlbKosztZamowienia, cPanelDaneZam);
 			cPanelDaneZam.gridx++;
@@ -253,7 +253,6 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jlTytulZamTow.setFont(new Font("Calibri", Font.BOLD, 30));
 			
 			jbdodajTowar =  new JButton("Dodaj Towar");
-			jbdodajTowar.addActionListener(this);
 			
 			jlLP = new JLabel("Liczba porzadkowa");
 			jtfLP = new JTextField("");
@@ -267,7 +266,6 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jcbTowar = new JComboBox<String>(tabTowar);
 			jtfTowar = new JTextField();
 			jtfTowar.setVisible(false);
-			jcbTowar.addActionListener(this);
 			
 			String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTowar=dostawcatowar.IdTowar  INNER JOIN dostawca on dostawca.IdDostawca=dostawcatowar.IdDostawca WHERE towar.NazwaTowaru = '"+jcbTowar.getSelectedItem()+"' AND dostawca.NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"'  ORDER BY DataDo DESC";
 			
@@ -376,26 +374,44 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 		         tablemodel = new DefaultTableModel(0,0);
 		    	tablemodel.setColumnIdentifiers(tabNazwyKol);
 		    	tablicaTowarow = new JTable();
+		    	tablicaTowarow.setPreferredScrollableViewportSize(new Dimension(400,200));
 		    	tablicaTowarow.getTableHeader().setReorderingAllowed(false);
 		    	tablicaTowarow.setModel(tablemodel);
 		        scrollPane = new JScrollPane(tablicaTowarow);
-		        scrollPane.setMinimumSize(new Dimension(400, 200));
-		        scrollPane.setMaximumSize(new Dimension(400,300));
-		        scrollPane.setViewportView(tablicaTowarow);
 		        panelTablicaTowarow.add(scrollPane);
 		        splitPane.setBottomComponent(panelTablicaTowarow);
-			add(splitPane);
+		        
+		        jbZamow= new JButton("Zamow");
+		        jbZamow.setMaximumSize(new Dimension(100, 25));
+		        jbZamow.setPreferredSize(new Dimension(100, 25));
+		        
+		        c.gridx=0; c.gridy=0;
+		        add(splitPane,c);
+				c.gridy++;
+				add(jbZamow,c);
+				
+				ustawNasluchZdarzen();
 		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object z = e.getSource();
+			if(z==jtfKosztDostawy)
+			{
+				kosztDostawy = Double.parseDouble(jtfKosztDostawy.getText());
+				kosztZam = wartoscTowarow + kosztDostawy;
+				jtfKosztZamowienia.setText(Double.toString(kosztZam));
+			}
 			if(z==jcbDostawca)
 			{
 				tablemodel = new DefaultTableModel(0,0);
 		    	tablemodel.setColumnIdentifiers(tabNazwyKol);
 				tablicaTowarow.setModel(tablemodel);
 				lp=1;
+				wartoscTowarow = 0;
+				kosztZam = wartoscTowarow + kosztDostawy;
+				jtfWartoscTowarow.setText(Double.toString(wartoscTowarow));
 				jtfLP.setText(Integer.toString(lp));
+				jtfKosztZamowienia.setText(Double.toString(kosztZam));
 				String sqlTowar="SELECT * from towar INNER JOIN dostawcatowar ON dostawcatowar.IdTowar=towar.IdTowar INNER JOIN dostawca ON dostawcatowar.IdDostawca=dostawca.IdDostawca WHERE NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"' GROUP BY NazwaTowaru";
 				try {
 					ResultSet rsT = poloczenie.sqlSelect(sqlTowar);
@@ -437,6 +453,10 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 				dodajNowyTowar();
 				lp++;
 				jtfLP.setText(Integer.toString(lp));
+				wartoscTowarow += wartoscNetto;
+				jtfWartoscTowarow.setText(Double.toString(wartoscTowarow));
+				kosztZam = wartoscTowarow+kosztDostawy;
+				jtfKosztZamowienia.setText(Double.toString(kosztZam));
 			}
 			if(z==jcbTowar)
 			{
@@ -451,12 +471,48 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 					jtfIlosc.setText(Integer.toString(ilosc));
 					wartoscNetto = cena*ilosc;
 					jtfWartoscNetto.setText(Double.toString(wartoscNetto));
+					
+					
 				} catch (SQLException d) {
 					// TODO Auto-generated catch block
 					d.printStackTrace();
 				}
 			}
+			if(z==jbZamow)
+			{
+				String TerminRealizacji = jtfTerminRealizacji.getText().toString();
+				try {
+					 String walidacja = walidacjaDat(TerminRealizacji);
+					 walidacja+=walidacjaTabeli();
+					 if(walidacja.length()>0)
+					 {
+				    	JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+					 }else
+					 {
+						 try {
+							Zamowienie();
+							dodanieTowarowDoZamowienia();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						 
+					 }
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 			
+		}
+		private void ustawNasluchZdarzen() 
+		{
+			jbdodajTowar.addActionListener(this);
+			jbZamow.addActionListener(this);
+			jcbDostawca.addActionListener(this);
+			jcbTowar.addActionListener(this);
+			jcbSposobDostawy.addActionListener(this);
+			jtfKosztDostawy.addActionListener(this);
 		}
 		public String tworzenieNazwyZam() throws SQLException
 		{
@@ -485,6 +541,155 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 	    	tablemodel.addRow(tabPom);
 	    	tablicaTowarow.setModel(tablemodel);
 		}
+		public String sprawdzenieDaty(String data) throws ParseException
+		{
+			
+			String error="";
+			String[] podzial= null;
+			podzial = data.split("-");
+			int miesiac = Integer.parseInt(podzial[1]);
+			int rok = Integer.parseInt(podzial[0]);
+			int dzien = Integer.parseInt(podzial[2]);
+			if(miesiac>12){
+				error+="Zosta³ podany niepoprawny miesi¹c , nie powinien byæ wiêkszy ni¿ 12.\n"; }
+			else{
+			 if(miesiac==1 ||miesiac==3 || miesiac==5 || miesiac==7 || miesiac==8 || miesiac==10 || miesiac==12)
+			 {
+				 if(dzien>31)
+				 {
+					 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 31.\n";
+				 }
+			 }
+			 else if(miesiac==4 || miesiac==6 || miesiac==9 || miesiac==11)
+			 {
+				 if(dzien>30)
+				 {
+					 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 30.\n";
+				 }
+			 }
+			 else
+			 {
+				 if(((rok%4== 0) && (rok%100!= 0)) || (rok%400 == 0))
+				 {
+					 if(dzien>29)
+					 {
+						 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 29.\n";
+					 }
+				 }
+				 else
+				 {
+					 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 28.\n";
+				 }
+			 }
+			 }
+			
+			return error;
+		}
+		private String walidacjaDat(String TerminRealizacji) throws ParseException
+		{
+			String error="";
+			
+			if(TerminRealizacji.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
+				String walidacjaDaty = sprawdzenieDaty(TerminRealizacji);
+				if(walidacjaDaty.length()>0)
+					{
+						error+=walidacjaDaty;	
+					}
+			}else
+				{
+					error+="Niepoprawny format daty przy Termin Realizacji \n";}
+			
+			return error;
+		}
+		private String walidacjaTabeli() throws ParseException
+		{
+			String error="";
+			
+			if(tablicaTowarow.getModel().getRowCount()==0){
+				error="Nie ma dodanego towaru do zamówienia \n";
+			}
+			
+			return error;
+		}
+		public void Zamowienie() throws SQLException
+		{
+			Connection connection = DriverManager.getConnection(url, username, password);
+			String query = "INSERT INTO zamowienie "
+					+ "(TerminRealizacji,DataRealizacji,KosztZamowienia,IdDostawcy,DataWystawienia,NumerZamowienia,IdSposobDostawy,KosztDostawy,WartoscTowarow)"
+				    + " values (?, ?, ?, ?, ?, ?,?,?,?)";
+			PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+			preparedStmt.setString (1,jtfTerminRealizacji.getText());
+			preparedStmt.setNull(2, java.sql.Types.DATE);
+			float kosztZamowienia = Float.parseFloat(jtfKosztZamowienia.getText());
+			preparedStmt.setFloat (3,kosztZamowienia);
+			String zapDostawca = "Select * from dostawca WHERE NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"'";
+			ResultSet rsDostawca = poloczenie.sqlSelect(zapDostawca);
+			rsDostawca.next();
+			int idDostawca = rsDostawca.getInt("IdDostawca");
+			preparedStmt.setInt (4,idDostawca);
+			preparedStmt.setString (5, teraz);
+			preparedStmt.setString (6,nazwaZam);
+			String zapSposobDostawy = "SELECT * from sposobdostawy WHERE SposobDostawy='"+jcbSposobDostawy.getSelectedItem()+"'";
+			ResultSet rsSposobDostawy=poloczenie.sqlSelect(zapSposobDostawy);
+			rsSposobDostawy.next();
+			int IdSposobDostawy = rsSposobDostawy.getInt("IdSposobDostawy");
+			preparedStmt.setInt (7,IdSposobDostawy);
+			float kosztDostawy=Float.parseFloat(jtfKosztDostawy.getText());
+			preparedStmt.setFloat (8,kosztDostawy);
+			float WartoscZamowienia = Float.parseFloat(jtfWartoscTowarow.getText());
+			preparedStmt.setFloat (9,WartoscZamowienia);
+			preparedStmt.execute();
+			connection.close();
+		}
+		public void dodanieTowarowDoZamowienia() throws SQLException
+		{
+			Connection connection = DriverManager.getConnection(url, username, password);
+			String zapZam= "Select * from zamowienie WHERE NumerZamowienia='"+nazwaZam+"'";
+			ResultSet rsZam=poloczenie.sqlSelect(zapZam);
+			rsZam.next();
+			int idZam=rsZam.getInt("IdZamowienie");
+			for(int i=0;i<tablicaTowarow.getRowCount();i++){
+			String query = "INSERT INTO zamowienietowar "
+					+ "(LP,IdTowar,Cena,Ilosc,WartoscNetto,IdZamowienie)"
+				    + " values (?, ?, ?, ?, ?, ?)";
+			int j=0;
+			Object LP = tablicaTowarow.getValueAt(i,j);
+			int lp = Integer.parseInt((String) LP);
+			PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+			preparedStmt.setInt (1,lp);
+			j++;
+			String zapTowar="Select * from towar WHERE NazwaTowaru='"+tablicaTowarow.getValueAt(i,j)+"'";
+			ResultSet rsTow = poloczenie.sqlSelect(zapTowar);
+			rsTow.next();
+			int idTow = rsTow.getInt("IdTowar");
+			preparedStmt.setInt (2, idTow);
+			j++;
+			Object ce = tablicaTowarow.getValueAt(i,j);
+			double cena = Double.parseDouble((String) ce);
+			preparedStmt.setDouble (3, cena);
+			j++;
+			Object il = tablicaTowarow.getValueAt(i,j);
+			int ilosc= Integer.parseInt((String) il);
+			preparedStmt.setInt (4, ilosc);
+			j++;
+			Object wa = tablicaTowarow.getValueAt(i,j);
+			double wartosc= Double.parseDouble((String) wa);
+			preparedStmt.setDouble (5,wartosc);
+			preparedStmt.setInt (6,idZam);
+			preparedStmt.execute();
+			
+			String query2= "UPDATE towar set StanMagazynowyDysponowany =StanMagazynowyDysponowany + ? WHERE IdTowar=?";
+			PreparedStatement preparedStmt2 = connection.prepareStatement(query2);
+			preparedStmt2.setInt(1,ilosc);
+			preparedStmt2.setInt(2,idTow);
+			preparedStmt2.execute();
+			}
+			connection.close();
+		}
+		
+		
+		
+		
 		
 		
 	 }
