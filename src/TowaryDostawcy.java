@@ -28,7 +28,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 	private JSplitPane splitPane,splitPane1;
 	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbNrZam,jlbTermin,jlbDataReal,jlbDataWys,jlbSposDos,jlbKosztDos,jlbWartoscTow,jlbKosztZam,jlbDostawca;
-	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
+	private JTextField search,search1,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
 	public TowaryDostawcy()
 	{
 		try {
@@ -50,14 +50,18 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		}
 		
 		splitPane = new JSplitPane();
+		splitPane1 = new JSplitPane();
 		JPanel panel = new JPanel();
+		
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.setPreferredSize(new Dimension(200,600));
-		splitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		
+		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		
 		scrollPane = new JScrollPane();
 		
 		search = new JTextField();
+		search1 = new JTextField();
 		list = new JList<String>(tab);
 		list.setMinimumSize(new Dimension(150,150));
 		list.setPreferredSize(new Dimension(150, 150));
@@ -67,16 +71,18 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		scrollPane.setViewportView(list);
 		panel.add(search);
 		search.setMaximumSize(new Dimension(200, 20));
+		search1.setMinimumSize(new Dimension(300, 20));
 		panel.add(scrollPane);
+		
 		splitPane.setLeftComponent(panel);
 		//scrollPane1.setViewportView(list1);
 		
 		String[] columnNames = 
-			{"Lp",
-            "Nazwa Towaru",
+			{"NazwaTowaruWgDostawcy",
+            "KodTowaruWgDostawcy",
             "Cena",
-            "Ilosc",
-            "Wartosc Netto"};
+            "DataOd",
+            "DataDo"};
 		
 		String[][] data = new String[0][0];
 		
@@ -84,24 +90,24 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		tabela.setDefaultEditor(Object.class, null);
 		tabela.getTableHeader().setReorderingAllowed(false);
 		
-		scrollPane1 = new JScrollPane(listaTowary);
-		JPanel p = new JPanel();
-		p.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		p.setPreferredSize(new Dimension(600, 200));
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(0, 10, 0, 10);
+		scrollPane1 = new JScrollPane(tabela);
+//		JPanel p = new JPanel();
+//		p.setLayout(new GridBagLayout());
+//		GridBagConstraints c = new GridBagConstraints();
+//		p.setPreferredSize(new Dimension(600, 200));
+//		c.fill = GridBagConstraints.HORIZONTAL;
+//		c.insets = new Insets(0, 10, 0, 10);
 		
 		
 		
 
-        splitPane1.setTopComponent(scrollPane1);
-        splitPane1.setBottomComponent(p);
+        splitPane1.setTopComponent(search1);
+        splitPane1.setBottomComponent(scrollPane1);
         splitPane.setRightComponent(splitPane1);
  
      
         add(splitPane);
-        add(splitPane1);
+       // add(splitPane1);
         
         ustawNasluchZdarzen();
 	}
@@ -117,21 +123,21 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 			String[] tabPom;
 			String[][] towary;
 			String sel = list.getSelectedValue().toString();
-			String sql = "SELECT IdZamowienie, NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, sposobdostawy.SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia, dostawca.NazwaSkrocona FROM zamowienie INNER JOIN sposobdostawy ON sposobdostawy.IdSposobDostawy=zamowienie.IdSposobDostawy INNER JOIN dostawca ON dostawca.IdDostawca=zamowienie.IdDostawcy WHERE NumerZamowienia='"+sel+"'";
+			String sql = "SELECT IdDostawca FROM dostawca WHERE NazwaSkrocona='"+sel+"'";
 			
 			
 			try {
 				ResultSet rs = polaczenie.sqlSelect(sql);
-				tabPom = new String[10];
+				tabPom = new String[1];
 				
 				rs.next();
 				for(int i = 0;i<tabPom.length;i++)
 				{
 					tabPom[i]=rs.getString(i+1);
 				}
+				int id = Integer.parseInt(tabPom[0]);
 	
-	
-				String query1 = "SELECT Lp,towar.NazwaTowaru,Cena,Ilosc,WartoscNetto FROM zamowienietowar INNER JOIN towar ON towar.IdTowar = zamowienietowar.IdTowar WHERE zamowienietowar.IdZamowienie = 1";
+				String query1 = "SELECT NazwaTowaruWgDostawcy,KodTowaruWgDostawcy,Cena,DataOd,DataDo FROM dostawcatowar WHERE dostawcatowar.IdDostawca = '"+id+"'";
 				ResultSet result = polaczenie.sqlSelect(query1);
 				result.last();
 				int rozmiar = result.getRow();
@@ -151,11 +157,11 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 			
 	
 				String[] columnNames = 
-					{"Lp",
-		            "Nazwa Towaru",
+					{"NazwaTowaruWgDostawcy",
+		            "KodTowaruWgDostawcy",
 		            "Cena",
-		            "Ilosc",
-		            "Wartosc Netto"};
+		            "DataOd",
+		            "DataDo"};
 				DefaultTableModel tableModel = new DefaultTableModel(0,0);
 				tableModel.setColumnIdentifiers(columnNames);
 				tabela.setModel(tableModel);
@@ -183,7 +189,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 	public void szukaj(String text){
 		try {
 			polaczenie = new Polaczenie();
-			String sql = "SELECT NumerZamowienia FROM zamowienie WHERE NumerZamowienia LIKE '%"+text+"%'";
+			String sql = "SELECT NazwaSkrocona FROM dostawca WHERE NazwaSkrocona LIKE '%"+text+"%'";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
 			int rozmiar = rs.getRow();
@@ -191,7 +197,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 			int i = 0;
 			tab = new String[rozmiar];
 			while(rs.next()){
-				tab[i] = rs.getString("NumerZamowienia");
+				tab[i] = rs.getString("NazwaSkrocona");
 				i++;
 			}
 			//list.clearSelection();
@@ -200,6 +206,12 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 			e.printStackTrace();
 		}
 	}
+	
+//	public void szukajTowaru(String text){
+//
+//	}
+	
+	
 	@Override
 	public void keyPressed(KeyEvent arg0) { }
 	@Override
