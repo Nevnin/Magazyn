@@ -62,6 +62,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		
 		search = new JTextField();
 		search1 = new JTextField();
+		jlbNrZam = new JLabel("Towary");
 		list = new JList<String>(tab);
 		list.setMinimumSize(new Dimension(150,150));
 		list.setPreferredSize(new Dimension(150, 150));
@@ -101,7 +102,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		
 		
 
-        splitPane1.setTopComponent(search1);
+        splitPane1.setTopComponent(jlbNrZam);
         splitPane1.setBottomComponent(scrollPane1);
         splitPane.setRightComponent(splitPane1);
  
