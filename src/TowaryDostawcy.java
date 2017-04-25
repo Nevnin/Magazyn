@@ -26,12 +26,22 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 	private Polaczenie polaczenie;
 	private JList<String> list,listaTowary;
 	private JTable tabela, tabela2;
-	private String[] tab, tabTow;
+	private String[] tab, tabTow, podswietlenieTowarow;
+	private String[] columnNames = {"NazwaTowaruWgDostawcy",
+            "KodTowaruWgDostawcy",
+            "Cena",
+            "DataOd",
+            "DataDo"};
+	String[][] towary;
+	private String[] columnNames2 = 
+		{"NazwaDostawcy",
+        "KodTowaru",
+        "KodTowaruWgDostawcy"};
 	private JSplitPane splitPane,splitPane1,splitPane2,splitPane3;
 	private JScrollPane scrollPane,scrollPane1,scrollPane2,scrollPane3;
 	private JTabbedPane tabbedPane;
 	private JLabel jlbNrZam, jlbNazwa;
-	private JTextField search, search1;
+	private JTextField search, search1,search2,search3;
 	public TowaryDostawcy()
 	{
 		try {
@@ -88,6 +98,23 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		 
 		
 		search = new JTextField();
+		search2 = new JTextField();
+		
+		search2.setMinimumSize(new Dimension(300, 20));
+		
+		panel.add(scrollPane);
+		search2.addKeyListener(new KeyListener(){
+			@Override
+			public void keyPressed(KeyEvent e) { }
+			@Override
+			public void keyReleased(KeyEvent e) 
+			{
+				szukajTowaru(search2.getText()); 
+				
+			}
+			@Override
+			public void keyTyped(KeyEvent e) { }
+		});
 		
 		jlbNrZam = new JLabel("Towary");
 		list = new JList<String>(tab);
@@ -100,11 +127,10 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 			@Override
 	public void valueChanged(ListSelectionEvent e) {
 		
-		if(e.getValueIsAdjusting()==true)
+		if(e.getValueIsAdjusting())
 		{
 			
 			String[] tabPom;
-			String[][] towary;
 			String sel = list.getSelectedValue().toString();
 			String sql = "SELECT IdDostawca FROM dostawca WHERE NazwaSkrocona='"+sel+"'";
 			
@@ -176,11 +202,11 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		panel.add(scrollPane);
 		search.addKeyListener(new KeyListener(){
 			@Override
-			public void keyPressed(KeyEvent arg0) { }
+			public void keyPressed(KeyEvent e) { }
 			@Override
-			public void keyReleased(KeyEvent arg0) { szukaj(search.getText());}
+			public void keyReleased(KeyEvent e) { szukaj(search.getText());}
 			@Override
-			public void keyTyped(KeyEvent arg0) { }
+			public void keyTyped(KeyEvent e) { }
 			
 		});
 		
@@ -208,10 +234,10 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 //		c.fill = GridBagConstraints.HORIZONTAL;
 //		c.insets = new Insets(0, 10, 0, 10);
 		
-		
+		tabela.setAutoCreateRowSorter(true);
 		
 
-        splitPane1.setTopComponent(jlbNrZam);
+        splitPane1.setTopComponent(search2);
         splitPane1.setBottomComponent(scrollPane1);
         splitPane.setRightComponent(splitPane1);
         
@@ -241,6 +267,23 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		
 		
 		search1 = new JTextField();
+		search3 = new JTextField();
+		
+		search3.setMinimumSize(new Dimension(300, 20));
+		
+		panel.add(scrollPane);
+		search3.addKeyListener(new KeyListener(){
+			@Override
+			public void keyPressed(KeyEvent e) { }
+			@Override
+			public void keyReleased(KeyEvent e) 
+			{
+				szukajTowaru2(search3.getText()); 
+				
+			}
+			@Override
+			public void keyTyped(KeyEvent e) { }
+		});
 		
 		jlbNazwa = new JLabel("Dostawcy");
 		listaTowary = new JList<String>(tabTow);
@@ -256,7 +299,6 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 			{
 				
 				String[] tabPom;
-				String[][] towary;
 				String sel = listaTowary.getSelectedValue().toString();
 				String sql = "SELECT IdTowar FROM towar WHERE NazwaTowaru='"+sel+"'";
 				
@@ -351,9 +393,11 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		tabela2.setDefaultEditor(Object.class, null);
 		tabela2.getTableHeader().setReorderingAllowed(false);
 		
+		tabela2.setAutoCreateRowSorter(true);
+		
 		scrollPane3 = new JScrollPane(tabela2);
 		
-		splitPane3.setTopComponent(jlbNazwa);
+		splitPane3.setTopComponent(search3);
         splitPane3.setBottomComponent(scrollPane3);
         splitPane2.setRightComponent(splitPane3);
 		
@@ -415,6 +459,102 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 			e.printStackTrace();
 		}
 	}
+	
+public void szukajTowaru(String text){
+		
+		try {
+			String sel = list.getSelectedValue().toString();
+			polaczenie = new Polaczenie();
+			String sql = "SELECT NazwaSkrocona, NazwaTowaruWgDostawcy FROM dostawcatowar INNER JOIN dostawca ON dostawcatowar.IdDostawca = dostawca.IdDostawca WHERE NazwaTowaruWgDostawcy LIKE '%"+text+"%' AND NazwaSkrocona = '"+sel+"'";
+			ResultSet rs = polaczenie.sqlSelect(sql);
+			
+			System.out.println(sql);
+			rs.last();
+			int rozmiar = rs.getRow();
+			rs.beforeFirst();
+			int i = 0;
+			String[] data = null;
+			DefaultTableModel tableModel1 = new DefaultTableModel(0,0); 
+			tableModel1.setColumnIdentifiers(columnNames);
+			tabela.setModel(tableModel1);
+			podswietlenieTowarow = new String[rozmiar];
+			while(rs.next()){
+				podswietlenieTowarow[i] = rs.getString("NazwaTowaruWgDostawcy");
+				i++;
+			}
+		for (int k=0;k<towary.length;k++)	
+		{
+			for(int l=0;l<podswietlenieTowarow.length;l++)
+			{
+			if(podswietlenieTowarow[l].equals(towary[k][0]))
+			{	
+				System.out.println(podswietlenieTowarow[l]+"Dziala");
+				
+				
+					data = new String[towary[0].length];
+					for(int z = 0;z<5;z++){
+						data[z]= towary[k][z];
+					}
+					tableModel1.addRow(data);
+					break;
+				
+			}
+			
+			}
+		}
+		tabela.setModel(tableModel1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+public void szukajTowaru2(String text){
+	
+	try {
+		String sel = listaTowary.getSelectedValue().toString();
+		polaczenie = new Polaczenie();
+		String sql = "SELECT NazwaSkrocona, NazwaTowaru FROM dostawcatowar INNER JOIN dostawca ON dostawcatowar.IdDostawca = dostawca.IdDostawca INNER JOIN towar ON towar.IdTowar = dostawcatowar.IdTowar WHERE NazwaSkrocona LIKE '%"+text+"%' AND NazwaTowaru = '"+sel+"'";
+		ResultSet rs = polaczenie.sqlSelect(sql);
+		
+		System.out.println(sql);
+		rs.last();
+		int rozmiar = rs.getRow();
+		rs.beforeFirst();
+		int i = 0;
+		String[] data = null;
+		DefaultTableModel tableModel1 = new DefaultTableModel(0,0); 
+		tableModel1.setColumnIdentifiers(columnNames2);
+		tabela.setModel(tableModel1);
+		podswietlenieTowarow = new String[rozmiar];
+		while(rs.next()){
+			podswietlenieTowarow[i] = rs.getString("NazwaTowaruWgDostawcy");
+			i++;
+		}
+	for (int k=0;k<towary.length;k++)	
+	{
+		for(int l=0;l<podswietlenieTowarow.length;l++)
+		{
+		if(podswietlenieTowarow[l].equals(towary[k][0]))
+		{	
+			System.out.println(podswietlenieTowarow[l]+"Dziala");
+			
+			
+				data = new String[towary[0].length];
+				for(int z = 0;z<5;z++){
+					data[z]= towary[k][z];
+				}
+				tableModel1.addRow(data);
+				break;
+			
+		}
+		
+		}
+	}
+	tabela.setModel(tableModel1);
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
+}
 	
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
