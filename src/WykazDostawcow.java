@@ -30,7 +30,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 	private Polaczenie polaczenie;
 	private JList list;
 	private String[] tab;
-	private JSplitPane splitPane;
+	private JSplitPane splitPane, splitPanePd;
 	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbNazSkroc, jlbNazPeln,jlbNIP, jlbTel1, jlbTel2,jlbTel3,jlbNazDzial,jlbNrKonta,jlbAdres,jlbKodPocz,jlbPoczta;
 	private JTextField search,jtfNazSkroc,jtfNIP,jtfTel1,jtfTel2,jtfTel3,jtfNazDzial,jtfNrKonta,jtfAdres,jtfKodPocz,jtfPoczta;
