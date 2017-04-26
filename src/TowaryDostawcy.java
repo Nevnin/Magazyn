@@ -1,4 +1,5 @@
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -24,7 +25,13 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 	private Polaczenie polaczenie;
 	private JList<String> list,listaTowary;
 	private JTable tabela;
-	private String[] tab;
+	private String[] tab,podswietlenieTowarow;
+	private String[] columnNames = {"NazwaTowaruWgDostawcy",
+            "KodTowaruWgDostawcy",
+            "Cena",
+            "DataOd",
+            "DataDo"};
+	String[][] towary;
 	private JSplitPane splitPane,splitPane1;
 	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbNrZam,jlbTermin,jlbDataReal,jlbDataWys,jlbSposDos,jlbKosztDos,jlbWartoscTow,jlbKosztZam,jlbDostawca;
@@ -72,18 +79,39 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		scrollPane.setViewportView(list);
 		panel.add(search);
 		search.setMaximumSize(new Dimension(200, 20));
+		search.addKeyListener(new KeyListener(){
+			@Override
+			public void keyPressed(KeyEvent e) { }
+			@Override
+			public void keyReleased(KeyEvent e) 
+			{
+				szukaj(search.getText()); 
+				
+			}
+			@Override
+			public void keyTyped(KeyEvent e) { }
+		});
+		
 		search1.setMinimumSize(new Dimension(300, 20));
 		panel.add(scrollPane);
+		
+		search1.addKeyListener(new KeyListener(){
+			@Override
+			public void keyPressed(KeyEvent e) { }
+			@Override
+			public void keyReleased(KeyEvent e) 
+			{
+				szukajTowaru(search1.getText()); 
+				
+			}
+			@Override
+			public void keyTyped(KeyEvent e) { }
+		});
 		
 		splitPane.setLeftComponent(panel);
 		//scrollPane1.setViewportView(list1);
 		
-		String[] columnNames = 
-			{"NazwaTowaruWgDostawcy",
-            "KodTowaruWgDostawcy",
-            "Cena",
-            "DataOd",
-            "DataDo"};
+
 		
 		String[][] data = new String[0][0];
 		
@@ -102,7 +130,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		
 		
 
-        splitPane1.setTopComponent(jlbNrZam);
+        splitPane1.setTopComponent(search1);
         splitPane1.setBottomComponent(scrollPane1);
         splitPane.setRightComponent(splitPane1);
  
@@ -115,6 +143,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 	private void ustawNasluchZdarzen(){
 		list.addListSelectionListener(this);
 		search.addKeyListener(this);
+		search1.addKeyListener(this);
 	}
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
@@ -122,7 +151,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		if(arg0.getValueIsAdjusting())
 		{
 			String[] tabPom;
-			String[][] towary;
+			
 			String sel = list.getSelectedValue().toString();
 			String sql = "SELECT IdDostawca FROM dostawca WHERE NazwaSkrocona='"+sel+"'";
 			
@@ -144,7 +173,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 				int rozmiar = result.getRow();
 				result.beforeFirst();
 				towary = new String[rozmiar][5]; 
-	int j=0;
+				int j=0;
 				while(result.next())
 				{
 					towary[j][0]=result.getString(1);
@@ -157,12 +186,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 				}
 			
 	
-				String[] columnNames = 
-					{"NazwaTowaruWgDostawcy",
-		            "KodTowaruWgDostawcy",
-		            "Cena",
-		            "DataOd",
-		            "DataDo"};
+
 				DefaultTableModel tableModel = new DefaultTableModel(0,0);
 				tableModel.setColumnIdentifiers(columnNames);
 				tabela.setModel(tableModel);
@@ -208,17 +232,86 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		}
 	}
 	
-//	public void szukajTowaru(String text){
-//
-//	}
+	public void szukajTowaru(String text){
+		
+		try {
+			String sel = list.getSelectedValue().toString();
+			polaczenie = new Polaczenie();
+			String sql = "SELECT NazwaSkrocona, NazwaTowaruWgDostawcy FROM dostawcatowar INNER JOIN dostawca ON dostawcatowar.IdDostawca = dostawca.IdDostawca WHERE NazwaTowaruWgDostawcy LIKE '%"+text+"%' AND NazwaSkrocona = '"+sel+"'";
+			ResultSet rs = polaczenie.sqlSelect(sql);
+			
+			System.out.println(sql);
+			rs.last();
+			int rozmiar = rs.getRow();
+			rs.beforeFirst();
+			int i = 0;
+			String[] data = null;
+			DefaultTableModel tableModel1 = new DefaultTableModel(0,0); 
+			tableModel1.setColumnIdentifiers(columnNames);
+			tabela.setModel(tableModel1);
+			podswietlenieTowarow = new String[rozmiar];
+			while(rs.next()){
+				podswietlenieTowarow[i] = rs.getString("NazwaTowaruWgDostawcy");
+				i++;
+			}
+		for (int k=0;k<towary.length;k++)	
+		{
+			for(int l=0;l<podswietlenieTowarow.length;l++)
+			{
+			if(podswietlenieTowarow[l].equals(towary[k][0]))
+			{	
+				System.out.println(podswietlenieTowarow[l]+"Dziala");
+				
+				
+					data = new String[towary[0].length];
+					for(int z = 0;z<5;z++){
+						data[z]= towary[k][z];
+					}
+					tableModel1.addRow(data);
+					break;
+				
+			}
+			
+			}
+		}
+		tabela.setModel(tableModel1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}}
 	
 	
-	@Override
-	public void keyPressed(KeyEvent arg0) { }
-	@Override
-	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
-	@Override
-	public void keyTyped(KeyEvent arg0) { }
-}
+	
 
 
+
+//@Override
+//public void keyPressed(KeyEvent e) {
+//	// TODO Auto-generated method stub
+//	
+//}
+//@Override
+//public void keyReleased(KeyEvent e) {
+//	// TODO Auto-generated method stub
+//	
+//}
+//@Override
+//public void keyTyped(KeyEvent e) {
+//	// TODO Auto-generated method stub
+//	
+//}
