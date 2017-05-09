@@ -33,7 +33,7 @@ import javax.swing.event.ListSelectionListener;
 public class WykazDostawcow extends JPanel implements ListSelectionListener, KeyListener, ActionListener{
 	private Polaczenie polaczenie;
 	private JList list;
-	private String[] tab;
+	private String[] tab, tabTowary;
 	private JSplitPane splitPane, spDaneButt, spMidRig;
 	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbNazSkroc, jlbNazPeln,jlbNIP, jlbTel1, jlbTel2,jlbTel3,jlbNazDzial,jlbNrKonta,jlbAdres,jlbKodPocz,jlbPoczta, jlbKodWgDos, jlbNazwaWgDos, jlbDataDo, jlbDataOd, jlbCena, jlbTowary, jlbTytulTowary;
@@ -42,30 +42,38 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 	private JButton jbtDodajDos, jbtDodajTow, jbtNowyTowar;
 	private JComboBox<String> jcbTowary;
 	private JPanel pTowary;
+	private boolean edycjaListy;
 
 	public WykazDostawcow() {
-//		String[] tabNazwyKol = null;
-//      try {
-//			polaczenie = new Polaczenie();
-//			String sql = "SELECT * FROM towar";
-//			ResultSet rs = polaczenie.sqlSelect(sql);
-//			rs.last();
-//			int rozmiar = rs.getRow();
-//			rs.beforeFirst();
-//			int i = 0;
-//			tab = new String[rozmiar];
-//			while(rs.next()){
-//				tab[i] = rs.getString("NazwaTowaru");
-//				i++;
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//      try{
-//			polaczenie = new Polaczenie();
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		
+		JPanel p = new JPanel();
+		p.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		p.setPreferredSize(new Dimension(600, 300));
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(0, 10, 0, 10);
+		
+		JPanel pButtons = new JPanel();
+		
+        pTowary = new JPanel(new GridBagLayout());
+        GridBagConstraints gbcPanelTowary = new GridBagConstraints();
+        gbcPanelTowary.insets = new Insets(0, 10, 1, 10);
+        gbcPanelTowary.fill = GridBagConstraints.HORIZONTAL;  
+        pTowary.setVisible(false);
+		
+		splitPane = new JSplitPane();							//panel + spMigRig
+		spMidRig = new JSplitPane();							//spDaneButt + pTowary
+		spDaneButt = new JSplitPane(JSplitPane.VERTICAL_SPLIT);	//p + pButtons
+		
+		String[] tabNazwyKol = null;
+		tabTowary = getTowary();
+//	    try{
+//	    	polaczenie = new Polaczenie();
 //			String sql = "SELECT * FROM dostawcatowar";
 //			ResultSet rs = polaczenie.sqlSelect(sql);
-//      	int rozmiarKol = rs.getMetaData().getColumnCount();
+//			int rozmiarKol = rs.getMetaData().getColumnCount();
 //			tabNazwyKol = new String[rozmiarKol-2];
 //			tabNazwyKol[0] = "Nazwa Towaru";
 //			tabNazwyKol[1] = "Cena";
@@ -77,9 +85,9 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 ////			for(int i=1; i<rozmiarKol-2; i++){
 ////				tabNazwyKol[i] = rs.getMetaData().getColumnName(i+3);
 ////			}
-//      }catch (SQLException e) {
-//			e.printStackTrace();
-//      }
+//	      }catch (SQLException e) {
+//				e.printStackTrace();
+//	    }
 		try {
 			polaczenie = new Polaczenie();
 			String sql = "SELECT * FROM dostawca";
@@ -97,19 +105,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
-		splitPane = new JSplitPane();
-		spMidRig = new JSplitPane();
-		spDaneButt = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        JPanel pButtons = new JPanel();
-        pTowary = new JPanel(new GridBagLayout());
-        GridBagConstraints gbcPanelTowary = new GridBagConstraints();
-        gbcPanelTowary.insets = new Insets(0, 10, 1, 10);
-        gbcPanelTowary.fill = GridBagConstraints.HORIZONTAL;  
-        
-        pTowary.setVisible(false);
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		}	
 		scrollPane = new JScrollPane();
 		scrollPane1 = new JScrollPane();
 		search = new JTextField();
@@ -119,20 +115,10 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		list.setAlignmentX(CENTER_ALIGNMENT);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(list);
-		panel.add(search);
 		search.setMaximumSize(new Dimension(200, 20));
-		panel.add(scrollPane);
-		splitPane.setLeftComponent(panel);
-		//scrollPane1.setViewportView(list1);
+		edycjaListy = true;
+		
 		Border border = BorderFactory.createLineBorder(Color.lightGray);
-		
-		JPanel p = new JPanel();
-		p.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		p.setPreferredSize(new Dimension(600, 300));
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(0, 10, 0, 10);
-		
 		jlbNazSkroc = new JLabel("Nazwa Skrocona:");
 		jtfNazSkroc = new JTextField();
 		jtfNazSkroc.setEditable(false);
@@ -172,14 +158,17 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		jtfPoczta.setEditable(false);
 
         jbtDodajDos= new JButton("Dodaj nowego dostawce");
+        jbtDodajDos.setName("addDos");
+//        jbtDodajDos.setEnabled(false);
         jbtDodajTow= new JButton("Dodaj towary do dostawcy");
+        jbtDodajTow.setEnabled(false);
         jbtDodajTow.setName("addTowary");
         
         jlbTytulTowary = new JLabel("Dodawanie towaru do Dostawcy");
         jlbTytulTowary.setFont(new Font("Calibri", Font.BOLD, 30));
         jbtNowyTowar = new JButton("Nowy Towar");
         jlbTowary = new JLabel("Nazwa towaru");
-		jcbTowary = new JComboBox<String>(tab);
+		jcbTowary = new JComboBox<String>(tabTowary);
         jlbCena = new JLabel("Cena");
         jtfCena = new JTextField("");
         jtfCena.setMinimumSize(new Dimension(400, 20));
@@ -192,6 +181,9 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         jtfKodWgDos = new JTextField("");
         jlbNazwaWgDos = new JLabel("Nazwa towaru wed³ug dostacy");
         jtfNazwaWgDos = new JTextField("");
+
+		panel.add(search);
+		panel.add(scrollPane);
 		
 		c.gridx = 0; c.gridy = 0;
         p.add(jlbNazSkroc,c);
@@ -237,6 +229,9 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         p.add(jlbPoczta,c);
         c.gridx++;
         p.add(jtfPoczta, c);
+
+        pButtons.add(jbtDodajDos);
+        pButtons.add(jbtDodajTow);
         
         gbcPanelTowary.gridx = 1; gbcPanelTowary.gridy = 0;
         pTowary.add(jlbTytulTowary,gbcPanelTowary);
@@ -289,9 +284,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //      scrollPane = new JScrollPane(tablicaTowarow);
 //      scrollPane.setPreferredSize(new Dimension(400, 200));
 //      scrollPane.setMinimumSize(new Dimension(400, 200));
-        
-        pButtons.add(jbtDodajDos);
-        pButtons.add(jbtDodajTow);
 
         spDaneButt.setTopComponent(p);
         spDaneButt.setBottomComponent(pButtons);
@@ -299,6 +291,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         spMidRig.setLeftComponent(spDaneButt);
         spMidRig.setRightComponent(pTowary);
         
+		splitPane.setLeftComponent(panel);
         splitPane.setRightComponent(spMidRig);
         add(splitPane);
         
@@ -327,39 +320,60 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		        jbtDodajTow.setName("addTowary");
 			}
 		}
+		else if(e==jbtDodajDos){
+			if(jbtDodajDos.getName() == "addDos"){
+				jbtDodajDos.setText("Zakoncz dodawanie dostawcy");
+				jbtDodajDos.setName("endDos");
+				jbtDodajTow.setEnabled(false);
+				jtaNazPeln.setBackground(Color.WHITE);
+				edycjaDanychDos(true);
+				edycjaListy = false;
+				wyczyscDaneKontaktowe();
+			} else if(jbtDodajDos.getName() == "endDos"){
+				jbtDodajDos.setText("Dodaj nowego dostawce");
+				jbtDodajDos.setName("addDos");
+				jbtDodajTow.setEnabled(true);
+				jtaNazPeln.setBackground(null);
+				edycjaDanychDos(false);
+				edycjaListy = true;
+			}
+		}
 	}
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
-		if(arg0.getValueIsAdjusting()) {
-			String[] tabPom;
-			String sel = list.getSelectedValue().toString();
-			String sql = "SELECT NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta  FROM dostawca WHERE NazwaSkrocona='"+sel+"'";
-			//int id = 0;
-			//String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia FROM zamowienie WHERE NumerZamowienia='"+sel+"'";
-			
-			try {
-				ResultSet rs = polaczenie.sqlSelect(sql);
-				tabPom = new String[11];
+		if(edycjaListy){
+			if(arg0.getValueIsAdjusting()) {
+				String[] tabPom;
+				String sel = list.getSelectedValue().toString();
+				String sql = "SELECT NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta  FROM dostawca WHERE NazwaSkrocona='"+sel+"'";
+				//int id = 0;
+				//String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia FROM zamowienie WHERE NumerZamowienia='"+sel+"'";
 				
-				rs.next();
-				for(int i = 0;i<tabPom.length;i++)
-				{
-					tabPom[i]=rs.getString(i+1);
+				try {
+					ResultSet rs = polaczenie.sqlSelect(sql);
+					tabPom = new String[11];
+					
+					rs.next();
+					for(int i = 0;i<tabPom.length;i++)
+					{
+						tabPom[i]=rs.getString(i+1);
+					}
+					jtfNazSkroc.setText(tabPom[0]);
+					jtaNazPeln.setText(tabPom[1]);
+					jtfNIP.setText(tabPom[2]);
+					jtfTel1.setText(tabPom[3]);
+					jtfTel2.setText(tabPom[4]);
+					jtfTel3.setText(tabPom[5]);
+					jtfNazDzial.setText(tabPom[6]);
+					jtfNrKonta.setText(tabPom[7]);
+					jtfAdres.setText(tabPom[8]);
+					jtfKodPocz.setText(tabPom[9]);
+					jtfPoczta.setText(tabPom[10]);
+					jbtDodajTow.setEnabled(true);
+		
+				} catch (Exception e) {
+					// TODO: handle exception
 				}
-				jtfNazSkroc.setText(tabPom[0]);
-				jtaNazPeln.setText(tabPom[1]);
-				jtfNIP.setText(tabPom[2]);
-				jtfTel1.setText(tabPom[3]);
-				jtfTel2.setText(tabPom[4]);
-				jtfTel3.setText(tabPom[5]);
-				jtfNazDzial.setText(tabPom[6]);
-				jtfNrKonta.setText(tabPom[7]);
-				jtfAdres.setText(tabPom[8]);
-				jtfKodPocz.setText(tabPom[9]);
-				jtfPoczta.setText(tabPom[10]);
-	
-			} catch (Exception e) {
-				// TODO: handle exception
 			}
 		}
 	}
@@ -383,12 +397,59 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			e.printStackTrace();
 		}
 	}
+	public String[] getTowary(){
+		String[] tabPom = null;
+		try {
+			polaczenie = new Polaczenie();
+			String sql = "SELECT * FROM towar";
+			ResultSet rs = polaczenie.sqlSelect(sql);
+			rs.last();
+			int rozmiar = rs.getRow();
+			rs.beforeFirst();
+			int i = 0;
+			tabPom = new String[rozmiar];
+			while(rs.next()){
+				tabPom[i] = rs.getString("NazwaTowaru");
+				i++;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return tabPom;
+	}
 	@Override
 	public void keyPressed(KeyEvent arg0) { }
 	@Override
 	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
 	@Override
 	public void keyTyped(KeyEvent arg0) { }
+
+    private void wyczyscDaneKontaktowe(){
+		jtfNazSkroc.setText("");
+		jtaNazPeln.setText("");
+		jtfNIP.setText("");
+		jtfTel1.setText("");
+		jtfTel2.setText("");
+		jtfTel3.setText("");
+		jtfNazDzial.setText("");
+		jtfNrKonta.setText("");
+		jtfAdres.setText("");
+		jtfKodPocz.setText("");
+		jtfPoczta.setText("");
+    }
+    private void edycjaDanychDos(boolean flag){
+		jtfNazSkroc.setEditable(flag);
+		jtaNazPeln.setEditable(flag);
+		jtfNIP.setEditable(flag);
+		jtfTel1.setEditable(flag);
+		jtfTel2.setEditable(flag);
+		jtfTel3.setEditable(flag);
+		jtfNazDzial.setEditable(flag);
+		jtfNrKonta.setEditable(flag);
+		jtfAdres.setEditable(flag);
+		jtfKodPocz.setEditable(flag);
+		jtfPoczta.setEditable(flag);
+    }
 	
 //	@Override
 //	public void actionPerformed(ActionEvent arg0) {
