@@ -5,9 +5,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.Color;
@@ -21,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,6 +46,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
     String url = "jdbc:mysql://" + serverName + "/" + mydatabase; 
     String username = "root";
     String password = "";
+    DecimalFormat df;
 		JTabbedPane tabbedPane;
 		JLabel jlbTytulZamowienie,jlbTerminRealizacji,jlbDataRealizacji,jlbKosztZamowienia,jlbDostawca,jlbDataWystawienia,jlbNumerZamowienia,jlbSposobDostawy,jlbKosztDostawy,jlbWartoscTowarow;
 		JTextField jtfTerminRealizacji,jtfDostawca,jtfSposobDostawy,jtfDataRealizacji,jtfKosztZamowienia,jtfDataWystawienia,jtfNumerZamowienia,jtfKosztDostawy,jtfWartoscTowarow;
@@ -53,7 +57,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 		String[] tabDostawca,tabSposobDostawy,tabTowar,tabNazwyKol;
 		JPanel panelDaneZam,panelZamTow;
 		String teraz,nazwaZam;
-		double kosztZam,cena,wartoscNetto,wartoscTowarow,kosztDostawy;
+		float kosztZam=0.00f,cena=0.00f,wartoscNetto=0.00f,wartoscTowarow=0.00f,kosztDostawy=0.00f;
 		int ilosc,lp;
 		JSplitPane splitPane;
 		DefaultTableModel tablemodel;
@@ -62,6 +66,9 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 		JButton jbdodajTowar,jbZamow; 
 		public Zamowieniev2()
 		{
+			df=new java.text.DecimalFormat(); 
+			df.setMaximumFractionDigits(2); 
+			df.setMinimumFractionDigits(2); 
 			setLayout(new GridBagLayout());
 			GridBagConstraints c= new GridBagConstraints();
 			c.insets= new Insets(0,10,1,10);
@@ -97,7 +104,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jtfKosztZamowienia.setToolTipText(jlbKosztZamowienia.getText()+" :prosze wpisywac liczby");
 			jtfKosztZamowienia.setEditable(false);
 			kosztZam=wartoscTowarow+kosztDostawy;
-			jtfKosztZamowienia.setText(Double.toString(kosztZam));
+			jtfKosztZamowienia.setText(df.format(kosztZam));
 			String sqlDostawca = "SELECT * from dostawca";
 			String sqlSposobDostawy = "SELECT * from sposobdostawy";
 			
@@ -182,8 +189,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jlbWartoscTowarow.setToolTipText(jlbWartoscTowarow.getText()+" :prosze wpisywac liczby");
 			jtfWartoscTowarow.setToolTipText(jlbWartoscTowarow.getText()+" :prosze wpisywac liczby");
 			jtfWartoscTowarow.setEditable(false);
-			wartoscTowarow= 0.0;
-			jtfWartoscTowarow.setText(Double.toString(wartoscTowarow));
+			jtfWartoscTowarow.setText(df.format(wartoscTowarow));
 			
 			cPanelDaneZam.gridx = 1; cPanelDaneZam.gridy=0;
 			panelDaneZam.add(jlbTytulZamowienie,cPanelDaneZam);
@@ -272,7 +278,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			try {
 				ResultSet rs=poloczenie.sqlSelect(zapytanie);
 				rs.first();
-				cena = rs.getDouble("Cena");
+				cena = rs.getFloat("Cena");
 				ilosc = rs.getInt("MaxStanMagazynowy")-rs.getInt("StanMagazynowyDysponowany");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -286,7 +292,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jlCena.setToolTipText(jlCena.getText()+" :prosze podac liczbe");
 			jtfCena.setToolTipText(jlCena.getText()+" :prosze podac liczbe");
 			jtfCena.setEditable(false);
-			jtfCena.setText(Double.toString(cena));
+			jtfCena.setText(df.format(cena));
 			
 			jlIlosc = new JLabel("Ilosc");
 			jtfIlosc = new JTextField("");
@@ -302,7 +308,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			jtfWartoscNetto.setPreferredSize(new Dimension(400,20));
 			jtfWartoscNetto.setEditable(false);
 			wartoscNetto = ilosc * cena;
-			jtfWartoscNetto.setText(Double.toString(wartoscNetto));
+			jtfWartoscNetto.setText(df.format(wartoscNetto));
 			
 			jlZamowienie = new JLabel("Zamowienie");
 			jtfZamowienie = new JTextField("");
@@ -377,6 +383,20 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 		    	tablicaTowarow.setPreferredScrollableViewportSize(new Dimension(400,200));
 		    	tablicaTowarow.getTableHeader().setReorderingAllowed(false);
 		    	tablicaTowarow.setModel(tablemodel);
+		    	tablicaTowarow.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		    	int[] tabKolSzer = {50,155,100,100,150};
+		    	for(int i=0; i<tabNazwyKol.length; i++){
+		    		tablicaTowarow.getColumnModel().getColumn(i).setPreferredWidth(tabKolSzer[i]);
+					DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
+		    		if(i==2 || i==4){
+		    			tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+		    			tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+		    		}
+		    		else if(i==0 || i ==1 || i==3){
+		    			tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		    			tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+		    		}
+		    	}
 		        scrollPane = new JScrollPane(tablicaTowarow);
 		        panelTablicaTowarow.add(scrollPane);
 		        splitPane.setBottomComponent(panelTablicaTowarow);
@@ -397,9 +417,20 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			Object z = e.getSource();
 			if(z==jtfKosztDostawy)
 			{
-				kosztDostawy = Double.parseDouble(jtfKosztDostawy.getText());
+				try {
+					if(jtfKosztDostawy.getText().isEmpty())
+					{
+						kosztDostawy = 0.00f;
+					}else{
+					kosztDostawy =df.parse(jtfKosztDostawy.getText()).floatValue();
+					}
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				kosztZam = wartoscTowarow + kosztDostawy;
-				jtfKosztZamowienia.setText(Double.toString(kosztZam));
+				jtfKosztZamowienia.setText(df.format(kosztZam));
+				jtfKosztDostawy.setText(df.format(kosztDostawy));
 			}
 			if(z==jcbDostawca)
 			{
@@ -407,11 +438,11 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 		    	tablemodel.setColumnIdentifiers(tabNazwyKol);
 				tablicaTowarow.setModel(tablemodel);
 				lp=1;
-				wartoscTowarow = 0;
+				wartoscTowarow = 0.00f;
 				kosztZam = wartoscTowarow + kosztDostawy;
-				jtfWartoscTowarow.setText(Double.toString(wartoscTowarow));
+				jtfWartoscTowarow.setText(df.format(wartoscTowarow));
 				jtfLP.setText(Integer.toString(lp));
-				jtfKosztZamowienia.setText(Double.toString(kosztZam));
+				jtfKosztZamowienia.setText(df.format(kosztZam));
 				String sqlTowar="SELECT * from towar INNER JOIN dostawcatowar ON dostawcatowar.IdTowar=towar.IdTowar INNER JOIN dostawca ON dostawcatowar.IdDostawca=dostawca.IdDostawca WHERE NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"' GROUP BY NazwaTowaru";
 				try {
 					ResultSet rsT = poloczenie.sqlSelect(sqlTowar);
@@ -431,12 +462,13 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 					try {
 						ResultSet rs=poloczenie.sqlSelect(zapytanie);
 						rs.first();
-						cena = rs.getDouble("Cena");
+						cena = rs.getFloat("Cena");
 						ilosc = rs.getInt("MaxStanMagazynowy")-rs.getInt("StanMagazynowyDysponowany");
-						jtfCena.setText(Double.toString(cena));
+						String cenaa = df.format(cena);
+						jtfCena.setText(cenaa);
 						jtfIlosc.setText(Integer.toString(ilosc));
 						wartoscNetto = cena*ilosc;
-						jtfWartoscNetto.setText(Double.toString(wartoscNetto));
+						jtfWartoscNetto.setText(df.format(wartoscNetto));
 					} catch (SQLException d) {
 						// TODO Auto-generated catch block
 						d.printStackTrace();
@@ -454,9 +486,9 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 				lp++;
 				jtfLP.setText(Integer.toString(lp));
 				wartoscTowarow += wartoscNetto;
-				jtfWartoscTowarow.setText(Double.toString(wartoscTowarow));
+				jtfWartoscTowarow.setText(df.format(wartoscTowarow));
 				kosztZam = wartoscTowarow+kosztDostawy;
-				jtfKosztZamowienia.setText(Double.toString(kosztZam));
+				jtfKosztZamowienia.setText(df.format(kosztZam));
 			}
 			if(z==jcbTowar)
 			{
@@ -465,12 +497,13 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 				try {
 					ResultSet rs=poloczenie.sqlSelect(zapytanie);
 					rs.first();
-					cena = rs.getDouble("Cena");
+					cena = rs.getFloat("Cena");
 					ilosc = rs.getInt("MaxStanMagazynowy")-rs.getInt("StanMagazynowyDysponowany");
-					jtfCena.setText(Double.toString(cena));
+					String cenaa = df.format(cena);
+					jtfCena.setText((cenaa));
 					jtfIlosc.setText(Integer.toString(ilosc));
 					wartoscNetto = cena*ilosc;
-					jtfWartoscNetto.setText(Double.toString(wartoscNetto));
+					jtfWartoscNetto.setText(df.format(wartoscNetto));
 					
 					
 				} catch (SQLException d) {
@@ -478,37 +511,13 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 					d.printStackTrace();
 				}
 			}
-			if(z==jbZamow)
-			{
-				String TerminRealizacji = jtfTerminRealizacji.getText().toString();
-				try {
-					 String walidacja = walidacjaDat(TerminRealizacji);
-					 walidacja+=walidacjaTabeli();
-					 if(walidacja.length()>0)
-					 {
-				    	JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
-					 }else
-					 {
-						 try {
-							Zamowienie();
-							dodanieTowarowDoZamowienia();
-						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						 
-					 }
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
+			
 			
 		}
 		private void ustawNasluchZdarzen() 
 		{
 			jbdodajTowar.addActionListener(this);
-			jbZamow.addActionListener(this);
+			//jbZamow.addActionListener(this);
 			jcbDostawca.addActionListener(this);
 			jcbTowar.addActionListener(this);
 			jcbSposobDostawy.addActionListener(this);
@@ -585,7 +594,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			
 			return error;
 		}
-		private String walidacjaDat(String TerminRealizacji) throws ParseException
+		String walidacjaDat(String TerminRealizacji) throws ParseException
 		{
 			String error="";
 			
@@ -601,7 +610,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			
 			return error;
 		}
-		private String walidacjaTabeli() throws ParseException
+		String walidacjaTabeli() throws ParseException
 		{
 			String error="";
 			
@@ -611,7 +620,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			
 			return error;
 		}
-		public void Zamowienie() throws SQLException
+		public void Zamowienie() throws SQLException, ParseException
 		{
 			Connection connection = DriverManager.getConnection(url, username, password);
 			String query = "INSERT INTO zamowienie "
@@ -620,8 +629,9 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setString (1,jtfTerminRealizacji.getText());
 			preparedStmt.setNull(2, java.sql.Types.DATE);
-			float kosztZamowienia = Float.parseFloat(jtfKosztZamowienia.getText());
-			preparedStmt.setFloat (3,kosztZamowienia);
+			Number kosztZam = df.parse(jtfKosztZamowienia.getText());
+			float kosztZamowienia = kosztZam.floatValue();
+			preparedStmt.setDouble(3,kosztZamowienia);
 			String zapDostawca = "Select * from dostawca WHERE NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"'";
 			ResultSet rsDostawca = poloczenie.sqlSelect(zapDostawca);
 			rsDostawca.next();
@@ -634,9 +644,11 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			rsSposobDostawy.next();
 			int IdSposobDostawy = rsSposobDostawy.getInt("IdSposobDostawy");
 			preparedStmt.setInt (7,IdSposobDostawy);
-			float kosztDostawy=Float.parseFloat(jtfKosztDostawy.getText());
+			Number kosztDos=df.parse(jtfKosztDostawy.getText());
+			float kosztDostawy=kosztDos.floatValue();
 			preparedStmt.setFloat (8,kosztDostawy);
-			float WartoscZamowienia = Float.parseFloat(jtfWartoscTowarow.getText());
+			Number watoscZam = df.parse(jtfWartoscTowarow.getText());
+			float WartoscZamowienia = watoscZam.floatValue();
 			preparedStmt.setFloat (9,WartoscZamowienia);
 			preparedStmt.execute();
 			connection.close();
@@ -665,16 +677,32 @@ public class Zamowieniev2 extends JPanel implements ActionListener {
 			preparedStmt.setInt (2, idTow);
 			j++;
 			Object ce = tablicaTowarow.getValueAt(i,j);
-			double cena = Double.parseDouble((String) ce);
-			preparedStmt.setDouble (3, cena);
+			Number cenna;
+			try {
+				cenna = df.parse((String)ce);
+				float cena = cenna.floatValue();
+				preparedStmt.setFloat (3, cena);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			j++;
 			Object il = tablicaTowarow.getValueAt(i,j);
 			int ilosc= Integer.parseInt((String) il);
 			preparedStmt.setInt (4, ilosc);
 			j++;
 			Object wa = tablicaTowarow.getValueAt(i,j);
-			double wartosc= Double.parseDouble((String) wa);
-			preparedStmt.setDouble (5,wartosc);
+			Number wart;
+			try {
+				wart = df.parse((String)wa);
+				float wartosc= wart.floatValue();
+				preparedStmt.setFloat (5,wartosc);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			preparedStmt.setInt (6,idZam);
 			preparedStmt.execute();
 			
