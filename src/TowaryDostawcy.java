@@ -527,7 +527,7 @@ public void szukajTowaru2(String text){
 		tabela.setModel(tableModel1);
 		podswietlenieTowarow = new String[rozmiar];
 		while(rs.next()){
-			podswietlenieTowarow[i] = rs.getString("NazwaTowaruWgDostawcy");
+			podswietlenieTowarow[i] = rs.getString("NazwaSkrocona");
 			i++;
 		}
 	for (int k=0;k<towary.length;k++)	
@@ -550,7 +550,7 @@ public void szukajTowaru2(String text){
 		
 		}
 	}
-	tabela.setModel(tableModel1);
+	tabela2.setModel(tableModel1);
 	} catch (SQLException e) {
 		e.printStackTrace();
 	}
