@@ -1,41 +1,56 @@
 
 import java.awt.Color;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 public class WykazDostawcow extends JPanel implements ListSelectionListener, KeyListener, ActionListener{
 	private Polaczenie polaczenie;
 	private JList list;
 	private String[] tab, tabTowary;
-	private JSplitPane splitPane, spDaneButt, spMidRig;
-	private JScrollPane scrollPane,scrollPane1;
+	private JSplitPane splitPane, spDaneButt, spListDane;
+	private JScrollPane scrollPane,scPaneTabTow;
 	private JLabel jlbNazSkroc, jlbNazPeln,jlbNIP, jlbTel1, jlbTel2,jlbTel3,jlbNazDzial,jlbNrKonta,jlbAdres,jlbKodPocz,jlbPoczta, jlbKodWgDos, jlbNazwaWgDos, jlbDataDo, jlbDataOd, jlbCena, jlbTowary, jlbTytulTowary;
 	private JTextField search,jtfNazSkroc,jtfNIP,jtfTel1,jtfTel2,jtfTel3,jtfNazDzial,jtfNrKonta,jtfAdres,jtfKodPocz,jtfPoczta, jtfKodWgDos, jtfNazwaWgDos, jtfDataDo, jtfDataOd, jtfCena;
 	private JTextArea area, jtaNazPeln;
@@ -43,6 +58,9 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 	private JComboBox<String> jcbTowary;
 	private JPanel pTowary;
 	private boolean edycjaListy;
+	private DefaultTableModel tablemodel;
+	private JTable tablicaTowarow;
+	private AbstractButton jtfNip;
 
 	public WykazDostawcow() {
 		JPanel panel = new JPanel();
@@ -61,33 +79,13 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         GridBagConstraints gbcPanelTowary = new GridBagConstraints();
         gbcPanelTowary.insets = new Insets(0, 10, 1, 10);
         gbcPanelTowary.fill = GridBagConstraints.HORIZONTAL;  
-        pTowary.setVisible(false);
 		
-		splitPane = new JSplitPane();							//panel + spMigRig
-		spMidRig = new JSplitPane();							//spDaneButt + pTowary
+		splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);							//panel + spMigRig
+		spListDane = new JSplitPane();							//spDaneButt + pTowary
 		spDaneButt = new JSplitPane(JSplitPane.VERTICAL_SPLIT);	//p + pButtons
 		
-		String[] tabNazwyKol = null;
+		String[] tabNazwyKol = getNazwyKol();
 		tabTowary = getTowary();
-//	    try{
-//	    	polaczenie = new Polaczenie();
-//			String sql = "SELECT * FROM dostawcatowar";
-//			ResultSet rs = polaczenie.sqlSelect(sql);
-//			int rozmiarKol = rs.getMetaData().getColumnCount();
-//			tabNazwyKol = new String[rozmiarKol-2];
-//			tabNazwyKol[0] = "Nazwa Towaru";
-//			tabNazwyKol[1] = "Cena";
-//			tabNazwyKol[2] = "Data Od";
-//			tabNazwyKol[3] = "Data Do";
-//			tabNazwyKol[4] = "Kod towaru wed³ug dostawcy";
-//			tabNazwyKol[5] = "Nazwa towaru wed³ug dostawcy";
-////			
-////			for(int i=1; i<rozmiarKol-2; i++){
-////				tabNazwyKol[i] = rs.getMetaData().getColumnName(i+3);
-////			}
-//	      }catch (SQLException e) {
-//				e.printStackTrace();
-//	    }
 		try {
 			polaczenie = new Polaczenie();
 			String sql = "SELECT * FROM dostawca";
@@ -106,8 +104,37 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
+
+	      JPanel panelTowaryDolny = new JPanel();
+	    panelTowaryDolny.setLayout(new BoxLayout(panelTowaryDolny, BoxLayout.Y_AXIS));
+	    tablemodel = new DefaultTableModel(0,0);
+		tablemodel.setColumnIdentifiers(tabNazwyKol);
+		tablicaTowarow = new JTable();
+		tablicaTowarow.getTableHeader().setReorderingAllowed(false);
+		tablicaTowarow.setModel(tablemodel);
+		tablicaTowarow.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		int[] tabKolSzer = {200,100,100,100,200,200};
+		for(int i=0; i<tabNazwyKol.length; i++){
+			tablicaTowarow.getColumnModel().getColumn(i).setPreferredWidth(tabKolSzer[i]);
+				DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
+			if(i==1){
+				tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+			}
+			else if(i==2 || i ==3){
+				tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+			}else{
+				tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+			}
+		}
+	    scrollPane = new JScrollPane(tablicaTowarow);
+	    scrollPane.setPreferredSize(new Dimension(400, 200));
+	    scrollPane.setMinimumSize(new Dimension(400, 200));
+		
 		scrollPane = new JScrollPane();
-		scrollPane1 = new JScrollPane();
+		scPaneTabTow = new JScrollPane(tablicaTowarow);
 		search = new JTextField();
 		list = new JList(tab);
 		list.setMinimumSize(new Dimension(150,150));
@@ -259,40 +286,18 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         pTowary.add(jlbNazwaWgDos,gbcPanelTowary);
         gbcPanelTowary.gridx++;
         pTowary.add(jtfNazwaWgDos,gbcPanelTowary);
-        
-//        JPanel panelTowaryDolny = new JPanel();
-//      panelTowaryDolny.setLayout(new BoxLayout(panelTowaryDolny, BoxLayout.Y_AXIS));
-//      tablemodel = new DefaultTableModel(0,0);
-//  	tablemodel.setColumnIdentifiers(tabNazwyKol);
-//  	tablicaTowarow = new JTable();
-//  	tablicaTowarow.getTableHeader().setReorderingAllowed(false);
-//  	tablicaTowarow.setModel(tablemodel);
-//  	tablicaTowarow.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-//  	int[] tabKolSzer = {200,100,100,100,200,200};
-//  	for(int i=0; i<tabNazwyKol.length; i++){
-//  		tablicaTowarow.getColumnModel().getColumn(i).setPreferredWidth(tabKolSzer[i]);
-//			DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
-//  		if(i==1){
-//  			tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-//  			tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
-//  		}
-//  		else if(i==2 || i ==3){
-//  			tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-//  			tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
-//  		}
-//  	}
-//      scrollPane = new JScrollPane(tablicaTowarow);
-//      scrollPane.setPreferredSize(new Dimension(400, 200));
-//      scrollPane.setMinimumSize(new Dimension(400, 200));
+//        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
+//        pTowary.add(jbtNowyTowar,gbcPanelTowary);
 
         spDaneButt.setTopComponent(p);
         spDaneButt.setBottomComponent(pButtons);
         
-        spMidRig.setLeftComponent(spDaneButt);
-        spMidRig.setRightComponent(pTowary);
+        spListDane.setLeftComponent(panel);
+        spListDane.setRightComponent(spDaneButt);
         
-		splitPane.setLeftComponent(panel);
-        splitPane.setRightComponent(spMidRig);
+        
+		splitPane.setRightComponent(scPaneTabTow);
+        splitPane.setLeftComponent(spListDane);
         add(splitPane);
         
         ustawNasluchZdarzen();
@@ -307,18 +312,30 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 	public void actionPerformed(ActionEvent arg0) {
 		Object e = arg0.getSource();
 		if(e==jbtDodajTow){
-			if(jbtDodajTow.getName() == "addTowary"){
-				pTowary.setVisible(true);
-				spMidRig.setDividerLocation(CENTER_ALIGNMENT);
-				jbtDodajTow.setText("Zakoncz dodawanie towarow");
-		        jbtDodajTow.setName("endTowary");
-			}
-			else if(jbtDodajTow.getName() == "endTowary"){
-				pTowary.setVisible(false);
-				spMidRig.setDividerLocation(RIGHT_ALIGNMENT);
-				jbtDodajTow.setText("Dodaj towary do dostawcy");
-		        jbtDodajTow.setName("addTowary");
-			}
+			Object[] options = {"Dodaj towar",
+	                "Odrzuc"};
+			JOptionPane optionPane = new JOptionPane(pTowary,
+				    JOptionPane.PLAIN_MESSAGE,
+					    JOptionPane.YES_NO_OPTION);
+//			JFrame frame = new JFrame();
+//			frame.add(pTowary);
+//			frame.setPreferredSize(new Dimension(400, 300));
+//			frame.setSize(700, 300);
+////			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//			frame.setVisible(true);
+//			JDialog dialog = new JDialog ();
+//			dialog.setContentPane(optionPane);
+//			dialog.setModal (true);
+//			dialog.setAlwaysOnTop (true);
+//			dialog.setModalityType (ModalityType.APPLICATION_MODAL);
+//			dialog.pack();
+//			dialog.setVisible(true);
+//			int value = ((Integer)optionPane.getValue()).intValue();
+//			if (value == JOptionPane.YES_OPTION) {
+//			    wyczyscDaneTowaru();
+//			} else if (value == JOptionPane.NO_OPTION) {
+//			    dialog.dispose();
+//			}
 		}
 		else if(e==jbtDodajDos){
 			if(jbtDodajDos.getName() == "addDos"){
@@ -337,6 +354,14 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 				edycjaDanychDos(false);
 				edycjaListy = true;
 			}
+		}
+		else if(e==jbtNowyTowar){
+			String walidacjaTowaru = walidacjaTowaru();
+			if(walidacjaTowaru.length()>0)
+	    		JOptionPane.showMessageDialog(null, walidacjaTowaru,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+		}
+		else {
+			dodajNowyTowar();
 		}
 	}
 	@Override
@@ -417,6 +442,29 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		}
 		return tabPom;
 	}
+	public String[] getNazwyKol(){
+		String[] tabPom = null;
+//	    try{
+//	    	polaczenie = new Polaczenie();
+//			String sql = "SELECT * FROM dostawcatowar";
+//			ResultSet rs = polaczenie.sqlSelect(sql);
+//			int rozmiarKol = rs.getMetaData().getColumnCount();
+			tabPom = new String[6];
+			tabPom[0] = "Nazwa Towaru";
+			tabPom[1] = "Cena";
+			tabPom[2] = "Data Od";
+			tabPom[3] = "Data Do";
+			tabPom[4] = "Kod towaru wed³ug dostawcy";
+			tabPom[5] = "Nazwa towaru wed³ug dostawcy";
+	//		
+	//		for(int i=1; i<rozmiarKol-2; i++){
+	//			tabNazwyKol[i] = rs.getMetaData().getColumnName(i+3);
+	//		}
+//	      }catch (SQLException e) {
+//				e.printStackTrace();
+//	    }
+		return tabPom;
+	}
 	@Override
 	public void keyPressed(KeyEvent arg0) { }
 	@Override
@@ -467,220 +515,220 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //	private void ustawNasluchZdarzen(){
 //		jbtNowyTowar.addActionListener(this);
 //	}
-//	private boolean insertTowaryDostawcy(){
-//		try {
-//			polaczenie = new Polaczenie();
-//			String sql;
-//			String idDostawca;
-//			sql = "SELECT idDostawca FROM Dostawca WHERE Nip="+jtfNip.getText().toString()+"";
-//			sql = "SELECT * FROM Dostawca WHERE Nip=5645824795";
-//			ResultSet rs = polaczenie.sqlSelect(sql);
-//			ResultSetMetaData rsmd = rs.getMetaData();
-//			rs.next();
-//			
-//			idDostawca = rs.getString("idDostawca");
-//			System.out.println(idDostawca);
-//			int liczbaWierszy = tablemodel.getRowCount();
-//			int liczbaKolumn = tablemodel.getColumnCount();
-//			String[][] tabPom = new String[liczbaWierszy][liczbaKolumn];
-//			//String
-//			for(int i=0; i<liczbaWierszy; i++){
-//				for(int j=0; j<liczbaKolumn; j++){
-//					tabPom[i][j] = (String) tablemodel.getValueAt(i, j);
-//					//System.out.print(tabPom[i][j]+"|");
-//					String name = rsmd.getColumnName(j);
-//				}
-//				//System.out.println();
-//			}
-//			sql="";
-//			for(int i=0; i<liczbaWierszy; i++){
-//				sql+="Insert";
-//			}
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return false;
-//		}		
-//		return true;
-//	}
-//
-//    private void dodajNowyTowar() {
-//    	String walidacjaTowaru = walidacjaTowaru();
-//    	if(walidacjaTowaru.length()>0){
-//    		JOptionPane.showMessageDialog(null, walidacjaTowaru,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
-//    	}else{
-//	    	String[] tabPom = {jcbTowary.getSelectedItem().toString(),jtfCena.getText(),jtfDataOd.getText(),jtfDataDo.getText(),jtfKodWgDos.getText(),jtfNazwaWgDos.getText()};
-//	    	tablemodel.addRow(tabPom);
-//	    	tablicaTowarow.setModel(tablemodel);
-//	    	wyczyscDaneTowaru();
-//    	}
-//	}
-//    private String walidacjaTowaru(){
-//    	String error = "";
-//    	String cena = jtfCena.getText().toString();
-//    	String dataOd = jtfDataOd.getText().toString();
-//    	String dataDo = jtfDataDo.getText().toString();
-//    	String kodWgDos = jtfKodWgDos.getText().toString();
-//    	String nazwaWgDos = jtfNazwaWgDos.getText().toString();
-//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//    	Date dtDataOd = null;
-//    	Date dtDataDo = null;
-//    	boolean flagaDate = true;
-//    	if(cena.matches("^\\s*$")){
-//    		error+="Cena zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
-//			jtfCena.setBackground(Color.RED);
-//    	}
-//    	try{
-//        	Double.parseDouble(cena);
-//    	}catch (Exception e) {
-//			error+="Cena zosta³a podana nieprawid³owa(tylko liczby ,np. 20.99)\n";
-//			jtfCena.setBackground(Color.RED);
-//		}
-//    	if(dataOd.length()>11){
-//    		error+="DataOd zosta³a podana nieprawid³owa(max 10 znaków, YYYY-MM-DD)\n";
-//    		jtfDataOd.setBackground(Color.RED);
-//    	}
-//    	if(dataOd.isEmpty() || dataOd.matches("^\\s*$")){
-//    		error+="DataOd zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
-//    		jtfDataOd.setBackground(Color.RED);
-//    		flagaDate = false;
-//    	}
-//    	else{
-//            try {
-//				dtDataOd = formatter.parse(dataOd);
-//			} catch (ParseException e) {
-//	    		error+="DataOd zosta³a podana nieprawid³owa(YYYY-MM-DD)\n";
-//	    		jtfDataOd.setBackground(Color.RED);
-//	    		flagaDate = false;
-//			}
-//    	}    	
-//    	if(dataDo.length()>11){
-//    		error+="DataDo zosta³a podana nieprawid³owa(max 10 znaków, YYYY-MM-DD)\n";
-//    		jtfDataDo.setBackground(Color.RED);
-//    	}else if(dataDo.isEmpty()){
-//    		flagaDate = false;
-//    	}
-//    	else if(!dataDo.isEmpty()){
-//	    	try{
-//	            dtDataDo = formatter.parse(dataDo);
-//	    	}catch (Exception e) {
-//	    		error+="DataDo zosta³a podana nieprawid³owa(YYYY-MM-DD)\n";
-//	    		jtfDataDo.setBackground(Color.RED);
-//	    		flagaDate = false;
-//			}
-//    	}
-//    	if(flagaDate){
-//    		if(dtDataOd.after(dtDataDo)){
-//	    		error+="DataDo musi byc pózniejsza ni¿ DataOd\n";
-//	    		jtfDataDo.setBackground(Color.RED);
-//	    		jtfDataOd.setBackground(Color.RED);
-//    		}
-//    	}
-//    	if(kodWgDos.isEmpty() || kodWgDos.matches("^\\s*$")){
-//    		error+="Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(nie mo¿e pozostaæ pusty)\n";
-//    		jtfKodWgDos.setBackground(Color.RED);
-//    	}
-//    	else if(kodWgDos.length()>50){
-//    		error+="Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)\n";
-//    		jtfKodWgDos.setBackground(Color.RED);
-//    	}
-//    	if(nazwaWgDos.matches("^\\s*$")){
-//    		error+="Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
-//    		jtfNazwaWgDos.setBackground(Color.RED);
-//    	}
-//    	else if(nazwaWgDos.length()>50){
-//    		error+="Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)\n";
-//    		jtfNazwaWgDos.setBackground(Color.RED);
-//    	}
-//    	return error;
-//    }
-//    private void wyczyscDaneTowaru(){
-//    	jtfCena.setText("");
-//    	jtfDataOd.setText("");
-//    	jtfDataDo.setText("");
-//    	jtfKodWgDos.setText("");
-//    	jtfNazwaWgDos.setText("");
-//    }
-//    private void focusListener(){
-//		jtfCena.addFocusListener(new FocusListener() {
-//			@Override
-//			public void focusLost(FocusEvent e) {
-//		    	try{
-//		        	Double.parseDouble(jtfCena.getText().toString());
-//		    	}catch (Exception ex) {
-//		    		jtfCena.setBackground(Color.RED);
-//		    		JOptionPane.showMessageDialog(null, "Cena zosta³a podana nieprawid³owa(tylko liczby ,np. 20.99)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-//				}
-//			}
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				jtfCena.selectAll();
-//				jtfCena.setBackground(Color.WHITE);
-//			}
-//		});
-//		jtfDataOd.addFocusListener(new FocusListener() {
-//			@Override
-//			public void focusLost(FocusEvent e) {
-//				String dataOd = jtfDataOd.getText().toString();
-//		    	try{
-//		    		if(dataOd.matches("^\\s*$")){
-//		    			throw new Exception("Exception thrown");
-//		    		}
-//		    		else if(dataOd.length()>11){
-//		    			throw new Exception("Exception thrown");
-//		    		}
-//		            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//		            formatter.parse(dataOd);
-//		    	}catch (Exception ex) {
-//	//		    		if(dataOd.length()>11){
-//		        		jtfDataOd.setBackground(Color.RED);
-//			    		JOptionPane.showMessageDialog(null, "Data zosta³a podana nieprawid³owa(max 10 znaków w formacie 'YYYY-MM-DD')","Uwaga!", JOptionPane.ERROR_MESSAGE);
-//	//		        	}
-//				}
-//			}
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				jtfDataOd.selectAll();
-//				jtfDataOd.setBackground(Color.WHITE);
-//			}
-//		});
-//		jtfKodWgDos.addFocusListener(new FocusListener() {
-//			@Override
-//			public void focusLost(FocusEvent e) {
-//				String kodWgDos = jtfKodWgDos.getText().toString();
-//		    	if(kodWgDos.isEmpty() || kodWgDos.matches("^\\s*$")){
-//		    		jtfKodWgDos.setBackground(Color.RED);
-//		    		JOptionPane.showMessageDialog(null, "Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-//		    	}
-//		    	else if(kodWgDos.length()>50){
-//		    		jtfKodWgDos.setBackground(Color.RED);
-//		    		JOptionPane.showMessageDialog(null, "Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-//		    	}
-//			}
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				jtfKodWgDos.selectAll();
-//				jtfKodWgDos.setBackground(Color.WHITE);
-//			}
-//		});
-//		jtfNazwaWgDos.addFocusListener(new FocusListener() {
-//			@Override
-//			public void focusLost(FocusEvent e) {
-//				String nazwaWgDos = jtfNazwaWgDos.getText().toString();
-//		    	if(nazwaWgDos.isEmpty() || nazwaWgDos.matches("^\\s*$")){
-//		    		jtfKodWgDos.setBackground(Color.RED);
-//		    		JOptionPane.showMessageDialog(null, "Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-//		    	}
-//		    	else if(nazwaWgDos.length()>50){
-//		    		jtfKodWgDos.setBackground(Color.RED);
-//		    		JOptionPane.showMessageDialog(null, "Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-//		    	}
-//			}
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				jtfNazwaWgDos.selectAll();
-//				jtfNazwaWgDos.setBackground(Color.WHITE);
-//			}
-//		});
-//    }
+	private boolean insertTowaryDostawcy(){
+		try {
+			polaczenie = new Polaczenie();
+			String sql;
+			String idDostawca;
+			sql = "SELECT idDostawca FROM Dostawca WHERE Nip="+jtfNip.getText().toString()+"";
+			sql = "SELECT * FROM Dostawca WHERE Nip=5645824795";
+			ResultSet rs = polaczenie.sqlSelect(sql);
+			ResultSetMetaData rsmd = rs.getMetaData();
+			rs.next();
+			
+			idDostawca = rs.getString("idDostawca");
+			System.out.println(idDostawca);
+			int liczbaWierszy = tablemodel.getRowCount();
+			int liczbaKolumn = tablemodel.getColumnCount();
+			String[][] tabPom = new String[liczbaWierszy][liczbaKolumn];
+			//String
+			for(int i=0; i<liczbaWierszy; i++){
+				for(int j=0; j<liczbaKolumn; j++){
+					tabPom[i][j] = (String) tablemodel.getValueAt(i, j);
+					//System.out.print(tabPom[i][j]+"|");
+					String name = rsmd.getColumnName(j);
+				}
+				//System.out.println();
+			}
+			sql="";
+			for(int i=0; i<liczbaWierszy; i++){
+				sql+="Insert";
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}		
+		return true;
+	}
+
+    private void dodajNowyTowar() {
+    	String walidacjaTowaru = walidacjaTowaru();
+    	if(walidacjaTowaru.length()>0){
+    		JOptionPane.showMessageDialog(null, walidacjaTowaru,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+    	}else{
+	    	String[] tabPom = {jcbTowary.getSelectedItem().toString(),jtfCena.getText(),jtfDataOd.getText(),jtfDataDo.getText(),jtfKodWgDos.getText(),jtfNazwaWgDos.getText()};
+	    	tablemodel.addRow(tabPom);
+	    	tablicaTowarow.setModel(tablemodel);
+	    	wyczyscDaneTowaru();
+    	}
+	}
+    private String walidacjaTowaru(){
+    	String error = "";
+    	String cena = jtfCena.getText().toString();
+    	String dataOd = jtfDataOd.getText().toString();
+    	String dataDo = jtfDataDo.getText().toString();
+    	String kodWgDos = jtfKodWgDos.getText().toString();
+    	String nazwaWgDos = jtfNazwaWgDos.getText().toString();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    	Date dtDataOd = null;
+    	Date dtDataDo = null;
+    	boolean flagaDate = true;
+    	if(cena.matches("^\\s*$")){
+    		error+="Cena zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
+			jtfCena.setBackground(Color.RED);
+    	}
+    	try{
+        	Double.parseDouble(cena);
+    	}catch (Exception e) {
+			error+="Cena zosta³a podana nieprawid³owa(tylko liczby ,np. 20.99)\n";
+			jtfCena.setBackground(Color.RED);
+		}
+    	if(dataOd.length()>11){
+    		error+="DataOd zosta³a podana nieprawid³owa(max 10 znaków, YYYY-MM-DD)\n";
+    		jtfDataOd.setBackground(Color.RED);
+    	}
+    	if(dataOd.isEmpty() || dataOd.matches("^\\s*$")){
+    		error+="DataOd zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
+    		jtfDataOd.setBackground(Color.RED);
+    		flagaDate = false;
+    	}
+    	else{
+            try {
+				dtDataOd = formatter.parse(dataOd);
+			} catch (Exception e) {
+	    		error+="DataOd zosta³a podana nieprawid³owa(YYYY-MM-DD)\n";
+	    		jtfDataOd.setBackground(Color.RED);
+	    		flagaDate = false;
+			}
+    	}    	
+    	if(dataDo.length()>11){
+    		error+="DataDo zosta³a podana nieprawid³owa(max 10 znaków, YYYY-MM-DD)\n";
+    		jtfDataDo.setBackground(Color.RED);
+    	}else if(dataDo.isEmpty()){
+    		flagaDate = false;
+    	}
+    	else if(!dataDo.isEmpty()){
+	    	try{
+	            dtDataDo = formatter.parse(dataDo);
+	    	}catch (Exception e) {
+	    		error+="DataDo zosta³a podana nieprawid³owa(YYYY-MM-DD)\n";
+	    		jtfDataDo.setBackground(Color.RED);
+	    		flagaDate = false;
+			}
+    	}
+    	if(flagaDate){
+    		if(dtDataOd.after(dtDataDo)){
+	    		error+="DataDo musi byc pózniejsza ni¿ DataOd\n";
+	    		jtfDataDo.setBackground(Color.RED);
+	    		jtfDataOd.setBackground(Color.RED);
+    		}
+    	}
+    	if(kodWgDos.isEmpty() || kodWgDos.matches("^\\s*$")){
+    		error+="Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(nie mo¿e pozostaæ pusty)\n";
+    		jtfKodWgDos.setBackground(Color.RED);
+    	}
+    	else if(kodWgDos.length()>50){
+    		error+="Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)\n";
+    		jtfKodWgDos.setBackground(Color.RED);
+    	}
+    	if(nazwaWgDos.matches("^\\s*$")){
+    		error+="Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
+    		jtfNazwaWgDos.setBackground(Color.RED);
+    	}
+    	else if(nazwaWgDos.length()>50){
+    		error+="Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)\n";
+    		jtfNazwaWgDos.setBackground(Color.RED);
+    	}
+    	return error;
+    }
+    private void wyczyscDaneTowaru(){
+    	jtfCena.setText("");
+    	jtfDataOd.setText("");
+    	jtfDataDo.setText("");
+    	jtfKodWgDos.setText("");
+    	jtfNazwaWgDos.setText("");
+    }
+    private void focusListener(){
+		jtfCena.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+		    	try{
+		        	Double.parseDouble(jtfCena.getText().toString());
+		    	}catch (Exception ex) {
+		    		jtfCena.setBackground(Color.RED);
+		    		JOptionPane.showMessageDialog(null, "Cena zosta³a podana nieprawid³owa(tylko liczby ,np. 20.99)","Uwaga!", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfCena.selectAll();
+				jtfCena.setBackground(Color.WHITE);
+			}
+		});
+		jtfDataOd.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				String dataOd = jtfDataOd.getText().toString();
+		    	try{
+		    		if(dataOd.matches("^\\s*$")){
+		    			throw new Exception("Exception thrown");
+		    		}
+		    		else if(dataOd.length()>11){
+		    			throw new Exception("Exception thrown");
+		    		}
+		            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		            formatter.parse(dataOd);
+		    	}catch (Exception ex) {
+	//		    		if(dataOd.length()>11){
+		        		jtfDataOd.setBackground(Color.RED);
+			    		JOptionPane.showMessageDialog(null, "Data zosta³a podana nieprawid³owa(max 10 znaków w formacie 'YYYY-MM-DD')","Uwaga!", JOptionPane.ERROR_MESSAGE);
+	//		        	}
+				}
+			}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfDataOd.selectAll();
+				jtfDataOd.setBackground(Color.WHITE);
+			}
+		});
+		jtfKodWgDos.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				String kodWgDos = jtfKodWgDos.getText().toString();
+		    	if(kodWgDos.isEmpty() || kodWgDos.matches("^\\s*$")){
+		    		jtfKodWgDos.setBackground(Color.RED);
+		    		JOptionPane.showMessageDialog(null, "Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
+		    	}
+		    	else if(kodWgDos.length()>50){
+		    		jtfKodWgDos.setBackground(Color.RED);
+		    		JOptionPane.showMessageDialog(null, "Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
+		    	}
+			}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfKodWgDos.selectAll();
+				jtfKodWgDos.setBackground(Color.WHITE);
+			}
+		});
+		jtfNazwaWgDos.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				String nazwaWgDos = jtfNazwaWgDos.getText().toString();
+		    	if(nazwaWgDos.isEmpty() || nazwaWgDos.matches("^\\s*$")){
+		    		jtfKodWgDos.setBackground(Color.RED);
+		    		JOptionPane.showMessageDialog(null, "Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
+		    	}
+		    	else if(nazwaWgDos.length()>50){
+		    		jtfKodWgDos.setBackground(Color.RED);
+		    		JOptionPane.showMessageDialog(null, "Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
+		    	}
+			}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfNazwaWgDos.selectAll();
+				jtfNazwaWgDos.setBackground(Color.WHITE);
+			}
+		});
+    }
 }
