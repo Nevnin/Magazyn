@@ -8,35 +8,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 
 public class KartaDostawcy extends JPanel implements ActionListener{
     String serverName = "localhost";
@@ -45,51 +32,35 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     String username = "root";
     String password = "";
     
-    private JButton jbtPrzycisk, jbtNowyTowar, jbtWyczysc;
-    private JLabel jlbTytul, jlbTytulTowary, jlbNazwaSkrocona, jlbNazwaPelna, jlbNip, jlbTelefon1, jlbTelefon2, jlbTelefon3, jlbNazwaDzialu, jlbNrKonta, jlbAdres, jlbKodPocztowy, jlbPoczta, jlbTowary, jlbCena, jlbDataOd, jlbDataDo, jlbKodWgDos, jlbNazwaWgDos;
-    private JTextField jtfNazwaSkrocona, jtfNip, jtfTelefon1, jtfTelefon2, jtfTelefon3, jtfNazwaDzialu, jtfNrKonta, jtfAdres, jtfKodPocztowy, jtfPoczta, jtfCena, jtfDataOd, jtfDataDo, jtfKodWgDos, jtfNazwaWgDos;
+    private JButton jbtPrzycisk;
+    private JLabel jlbTytul, jlbNazwaSkrocona, jlbNazwaPelna, jlbNip, jlbTelefon1, jlbTelefon2, jlbTelefon3, jlbNazwaDzialu, jlbNrKonta, jlbAdres, jlbKodPocztowy, jlbPoczta;
+    private JTextField jtfNazwaSkrocona, jtfNip, jtfTelefon1, jtfTelefon2, jtfTelefon3, jtfNazwaDzialu, jtfNrKonta, jtfAdres, jtfKodPocztowy, jtfPoczta;
     private JTextArea jtfNazwaPelna;
-    private JTabbedPane tabbedPane;
-    private JSplitPane splitPane;
-    private JComboBox<String> jcbTowary;
-	private String[] tab;
-	private JTable tablicaTowarow;
-	private JScrollPane scrollPane;
-	private DefaultTableModel tablemodel;
 	Polaczenie polaczenie;
     public KartaDostawcy(){     
     	setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         Border border = BorderFactory.createLineBorder(Color.GRAY);
-        gbc.insets = new Insets(0, 10, 1, 10);  
-        
-        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        tabbedPane = new JTabbedPane();
-        
-        JPanel panelDaneOs = new JPanel();
-        panelDaneOs.setLayout(new GridBagLayout());
-        panelDaneOs.setMinimumSize(new Dimension(400, 400));
-        GridBagConstraints gbcPanelDaneOs = new GridBagConstraints();
-        gbcPanelDaneOs.insets = new Insets(0, 10, 1, 10);  
-        gbcPanelDaneOs.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 10, 1, 10); 
+        gbc.fill = GridBagConstraints.HORIZONTAL; 
 
         jlbTytul = new JLabel("Dodawanie Karty Dostawcy");
         jlbTytul.setFont(new Font("Calibri", Font.BOLD, 30));
-        jlbNazwaSkrocona = new JLabel("Nazwa Skrócona");
+        jlbNazwaSkrocona = new JLabel("Nazwa Skrócona*");
         jtfNazwaSkrocona = new JTextField("",35);
         jtfNazwaSkrocona.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 1, 0, 0)));        
-        jlbNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : maksymalna d³ugoœæ to 35 znaków");
+        jlbNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : pole wymagane, maksymalna d³ugoœæ to 35 znaków");
         jtfNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : maksymalna d³ugoœæ to 35 znaków");
-        jlbNazwaPelna = new JLabel("Nazwa Pe³na");
+        jlbNazwaPelna = new JLabel("Nazwa Pe³na*");
         jtfNazwaPelna = new JTextArea();
         jtfNazwaPelna.setPreferredSize(new Dimension(400, 40));
         jtfNazwaPelna.setLineWrap(true);
         jtfNazwaPelna.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 1, 0, 0)));
-        jlbNazwaPelna.setToolTipText(jlbNazwaPelna.getText()+" : maksymalna d³ugoœæ to 100 znaków");
+        jlbNazwaPelna.setToolTipText(jlbNazwaPelna.getText()+" : pole wymagane, maksymalna d³ugoœæ to 100 znaków");
         jtfNazwaPelna.setToolTipText(jlbNazwaPelna.getText()+" : maksymalna d³ugoœæ to 100 znaków");
-        jlbNip = new JLabel("NIP");
+        jlbNip = new JLabel("NIP*");
         jtfNip = new JTextField("",36);
-        jlbNip.setToolTipText(jlbNip.getText()+" : maksymalna d³ugoœæ to 10 znaków");
+        jlbNip.setToolTipText(jlbNip.getText()+" : pole wymagane, maksymalna d³ugoœæ to 10 znaków");
         jtfNip.setToolTipText(jlbNip.getText()+" : maksymalna d³ugoœæ to 10 znaków");
         jlbTelefon1 = new JLabel("Telefon 1");
         jtfTelefon1 = new JTextField("");
@@ -105,237 +76,95 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfTelefon3 = new JTextField("");
 		jlbTelefon3.setToolTipText(jlbTelefon3.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 		jtfTelefon3.setToolTipText(jlbTelefon3.getText()+" : maksymalna d³ugoœæ to 20 znaków");
-		jlbNazwaDzialu = new JLabel("Nazwa Dzia³u");
+		jlbNazwaDzialu = new JLabel("Nazwa Dzia³u*");
 		jtfNazwaDzialu = new JTextField("");
-		jlbNazwaDzialu.setToolTipText(jlbNazwaDzialu.getText()+" : maksymalna d³ugoœæ to 50 znaków");
+		jlbNazwaDzialu.setToolTipText(jlbNazwaDzialu.getText()+" : pole wymagane, maksymalna d³ugoœæ to 50 znaków");
 		jtfNazwaDzialu.setToolTipText(jlbNazwaDzialu.getText()+" : maksymalna d³ugoœæ to 50 znaków");
-        jlbNrKonta = new JLabel("Nr Konta");
+        jlbNrKonta = new JLabel("Nr Konta*");
 		jtfNrKonta = new JTextField("");
-		jlbNrKonta.setToolTipText(jlbNrKonta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
+		jlbNrKonta.setToolTipText(jlbNrKonta.getText()+" : pole wymagane, maksymalna d³ugoœæ to 30 znaków");
 		jtfNrKonta.setToolTipText(jlbNrKonta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
-		jlbAdres = new JLabel("Adres");
+		jlbAdres = new JLabel("Adres*");
 		jtfAdres = new JTextField("");
-		jlbAdres.setToolTipText(jlbAdres.getText()+" : maksymalna d³ugoœæ to 50 znaków");
+		jlbAdres.setToolTipText(jlbAdres.getText()+" : pole wymagane, maksymalna d³ugoœæ to 50 znaków");
 		jtfAdres.setToolTipText(jlbAdres.getText()+" : maksymalna d³ugoœæ to 50 znaków");
-		jlbKodPocztowy = new JLabel("KodPoczowy");
+		jlbKodPocztowy = new JLabel("KodPoczowy*");
 		jtfKodPocztowy = new JTextField("");
-		jlbKodPocztowy.setToolTipText(jlbKodPocztowy.getText()+" : maksymalna d³ugoœæ to 6 znaków");
+		jlbKodPocztowy.setToolTipText(jlbKodPocztowy.getText()+" : pole wymagane, maksymalna d³ugoœæ to 6 znaków");
 		jtfKodPocztowy.setToolTipText(jlbKodPocztowy.getText()+" : maksymalna d³ugoœæ to 6 znaków");
-		jlbPoczta = new JLabel("Poczta");
+		jlbPoczta = new JLabel("Poczta*");
 		jtfPoczta = new JTextField("");
-		jlbPoczta.setToolTipText(jlbPoczta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
+		jlbPoczta.setToolTipText(jlbPoczta.getText()+" : pole wymagane, maksymalna d³ugoœæ to 30 znaków");
 		jtfPoczta.setToolTipText(jlbPoczta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
-		jbtWyczysc = new JButton("Wyczyœæ dane z tabeli");
         jbtPrzycisk = new JButton("Zatwierdz");
-        jbtPrzycisk.setMaximumSize(new Dimension(100, 25));
-        jbtPrzycisk.setPreferredSize(new Dimension(100, 25));
-                
-        JPanel panelTowary = new JPanel();
-        panelTowary.setLayout(new GridBagLayout());
-        GridBagConstraints gbcPanelTowary = new GridBagConstraints();
-        gbcPanelTowary.insets = new Insets(0, 10, 1, 10);
-        gbcPanelTowary.fill = GridBagConstraints.HORIZONTAL;  
-        String[] tabNazwyKol = null;
-        try {
-			polaczenie = new Polaczenie();
-			String sql = "SELECT * FROM towar";
-			ResultSet rs = polaczenie.sqlSelect(sql);
-			rs.last();
-			int rozmiar = rs.getRow();
-			rs.beforeFirst();
-			int i = 0;
-			tab = new String[rozmiar];
-			while(rs.next()){
-				tab[i] = rs.getString("NazwaTowaru");
-				i++;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-        try{
-			polaczenie = new Polaczenie();
-			String sql = "SELECT * FROM dostawcatowar";
-			ResultSet rs = polaczenie.sqlSelect(sql);
-        	int rozmiarKol = rs.getMetaData().getColumnCount();
-			tabNazwyKol = new String[rozmiarKol-2];
-			tabNazwyKol[0] = "Nazwa Towaru";
-			tabNazwyKol[1] = "Cena";
-			tabNazwyKol[2] = "Data Od";
-			tabNazwyKol[3] = "Data Do";
-			tabNazwyKol[4] = "Kod towaru wed³ug dostawcy";
-			tabNazwyKol[5] = "Nazwa towaru wed³ug dostawcy";
-//			
-//			for(int i=1; i<rozmiarKol-2; i++){
-//				tabNazwyKol[i] = rs.getMetaData().getColumnName(i+3);
-//			}
-        }catch (SQLException e) {
-			e.printStackTrace();
-        }
-        jlbTytulTowary = new JLabel("Dodawanie towaru do Dostawcy");
-        jlbTytulTowary.setFont(new Font("Calibri", Font.BOLD, 30));
-        jbtNowyTowar = new JButton("Nowy Towar");
-        jlbTowary = new JLabel("Nazwa towaru");
-		jcbTowary = new JComboBox<String>(tab);
-        jlbCena = new JLabel("Cena");
-        jtfCena = new JTextField("");
-        jtfCena.setMinimumSize(new Dimension(400, 20));
-        jtfCena.setPreferredSize(new Dimension(400, 20));
-        jlbDataOd = new JLabel("Data od");
-        jtfDataOd = new JTextField("");
-        jlbDataDo = new JLabel("Data do");
-        jtfDataDo = new JTextField("");
-        jlbKodWgDos = new JLabel("Kod towaru wed³ug dostacy");
-        jtfKodWgDos = new JTextField("");
-        jlbNazwaWgDos = new JLabel("Nazwa towaru wed³ug dostacy");
-        jtfNazwaWgDos = new JTextField("");
+//        jbtPrzycisk.setMaximumSize(new Dimension(100, 25));
+//        jbtPrzycisk.setPreferredSize(new Dimension(100, 25));
         
-        JPanel panelTowaryDolny = new JPanel();
-        panelTowaryDolny.setLayout(new BoxLayout(panelTowaryDolny, BoxLayout.Y_AXIS));
-        tablemodel = new DefaultTableModel(0,0);
-    	tablemodel.setColumnIdentifiers(tabNazwyKol);
-    	tablicaTowarow = new JTable();
-    	tablicaTowarow.getTableHeader().setReorderingAllowed(false);
-    	tablicaTowarow.setModel(tablemodel);
-    	tablicaTowarow.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-    	int[] tabKolSzer = {200,100,100,100,200,200};
-    	for(int i=0; i<tabNazwyKol.length; i++){
-    		tablicaTowarow.getColumnModel().getColumn(i).setPreferredWidth(tabKolSzer[i]);
-			DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
-    		if(i==1){
-    			tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-    			tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
-    		}
-    		else if(i==2 || i ==3){
-    			tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-    			tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
-    		}
-    	}
-        scrollPane = new JScrollPane(tablicaTowarow);
-        scrollPane.setPreferredSize(new Dimension(400, 200));
-        scrollPane.setMinimumSize(new Dimension(400, 200));
-        
-        gbcPanelDaneOs.gridx = 1; gbcPanelDaneOs.gridy = 0;
-        panelDaneOs.add(jlbTytul,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-        panelDaneOs.add(jlbNazwaSkrocona,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx++;
-        panelDaneOs.add(jtfNazwaSkrocona,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-        panelDaneOs.add(jlbNazwaPelna,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx++;
-        panelDaneOs.add(jtfNazwaPelna,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-        panelDaneOs.add(jlbNip,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx++;
-        panelDaneOs.add(jtfNip,gbcPanelDaneOs);
+        gbc.gridx = 1; gbc.gridy = 0;
+        add(jlbTytul,gbc);
+        gbc.gridx = 0; gbc.gridy++;
+        add(jlbNazwaSkrocona,gbc);
+        gbc.gridx++;
+        add(jtfNazwaSkrocona,gbc);
+        gbc.gridx = 0; gbc.gridy++;
+        add(jlbNazwaPelna,gbc);
+        gbc.gridx++;
+        add(jtfNazwaPelna,gbc);
+        gbc.gridx = 0; gbc.gridy++;
+        add(jlbNip,gbc);
+        gbc.gridx++;
+        add(jtfNip,gbc);
 
-		gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-		panelDaneOs.add(jlbTelefon1,gbcPanelDaneOs);
-		gbcPanelDaneOs.gridx++;
-		panelDaneOs.add(jtfTelefon1,gbcPanelDaneOs);
-		gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-		panelDaneOs.add(jlbTelefon2,gbcPanelDaneOs);
-		gbcPanelDaneOs.gridx++;
-		panelDaneOs.add(jtfTelefon2,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-        panelDaneOs.add(jlbTelefon3,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx++;
-        panelDaneOs.add(jtfTelefon3,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-        panelDaneOs.add(jlbNazwaDzialu,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx++;
-        panelDaneOs.add(jtfNazwaDzialu,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-        panelDaneOs.add(jlbNrKonta,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx++;
-        panelDaneOs.add(jtfNrKonta,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-        panelDaneOs.add(jlbAdres,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx++;
-        panelDaneOs.add(jtfAdres,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-        panelDaneOs.add(jlbKodPocztowy,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx++;
-        panelDaneOs.add(jtfKodPocztowy,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-        panelDaneOs.add(jlbPoczta,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx++;
-        panelDaneOs.add(jtfPoczta,gbcPanelDaneOs);
-        gbcPanelDaneOs.gridx = 0; gbcPanelDaneOs.gridy++;
-        tabbedPane.addTab("Dane Kontaktowe", null, panelDaneOs, "Formularz do danych kontaktowych");
-
-        gbcPanelTowary.gridx = 1; gbcPanelTowary.gridy = 0;
-        panelTowary.add(jlbTytulTowary, gbcPanelTowary);
-        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
-        panelTowary.add(jlbTowary, gbcPanelTowary);
-        gbcPanelTowary.gridx++;
-        panelTowary.add(jcbTowary, gbcPanelTowary);
-        gbcPanelTowary.gridx++;
-        panelTowary.add(jbtNowyTowar, gbcPanelTowary);
-        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
-        panelTowary.add(jlbCena, gbcPanelTowary);
-        gbcPanelTowary.gridx++;
-        panelTowary.add(jtfCena, gbcPanelTowary);
-        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
-        panelTowary.add(jlbDataOd, gbcPanelTowary);
-        gbcPanelTowary.gridx++;
-        panelTowary.add(jtfDataOd, gbcPanelTowary);
-        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
-        panelTowary.add(jlbDataDo, gbcPanelTowary);
-        gbcPanelTowary.gridx++;
-        panelTowary.add(jtfDataDo, gbcPanelTowary);
-        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
-        panelTowary.add(jlbKodWgDos, gbcPanelTowary);
-        gbcPanelTowary.gridx++;
-        panelTowary.add(jtfKodWgDos, gbcPanelTowary);
-        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
-        panelTowary.add(jlbNazwaWgDos, gbcPanelTowary);
-        gbcPanelTowary.gridx++;
-        panelTowary.add(jtfNazwaWgDos, gbcPanelTowary);
-        tabbedPane.addTab("Towary Dostawcy", null, panelTowary, "Formularz do towarów dostawcy");
-        
-		panelTowaryDolny.add(scrollPane);  
-		
-        splitPane.setTopComponent(tabbedPane);
-        splitPane.setBottomComponent(panelTowaryDolny);
-        
-        gbc.gridx = 0; gbc.gridy = 0;
-        add(splitPane,gbc);
-        gbc.gridx++; gbc.gridy++;
-        add(jbtWyczysc,gbc);
+		gbc.gridx = 0; gbc.gridy++;
+		add(jlbTelefon1,gbc);
+		gbc.gridx++;
+		add(jtfTelefon1,gbc);
+		gbc.gridx = 0; gbc.gridy++;
+		add(jlbTelefon2,gbc);
+		gbc.gridx++;
+		add(jtfTelefon2,gbc);
+        gbc.gridx = 0; gbc.gridy++;
+        add(jlbTelefon3,gbc);
+        gbc.gridx++;
+        add(jtfTelefon3,gbc);
+        gbc.gridx = 0; gbc.gridy++;
+        add(jlbNazwaDzialu,gbc);
+        gbc.gridx++;
+        add(jtfNazwaDzialu,gbc);
+        gbc.gridx = 0; gbc.gridy++;
+        add(jlbNrKonta,gbc);
+        gbc.gridx++;
+        add(jtfNrKonta,gbc);
+        gbc.gridx = 0; gbc.gridy++;
+        add(jlbAdres,gbc);
+        gbc.gridx++;
+        add(jtfAdres,gbc);
+        gbc.gridx = 0; gbc.gridy++;
+        add(jlbKodPocztowy,gbc);
+        gbc.gridx++;
+        add(jtfKodPocztowy,gbc);
+        gbc.gridx = 0; gbc.gridy++;
+        add(jlbPoczta,gbc);
+        gbc.gridx++;
+        add(jtfPoczta,gbc);
+        gbc.gridx = 0; gbc.gridy++;
+//       
         gbc.gridy++;
         add(jbtPrzycisk,gbc);
         
         ustawNasluchZdarzen();
         documentListener();
         focusListener();
+        keyListener();
     }
 	private void ustawNasluchZdarzen(){
 		jbtPrzycisk.addActionListener(this);
-		jbtNowyTowar.addActionListener(this);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
         Object z= e.getSource();
     	if(z==jbtPrzycisk){
     		kartaWalidacja();
-    	}else if(z==jbtNowyTowar){
-    		String walidacjaTowaru = walidacjaTowaru();
-    		if(walidacjaTowaru.length()>0)
-        		JOptionPane.showMessageDialog(null, walidacjaTowaru,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
-    		else 
-    			dodajNowyTowar();
-    	}
-	}
-    private void dodajNowyTowar() {
-    	String walidacjaTowaru = walidacjaTowaru();
-    	if(walidacjaTowaru.length()>0){
-    		JOptionPane.showMessageDialog(null, walidacjaTowaru,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
-    	}else{
-	    	String[] tabPom = {jcbTowary.getSelectedItem().toString(),jtfCena.getText(),jtfDataOd.getText(),jtfDataDo.getText(),jtfKodWgDos.getText(),jtfNazwaWgDos.getText()};
-	    	tablemodel.addRow(tabPom);
-	    	tablicaTowarow.setModel(tablemodel);
-	    	wyczyscDaneTowaru();
     	}
 	}
 	private boolean insertDostawca(){
@@ -380,42 +209,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		}
 		return true;
 	}
-	private boolean insertTowaryDostawcy(){
-		try {
-			polaczenie = new Polaczenie();
-			String sql;
-			String idDostawca;
-			sql = "SELECT idDostawca FROM Dostawca WHERE Nip="+jtfNip.getText().toString()+"";
-			sql = "SELECT * FROM Dostawca WHERE Nip=5645824795";
-			ResultSet rs = polaczenie.sqlSelect(sql);
-			ResultSetMetaData rsmd = rs.getMetaData();
-			rs.next();
-			
-			idDostawca = rs.getString("idDostawca");
-			System.out.println(idDostawca);
-			int liczbaWierszy = tablemodel.getRowCount();
-			int liczbaKolumn = tablemodel.getColumnCount();
-			String[][] tabPom = new String[liczbaWierszy][liczbaKolumn];
-			//String
-			for(int i=0; i<liczbaWierszy; i++){
-				for(int j=0; j<liczbaKolumn; j++){
-					tabPom[i][j] = (String) tablemodel.getValueAt(i, j);
-					//System.out.print(tabPom[i][j]+"|");
-					String name = rsmd.getColumnName(j);
-				}
-				//System.out.println();
-			}
-			sql="";
-			for(int i=0; i<liczbaWierszy; i++){
-				sql+="Insert";
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}		
-		return true;
-	}
+	
     private void kartaWalidacja() {
     	//insertTowaryDostawcy();
     	String walidacja = walidacjaDanychDostawcy();
@@ -424,10 +218,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	}else {
 	    	boolean spr = insertDostawca();
 	    	if(spr == true){
-//	    		boolean sprTowar = insertTowaryDostawcy();
-//	    		String txt = "";
-//	    		if(!sprTowar)
-//	    			txt = "\nDodawanie dostawcy zakoñczone niepowodzeniem";
 	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone powodzeniem","", JOptionPane.INFORMATION_MESSAGE);
 	    		wyczyscDaneKontaktowe();
 	    	}
@@ -527,85 +317,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	}
     	return error;
     }
-    private String walidacjaTowaru(){
-    	String error = "";
-    	String cena = jtfCena.getText().toString();
-    	String dataOd = jtfDataOd.getText().toString();
-    	String dataDo = jtfDataDo.getText().toString();
-    	String kodWgDos = jtfKodWgDos.getText().toString();
-    	String nazwaWgDos = jtfNazwaWgDos.getText().toString();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-    	Date dtDataOd = null;
-    	Date dtDataDo = null;
-    	boolean flagaDate = true;
-    	if(cena.matches("^\\s*$")){
-    		error+="Cena zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
-			jtfCena.setBackground(Color.RED);
-    	}
-    	try{
-        	Double.parseDouble(cena);
-    	}catch (Exception e) {
-			error+="Cena zosta³a podana nieprawid³owa(tylko liczby ,np. 20.99)\n";
-			jtfCena.setBackground(Color.RED);
-		}
-    	if(dataOd.length()>11){
-    		error+="DataOd zosta³a podana nieprawid³owa(max 10 znaków, YYYY-MM-DD)\n";
-    		jtfDataOd.setBackground(Color.RED);
-    	}
-    	if(dataOd.isEmpty() || dataOd.matches("^\\s*$")){
-    		error+="DataOd zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
-    		jtfDataOd.setBackground(Color.RED);
-    		flagaDate = false;
-    	}
-    	else{
-            try {
-				dtDataOd = formatter.parse(dataOd);
-			} catch (ParseException e) {
-	    		error+="DataOd zosta³a podana nieprawid³owa(YYYY-MM-DD)\n";
-	    		jtfDataOd.setBackground(Color.RED);
-	    		flagaDate = false;
-			}
-    	}    	
-    	if(dataDo.length()>11){
-    		error+="DataDo zosta³a podana nieprawid³owa(max 10 znaków, YYYY-MM-DD)\n";
-    		jtfDataDo.setBackground(Color.RED);
-    	}else if(dataDo.isEmpty()){
-    		flagaDate = false;
-    	}
-    	else if(!dataDo.isEmpty()){
-	    	try{
-	            dtDataDo = formatter.parse(dataDo);
-	    	}catch (Exception e) {
-	    		error+="DataDo zosta³a podana nieprawid³owa(YYYY-MM-DD)\n";
-	    		jtfDataDo.setBackground(Color.RED);
-	    		flagaDate = false;
-			}
-    	}
-    	if(flagaDate){
-    		if(dtDataOd.after(dtDataDo)){
-	    		error+="DataDo musi byc pózniejsza ni¿ DataOd\n";
-	    		jtfDataDo.setBackground(Color.RED);
-	    		jtfDataOd.setBackground(Color.RED);
-    		}
-    	}
-    	if(kodWgDos.isEmpty() || kodWgDos.matches("^\\s*$")){
-    		error+="Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(nie mo¿e pozostaæ pusty)\n";
-    		jtfKodWgDos.setBackground(Color.RED);
-    	}
-    	else if(kodWgDos.length()>50){
-    		error+="Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)\n";
-    		jtfKodWgDos.setBackground(Color.RED);
-    	}
-    	if(nazwaWgDos.matches("^\\s*$")){
-    		error+="Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
-    		jtfNazwaWgDos.setBackground(Color.RED);
-    	}
-    	else if(nazwaWgDos.length()>50){
-    		error+="Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)\n";
-    		jtfNazwaWgDos.setBackground(Color.RED);
-    	}
-    	return error;
-    }
     private void wyczyscDaneKontaktowe(){
 		jtfNazwaSkrocona.setText("");
 		jtfNazwaPelna.setText("");
@@ -618,13 +329,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfAdres.setText("");
 		jtfKodPocztowy.setText("");
 		jtfPoczta.setText("");
-    }
-    private void wyczyscDaneTowaru(){
-    	jtfCena.setText("");
-    	jtfDataOd.setText("");
-    	jtfDataDo.setText("");
-    	jtfKodWgDos.setText("");
-    	jtfNazwaWgDos.setText("");
     }
     private void documentListener(){
         jtfNazwaSkrocona.getDocument().addDocumentListener(new DocumentListener() {
@@ -661,7 +365,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 			@Override
 			public void focusLost(FocusEvent e) {
 		    	String nazwaSkrocona = jtfNazwaSkrocona.getText().toString();
-				if(nazwaSkrocona.length()>100){ 
+		    	if(nazwaSkrocona.length()>100){ 
 		    		jtfNazwaSkrocona.setBackground(Color.RED);
 		    		JOptionPane.showMessageDialog(null, "Nazwa Skrócona zosta³a podana nieprawid³owa(100max znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
@@ -684,10 +388,10 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		    		jtfNazwaPelna.setBackground(Color.RED);
 		    		JOptionPane.showMessageDialog(null, "Nazwa Pe³na zosta³a podana nieprawid³owa(100max znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
-		    	if(nazwaPelna.matches("^\\s*$")){
-		    		jtfNazwaPelna.setBackground(Color.RED);
-		    		JOptionPane.showMessageDialog(null, "Nazwa Pe³na zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-		    	} 
+//		    	if(nazwaPelna.matches("^\\s*$")){
+//		    		jtfNazwaPelna.setBackground(Color.RED);
+//		    		JOptionPane.showMessageDialog(null, "Nazwa Pe³na zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
+//		    	} 
 			}
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -854,85 +558,19 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 				jtfPoczta.setBackground(Color.WHITE);
 			}
 		});
-		jtfCena.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-		    	try{
-		        	Double.parseDouble(jtfCena.getText().toString());
-		    	}catch (Exception ex) {
-		    		jtfCena.setBackground(Color.RED);
-		    		JOptionPane.showMessageDialog(null, "Cena zosta³a podana nieprawid³owa(tylko liczby ,np. 20.99)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfCena.selectAll();
-				jtfCena.setBackground(Color.WHITE);
-			}
-		});
-		jtfDataOd.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				String dataOd = jtfDataOd.getText().toString();
-		    	try{
-		    		if(dataOd.matches("^\\s*$")){
-		    			throw new Exception("Exception thrown");
-		    		}
-		    		else if(dataOd.length()>11){
-		    			throw new Exception("Exception thrown");
-		    		}
-		            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		            formatter.parse(dataOd);
-		    	}catch (Exception ex) {
-//		    		if(dataOd.length()>11){
-		        		jtfDataOd.setBackground(Color.RED);
-			    		JOptionPane.showMessageDialog(null, "Data zosta³a podana nieprawid³owa(max 10 znaków w formacie 'YYYY-MM-DD')","Uwaga!", JOptionPane.ERROR_MESSAGE);
-//		        	}
-				}
-			}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfDataOd.selectAll();
-				jtfDataOd.setBackground(Color.WHITE);
-			}
-		});
-		jtfKodWgDos.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				String kodWgDos = jtfKodWgDos.getText().toString();
-		    	if(kodWgDos.isEmpty() || kodWgDos.matches("^\\s*$")){
-		    		jtfKodWgDos.setBackground(Color.RED);
-		    		JOptionPane.showMessageDialog(null, "Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-		    	}
-		    	else if(kodWgDos.length()>50){
-		    		jtfKodWgDos.setBackground(Color.RED);
-		    		JOptionPane.showMessageDialog(null, "Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-		    	}
-			}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfKodWgDos.selectAll();
-				jtfKodWgDos.setBackground(Color.WHITE);
-			}
-		});
-		jtfNazwaWgDos.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				String nazwaWgDos = jtfNazwaWgDos.getText().toString();
-		    	if(nazwaWgDos.isEmpty() || nazwaWgDos.matches("^\\s*$")){
-		    		jtfKodWgDos.setBackground(Color.RED);
-		    		JOptionPane.showMessageDialog(null, "Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-		    	}
-		    	else if(nazwaWgDos.length()>50){
-		    		jtfKodWgDos.setBackground(Color.RED);
-		    		JOptionPane.showMessageDialog(null, "Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-		    	}
-			}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfNazwaWgDos.selectAll();
-				jtfNazwaWgDos.setBackground(Color.WHITE);
-			}
-		});
 	}
+    private void keyListener(){
+    	jtfNazwaPelna.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {}
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_TAB)  {
+					jtfNazwaPelna.transferFocus();
+				}
+			}
+		});
+    }
 }
