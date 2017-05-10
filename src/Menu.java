@@ -26,7 +26,7 @@ public class Menu extends JMenuBar {
         zamowienietowaru = new JMenuItem("Zamówienie towaru");
         stanmagazynowy = new JMenuItem("Stan magazynowy");
         reklamacja = new JMenuItem("Reklamacja towaru");
-        towarydostawcy = new JMenuItem("Szukanie towarów u dostawców");
+        towarydostawcy = new JMenuItem("Wyszukiwanie");
         towar.add(szukanietowarow);
         towar.add(towarydostawcy);
         towar.add(stanmagazynowy);
