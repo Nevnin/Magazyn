@@ -32,7 +32,7 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 	{
 		try {
 			polaczenie = new Polaczenie();
-			String sql = "SELECT * FROM zamowienie";
+			String sql = "SELECT * FROM zamowienie ORDER BY NumerZamowienia ASC";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
 			int rozmiar = rs.getRow();
@@ -82,6 +82,7 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 		tabela = new JTable(data, columnNames);
 		tabela.setDefaultEditor(Object.class, null);
 		tabela.getTableHeader().setReorderingAllowed(false);
+		tabela.setAutoCreateRowSorter(true);
 		
 		scrollPane1 = new JScrollPane(tabela);
 		JPanel p = new JPanel();
