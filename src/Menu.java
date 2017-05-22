@@ -14,7 +14,7 @@ public class Menu extends JMenuBar {
         towar = new JMenu("Towar");
         dostawcy = new JMenu("Dostawcy");
         zamowienie = new JMenu("Zamowienie");
-        wyszukiwanie = new JMenu("Wyszukiwanie zamówieñ:");
+        wyszukiwanie = new JMenu("Wyszukiwanie zamówieñ: ");
              
         menuBar.add(plik);
         menuBar.add(zamowienie);
