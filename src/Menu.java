@@ -5,7 +5,7 @@ import javax.swing.JMenuItem;
 public class Menu extends JMenuBar {
     JMenuBar menuBar;
     JMenu plik , pomoc ,towar , dostawcy ,zamowienie, wyszukiwanie;
-    JMenuItem zaklkartdostawcy, wykazdostawcow, szukanietowarow, historiazamowien, zamowienietowaru, stanmagazynowy , reklamacja,towarydostawcy, danyOkres, danyTowar, wgWartosci, wgKategorii;  
+    JMenuItem zaklkartdostawcy, wykazdostawcow, szukanietowarow, historiazamowien, zamowienietowaru, stanmagazynowy , reklamacja,towarydostawcy, danyOkres, danyTowar, doRealizacji, wgWartosci, wgKategorii;  
     
     public Menu() {
         menuBar =  new JMenuBar();
@@ -35,22 +35,29 @@ public class Menu extends JMenuBar {
         danyOkres = new JMenuItem("Dany okres");
         wgWartosci = new JMenuItem("Wed³ug wartoœci");
         wgKategorii = new JMenuItem("Wed³ug kategorii");
+        doRealizacji = new JMenuItem("Do realizacji");
         
         towar.add(szukanietowarow);
         towar.add(towarydostawcy);
         towar.add(stanmagazynowy);
         towar.add(reklamacja);
-        towar.add(wyszukiwanie);
+        
+        
         
         wyszukiwanie.add(danyTowar);
         wyszukiwanie.add(danyOkres);
+        wyszukiwanie.add(doRealizacji);
         wyszukiwanie.add(wgWartosci);
         wyszukiwanie.add(wgKategorii);
         
+        
         dostawcy.add(zaklkartdostawcy);
         dostawcy.add(wykazdostawcow);
+        
         zamowienie.add(zamowienietowaru);
         zamowienie.add(historiazamowien);
+        zamowienie.add(wyszukiwanie);
+        
         add(menuBar);
     }
 }
