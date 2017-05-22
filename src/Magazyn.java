@@ -14,6 +14,7 @@ public class Magazyn extends JFrame implements ActionListener {
 	Zamowieniev2 zamowienie = new Zamowieniev2();
 	HistoriaZamowien hs = new HistoriaZamowien();
 	TowaryDostawcy td = new TowaryDostawcy();
+	WyszZamNaDanyTowar dt = new WyszZamNaDanyTowar();
 	Menu menu;
 	Polaczenie polaczenie;
 	StanMagazynowy stanMag = new StanMagazynowy();
@@ -45,6 +46,7 @@ public class Magazyn extends JFrame implements ActionListener {
 		menu.historiazamowien.addActionListener(this);
 		menu.wykazdostawcow.addActionListener(this);
 		menu.towarydostawcy.addActionListener(this);
+		menu.danyTowar.addActionListener(this);
 		
 	}
 	@Override
@@ -101,7 +103,14 @@ public class Magazyn extends JFrame implements ActionListener {
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
-        } 
+        }else if(z==menu.danyTowar){
+        	removeP();
+        	dt = new WyszZamNaDanyTowar();
+        	add(dt);
+        	validate();
+        	dopasujSieDoZawartosci();
+        	repaint();
+        }
         if(z==zamowienie.jbZamow)
 		{
 			String TerminRealizacji = zamowienie.jtfTerminRealizacji.getText().toString();
@@ -149,5 +158,6 @@ public class Magazyn extends JFrame implements ActionListener {
 		remove(stanMag);
 		remove(wykazDostawcow);
 		remove(td);
+		remove(dt);
 	}
 }
