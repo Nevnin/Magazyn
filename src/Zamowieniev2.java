@@ -800,7 +800,14 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 						else{
 							jbdodajTowar.setEnabled(true);
 						}
-					
+						try {
+							cena =df.parse(jtfCena.getText()).floatValue();
+						} catch (ParseException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						wartoscNetto = ilosc*cena;
+						jtfWartoscNetto.setText(df.format(wartoscNetto));
 					
 				}
 				
