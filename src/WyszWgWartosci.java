@@ -32,7 +32,7 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 	public WyszWgWartosci(){
 		try{
 			polaczenie = new Polaczenie();
-			String sql = "SELECT *, CONCAT(KosztZamowienia, 'zl   ', NumerZamowienia) AS Koszt_Numer FROM `zamowienie` GROUP BY KosztZamowienia ORDER BY KosztZamowienia DESC";
+			String sql = "SELECT *, CONCAT(CalkowitaWartoscZamowienia, ' zl   ', NumerZamowienia) AS Koszt_Numer FROM `zamowienie` GROUP BY CalkowitaWartoscZamowienia ORDER BY CalkowitaWartoscZamowienia DESC";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
 			int rozmiar = rs.getRow();
@@ -128,8 +128,9 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 			String[] idT;
 			String[][] zamowienie;
 			String sel = list.getSelectedValue().toString();
-			String sql = "SELECT IdZamowienie FROM zamowienie WHERE KosztZamowienia='"+sel+"'";
-			
+			String tabS[] = sel.split(" ");
+			String sql = "SELECT IdZamowienie FROM zamowienie WHERE CalkowitaWartoscZamowienia='"+tabS[0]+"'";
+			System.out.println(tabS[0]);
 			try {
 				ResultSet rs = polaczenie.sqlSelect(sql);
 				idT = new String[1];
@@ -142,7 +143,14 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 		
 				int id = Integer.parseInt(idT[0]);
 	
-				String query1 = "SELECT towar.NazwaTowaru, zamowienie.DataRealizacji, zamowienie.TerminRealizacji, dostawca.NazwaSkrocona, sposobdostawy.SposobDostawy FROM `zamowienietowar` INNER JOIN zamowienie ON zamowienie.IdZamowienie = zamowienietowar.IdZamowienieTowar INNER JOIN towar ON towar.IdTowar = zamowienietowar.IdZamowienieTowar INNER JOIN dostawcatowar ON dostawcatowar.IdTowar = towar.IdTowar INNER JOIN dostawca ON dostawca.IdDostawca = dostawcatowar.IdDostawca INNER JOIN sposobdostawy ON sposobdostawy.IdSposobDostawy = zamowienie.IdSposobDostawy WHERE zamowienie.IdZamowienie  = '"+id+"'";
+				String query1 = "SELECT towar.NazwaTowaru, zamowienie.DataRealizacji, zamowienie.TerminRealizacji, dostawca.NazwaSkrocona, sposobdostawy.SposobDostawy "
+						+ "FROM `zamowienie` "
+						+ "INNER JOIN zamowienietowar ON zamowienie.IdZamowienie = zamowienietowar.IdZamowienie "
+						+ "INNER JOIN towar ON towar.IdTowar = zamowienietowar.IdTowar "
+						+ "INNER JOIN dostawca ON dostawca.IdDostawca = zamowienie.IdDostawcy "
+						+ "INNER JOIN sposobdostawy ON sposobdostawy.IdSposobDostawy = zamowienie.IdSposobDostawy "
+						+ "WHERE zamowienie.IdZamowienie  = '"+id+"'";
+				System.out.println(query1);
 				ResultSet result = polaczenie.sqlSelect(query1);
 				result.last();
 				int rozmiar = result.getRow();
@@ -188,7 +196,7 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 	public void szukaj(String text){
 		try {
 			polaczenie = new Polaczenie();
-			String sql = "SELECT CONCAT(KosztZamowienia, 'zl   ', NumerZamowienia) AS Koszt_Numer FROM `zamowienie` WHERE KosztZamowienia LIKE '%"+text+"%' GROUP BY KosztZamowienia ORDER BY KosztZamowienia DESC ";
+			String sql = "SELECT CONCAT(CalkowitaWartoscZamowienia, 'zl   ', NumerZamowienia) AS Koszt_Numer FROM `zamowienie` WHERE CalkowitaWartoscZamowienia LIKE '%"+text+"%' GROUP BY CalkowitaWartoscZamowienia ORDER BY CalkowitaWartoscZamowienia DESC ";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
 			int rozmiar = rs.getRow();

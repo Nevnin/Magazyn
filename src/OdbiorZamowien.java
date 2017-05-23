@@ -14,6 +14,7 @@ import java.sql.Statement;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -35,11 +36,12 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private JTable tabela;
-	private String[] tab;
+	private String[] tab,tabMagazyn;
 	private JSplitPane splitPane,splitPane1;
+	private JComboBox<String> jcbNumerMagazynu;
 	private JScrollPane scrollPane,scrollPane1;
-	private JLabel jlbNrZam,jlbTermin,jlbDataReal,jlbDataWys,jlbSposDos,jlbKosztDos,jlbWartoscTow,jlbKosztZam,jlbDostawca;
-	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
+	private JLabel jlbNrZam,jlbNumerPZ,jlbDataWystawienia,jlbNumerMagazynu,jlbDostawca,jlbWartoscNetto,jlbUwagi;
+	private JTextField jtfNrZam,search,jtfNumerPZ,jtfDataWystawienia,jtfNumerMagazynu,jtfWartoscNetto,jtfUwagi,jtfDostawca;
 	private JButton jbZatwierdz;
 	public OdbiorZamowien()
 	{
@@ -83,9 +85,11 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 		
 		String[] columnNames = 
 			{"Lp",
-            "Nazwa Towaru",
-            "Cena",
+			"Kod towaru",
+            "Nazwa towaru",
+            "j.m",
             "Ilosc",
+            "Cena", 
             "Wartosc Netto"};
 		
 		String[][] data = new String[0][0];
@@ -101,68 +105,74 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(0, 10, 0, 10);
-		jlbNrZam = new JLabel("Zamówienie nr:");
-		jlbNrZam.setFont(new Font("Calibri", Font.BOLD, 30));
-		jlbTermin = new JLabel("Termin Realizacji:");
-		jtfTermin = new JTextField();
-		jtfTermin.setEditable(false);
-		jtfTermin.setPreferredSize(new Dimension(400,20));
-		jlbDataReal = new JLabel("Data Realizacji:");
-		jtfDataReal = new JTextField();
-		jlbDataWys = new JLabel("Data Wystawienia:");
-		jtfDataWys = new JTextField();
-		jtfDataWys.setEditable(false);
-		jlbSposDos = new JLabel("Sposob Dostawy:");
-		jtfSposDos = new JTextField();
-		jtfSposDos.setEditable(false);
-		jlbKosztDos = new JLabel("Koszt Dostawy:");
-		jtfKosztDos = new JTextField();
-		jtfKosztDos.setEditable(false);
-		jlbWartoscTow = new JLabel("Wartosc Towarów:");
-		jtfWartoscTow = new JTextField();
-		jtfWartoscTow.setEditable(false);
-		jlbKosztZam = new JLabel("Koszt Zamowienia:");
-		jtfKosztZam = new JTextField();
-		jtfKosztZam.setEditable(false);
+		jlbNumerPZ = new JLabel("Numer PZ:");
+		jlbNumerPZ.setFont(new Font("Calibri", Font.BOLD, 30));
+		jlbNrZam = new JLabel("Numer zamowienia");
+		jtfNrZam = new JTextField();
+		jtfNrZam.setEditable(false);
+		jlbDataWystawienia = new JLabel("Data wystawienia:");
+		jtfDataWystawienia = new JTextField();
+		jtfDataWystawienia.setPreferredSize(new Dimension(400,20));
+		String sqlMagazyn = "SELECT * from magazyn";
+		
+		
+		try {
+			polaczenie = new Polaczenie();
+			ResultSet rs = polaczenie.sqlSelect(sqlMagazyn);
+			rs.last();
+			int rozmiar = rs.getRow();
+			rs.beforeFirst();
+			int i=0;
+			tabMagazyn = new String[rozmiar];
+			while(rs.next())
+			{
+				tabMagazyn[i] = rs.getString("NazwaMagazyn");
+				i++;
+			}
+		}catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		jlbNumerMagazynu = new JLabel("Magazyn");
+		jcbNumerMagazynu = new JComboBox<String>(tabMagazyn);
+		jtfNumerMagazynu = new JTextField();
+		jtfNumerMagazynu.setVisible(false);
 		jlbDostawca = new JLabel("Dostawca:");
 		jtfDostawca = new JTextField();
 		jtfDostawca.setEditable(false);
+		jlbWartoscNetto = new JLabel("Ca³kowita wartosc netto:");
+		jtfWartoscNetto = new JTextField();
+		jlbUwagi = new JLabel("Uwagi");
+		jtfUwagi = new JTextField();
 		jbZatwierdz= new JButton("Zatwierdz");
 		
 		c.gridx = 2; c.gridy = 0;
+        p.add(jlbNumerPZ,c);
+        c.gridx = 0; c.gridy++;
         p.add(jlbNrZam,c);
-        c.gridx = 0; c.gridy++;
-        p.add(jlbTermin,c);
         c.gridx += 2;
-        p.add(jtfTermin,c);
+        p.add(jtfNrZam,c);
         c.gridx = 0; c.gridy++;
-        p.add(jlbDataReal,c);
+        p.add(jlbDataWystawienia,c);
         c.gridx += 2;
-        p.add(jtfDataReal,c);
+        p.add(jtfDataWystawienia,c);
         c.gridx = 0; c.gridy++;
-        p.add(jlbDataWys,c);
+        p.add(jlbNumerMagazynu,c);
         c.gridx += 2;
-        p.add(jtfDataWys,c);
-        c.gridx = 0; c.gridy++;
-        p.add(jlbSposDos,c);
-        c.gridx += 2;
-        p.add(jtfSposDos,c);
-        c.gridx = 0; c.gridy++;
-        p.add(jlbKosztDos,c);
-        c.gridx += 2;
-        p.add(jtfKosztDos,c);
-        c.gridx = 0; c.gridy++;
-        p.add(jlbWartoscTow,c);
-        c.gridx += 2;
-        p.add(jtfWartoscTow,c);
-        c.gridx = 0; c.gridy++;
-        p.add(jlbKosztZam,c);
-        c.gridx += 2;
-        p.add(jtfKosztZam,c);
+        p.add(jcbNumerMagazynu,c);
+        p.add(jtfNumerMagazynu,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbDostawca,c);
         c.gridx += 2;
         p.add(jtfDostawca,c);
+        c.gridx = 0; c.gridy++;
+        p.add(jlbWartoscNetto,c);
+        c.gridx += 2;
+        p.add(jtfWartoscNetto,c);
+        c.gridx = 0; c.gridy++;
+        p.add(jlbUwagi,c);
+        c.gridx += 2;
+        p.add(jtfUwagi,c);
         c.gridx = 0; c.gridy++;
         c.gridx += 2;
         p.add(jbZatwierdz,c);
@@ -189,7 +199,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 			String[] tabPom;
 			String[][] towary;
 			String sel = list.getSelectedValue().toString();
-			String sql = "SELECT IdZamowienie, NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, sposobdostawy.SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia, dostawca.NazwaSkrocona FROM zamowienie INNER JOIN sposobdostawy ON sposobdostawy.IdSposobDostawy=zamowienie.IdSposobDostawy INNER JOIN dostawca ON dostawca.IdDostawca=zamowienie.IdDostawcy WHERE NumerZamowienia='"+sel+"'";
+			String sql = "SELECT IdZamowienie, NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, sposobdostawy.SposobDostawy, KosztDostawy,WartoscTowarow, CalkowitaWartoscZamowienia, dostawca.NazwaSkrocona FROM zamowienie INNER JOIN sposobdostawy ON sposobdostawy.IdSposobDostawy=zamowienie.IdSposobDostawy INNER JOIN dostawca ON dostawca.IdDostawca=zamowienie.IdDostawcy WHERE NumerZamowienia='"+sel+"'";
 			
 			try {
 				ResultSet rs = polaczenie.sqlSelect(sql);
@@ -200,14 +210,14 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 				{
 					tabPom[i]=rs.getString(i+1);
 				}
-				jlbNrZam.setText("Zamówienie nr:"+tabPom[1]);
-				jtfTermin.setText(tabPom[2]);
-				jtfDataReal.setText(tabPom[3]);
-				jtfDataWys.setText(tabPom[4]);
-				jtfSposDos.setText(tabPom[5]);
-				jtfKosztDos.setText(tabPom[6]);
-				jtfWartoscTow.setText(tabPom[7]);
-				jtfKosztZam.setText(tabPom[8]);
+				jtfNrZam.setText(tabPom[1]);
+//				jtfTermin.setText(tabPom[2]);
+//				jtfDataReal.setText(tabPom[3]);
+//				jtfDataWys.setText(tabPom[4]);
+//				jtfSposDos.setText(tabPom[5]);
+//				jtfKosztDos.setText(tabPom[6]);
+//				jtfWartoscTow.setText(tabPom[7]);
+//				jtfKosztZam.setText(tabPom[8]);
 				jtfDostawca.setText(tabPom[9]);
 				int id = Integer.parseInt(tabPom[0]);
 	
@@ -218,6 +228,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 				result.beforeFirst();
 				towary = new String[rozmiar][5]; 
 	int j=0;
+	double wynik =0;
 				while(result.next())
 				{
 					towary[j][0]=result.getString(1);
@@ -225,10 +236,10 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 					towary[j][2]=result.getString(3);
 					towary[j][3]=result.getString(4);
 					towary[j][4]=result.getString(5);
-					
+					wynik+=Double.parseDouble(result.getString(5));
 					j++;
 				}
-			
+				jtfWartoscNetto.setText(Double.toString(wynik));
 	
 				String[] columnNames = 
 					{"Lp",
