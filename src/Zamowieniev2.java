@@ -494,6 +494,10 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 					rs.first();
 					cena = rs.getFloat("Cena");
 					ilosc = rs.getInt("MaxStanMagazynowy")-rs.getInt("StanMagazynowyDysponowany");
+					if(ilosc <0)
+					{
+						ilosc=0;
+					}
 					String cenaa = df.format(cena);
 					jtfCena.setText((cenaa));
 					jtfIlosc.setText(Integer.toString(ilosc));
@@ -750,7 +754,6 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 		@Override
 		public void tableChanged(TableModelEvent e) {
 			// TODO Auto-generated method stub
-			System.out.println(e);
 			
 		}
 		 private void focusListener()
