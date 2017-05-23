@@ -43,6 +43,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class Zamowieniev2 extends JPanel implements ActionListener, TableModelListener {
 	String serverName = "localhost";
@@ -398,43 +400,12 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 				add(jbZamow,c);
 				
 				ustawNasluchZdarzen();
+				focusListener();
 				tablemodel.addTableModelListener(this);
 		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object z = e.getSource();
-			if(z==jtfKosztDostawy)
-			{
-				try {
-					if(jtfKosztDostawy.getText().isEmpty())
-					{
-						kosztDostawy = 0.00f;
-					}else{
-					kosztDostawy =df.parse(jtfKosztDostawy.getText()).floatValue();
-					}
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				kosztZam = wartoscTowarow + kosztDostawy;
-				jtfKosztZamowienia.setText(df.format(kosztZam));
-				jtfKosztDostawy.setText(df.format(kosztDostawy));
-			}
-			if(z==jtfIlosc)
-			{
-				ilosc=Integer.parseInt(jtfIlosc.getText());
-				if(ilosc<0)
-				{
-					ilosc =0 ;
-				}
-				if(ilosc == 0 || sprawdzenieCzyJestDodanyTowar() )
-				{
-					jbdodajTowar.setEnabled(false);
-				}
-				else{
-					jbdodajTowar.setEnabled(true);
-				}
-			}
 			if(z==jcbDostawca)
 			{
 				tablemodel = new DefaultTableModel(0,0);
@@ -782,7 +753,71 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 			System.out.println(e);
 			
 		}
-		
+		 private void focusListener()
+		 {
+			 jtfKosztDostawy.addFocusListener(new FocusListener() {
+				
+				@Override
+				public void focusLost(FocusEvent e) {
+					try {
+						if(jtfKosztDostawy.getText().isEmpty())
+						{
+							kosztDostawy = 0.00f;
+						}else{
+						kosztDostawy =df.parse(jtfKosztDostawy.getText()).floatValue();
+						}
+					} catch (ParseException e1) {
+						JOptionPane.showMessageDialog(null,"Mo¿esz podawaæ tylko liczby w polu Koszt Dostawy!!","Uwaga",JOptionPane.ERROR_MESSAGE); 
+						kosztDostawy = 0.00f;
+					}
+					kosztZam = wartoscTowarow + kosztDostawy;
+					jtfKosztZamowienia.setText(df.format(kosztZam));
+					jtfKosztDostawy.setText(df.format(kosztDostawy));
+
+					
+				}
+				
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			 jtfIlosc.addFocusListener(new FocusListener() {
+				
+				@Override
+				public void focusLost(FocusEvent e) {
+					
+						ilosc=Integer.parseInt(jtfIlosc.getText());
+						if(ilosc<0)
+						{
+							ilosc =0 ;
+						}
+						if(ilosc == 0 || sprawdzenieCzyJestDodanyTowar() )
+						{
+							jbdodajTowar.setEnabled(false);
+						}
+						else{
+							jbdodajTowar.setEnabled(true);
+						}
+						try {
+							cena =df.parse(jtfCena.getText()).floatValue();
+						} catch (ParseException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						wartoscNetto = ilosc*cena;
+						jtfWartoscNetto.setText(df.format(wartoscNetto));
+					
+				}
+				
+				@Override
+				public void focusGained(FocusEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		 }
 		
 		
 		

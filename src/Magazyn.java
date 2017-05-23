@@ -157,6 +157,7 @@ public class Magazyn extends JFrame implements ActionListener {
 						removeP();
 			        	zamowienie = new Zamowieniev2();
 			        	add(zamowienie);
+			        	zamowienie.jbZamow.addActionListener(this);
 			        	validate();
 			        	dopasujSieDoZawartosci();
 			        	repaint();
