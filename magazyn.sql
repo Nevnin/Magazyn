@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
--- https://www.phpmyadmin.net/
+-- version 4.5.1
+-- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Czas generowania: 23 Maj 2017, 16:42
--- Wersja serwera: 10.1.21-MariaDB
--- Wersja PHP: 7.1.1
+-- Czas generowania: 23 Maj 2017, 18:20
+-- Wersja serwera: 10.1.10-MariaDB
+-- Wersja PHP: 5.6.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -57,7 +57,7 @@ CREATE TABLE `dostawca` (
 --
 
 INSERT INTO `dostawca` (`IdDostawca`, `NazwaSkrocona`, `NazwaPelna`, `NIP`, `Telefon1`, `Telefon2`, `Telefon3`, `NazwaDzialu`, `NrKonta`, `Miejscowosc`, `Adres`, `KodPocztowy`, `Poczta`) VALUES
-(1, 'Hurtownia \"BHEU\"', 'Hurtownia \"BHEU\"SP. z o.o.', '5645824795', '785315745', NULL, NULL, 'Sprzeda?', '43897654135416984', '', 'Majkowska 14', '99-999', 'Kalisz'),
+(1, 'Hurtownia "BHEU"', 'Hurtownia "BHEU"SP. z o.o.', '5645824795', '785315745', NULL, NULL, 'Sprzeda?', '43897654135416984', '', 'Majkowska 14', '99-999', 'Kalisz'),
 (2, 'Pharma Store', 'Pharma Store Spó?ka z ograniczon? odpowiedzialno?ci? Spó?ka Komandytowa', '7401693405', '435096845', '549038504', NULL, 'Sprzedaz', '121234124594039405443', '', 'ul. Mazowiecka', '89-999', 'Torun'),
 (3, 'Gadget-Master', 'GADGET-MASTER Hurtownia Dystrybutor Importer Gad?etów Upominków Prezentów Smolec hurtownia', '7830284593', '403854923', NULL, NULL, 'Sprzedaz', '21124125613591285', '', 'ul.Parczewskiego', '34-999', 'Smolec '),
 (4, 'Best Buy', 'BEST BUTY Hurtownia obuwia sportowego Kostrzyn nad Odr? hurtownia', '1243234353', '122123512', NULL, NULL, 'Sprzedaz', '2152515412351561553', '', 'ul. Aleja Pokoju 12', '33-223', 'Kostrzyn nad Odr?'),
@@ -85,7 +85,7 @@ CREATE TABLE `dostawcatowar` (
 --
 
 INSERT INTO `dostawcatowar` (`IdDostawcaTowar`, `IdDostawca`, `IdTowar`, `Cena`, `DataOd`, `DataDo`, `KodTowaruWgDostawcy`, `NazwaTowaruWgDostawcy`) VALUES
-(1, 1, 1, 600, '2017-03-13', '2017-03-23', '648464168464', 'DELL 24\"'),
+(1, 1, 1, 600, '2017-03-13', '2017-03-23', '648464168464', 'DELL 24"'),
 (2, 2, 3, 250, '2017-03-07', '2017-03-30', '2655355253', 'Mysz Zowie EC1-A '),
 (3, 2, 3, 249, '2017-03-31', '2017-04-04', '1551555131353', 'Mysz Zowie EC1-A '),
 (4, 2, 3, 259, '2017-02-01', '2017-03-01', '3532673774775', 'Mysz Zowie EC1-A '),
@@ -98,8 +98,8 @@ INSERT INTO `dostawcatowar` (`IdDostawcaTowar`, `IdDostawca`, `IdTowar`, `Cena`,
 (11, 5, 6, 178, '2017-03-31', '2017-04-12', '125245634747', 'Zalman Z1 Black'),
 (12, 3, 7, 988, '2017-03-08', '2017-03-30', '1353736443', 'Intel i5-4460'),
 (13, 3, 8, 1900, '2017-03-01', '2017-03-30', '3156463464', 'NVIDIA GeForce 1080'),
-(14, 2, 9, 1200, '2017-03-01', '2017-03-31', '13543645673', 'Sony Bravia 23\"'),
-(15, 2, 10, 2100, '2017-03-01', '2017-03-31', '25624626262', 'Sony Bravia 37\"');
+(14, 2, 9, 1200, '2017-03-01', '2017-03-31', '13543645673', 'Sony Bravia 23"'),
+(15, 2, 10, 2100, '2017-03-01', '2017-03-31', '25624626262', 'Sony Bravia 37"');
 
 -- --------------------------------------------------------
 
@@ -246,16 +246,16 @@ CREATE TABLE `towar` (
 --
 
 INSERT INTO `towar` (`IdTowar`, `NazwaTowaru`, `MinStanMagazynowy`, `MaxStanMagazynowy`, `StanMagazynowyRzeczywisty`, `StanMagazynowyDysponowany`, `StawkaVat`, `KodTowaru`, `IdKategoria`, `IdJednostkaMiary`) VALUES
-(1, 'Monitor DELL 24\"', 5, 10, 8, 16, 23, '98764164135186497', 1, 3),
+(1, 'Monitor DELL 24"', 5, 10, 8, 31, 23, '98764164135186497', 1, 3),
 (2, 'Klawiatura Razer Chroma', 10, 25, 22, 18, 23, '5416168461536847', 1, 3),
-(3, 'Zowie EC1-A', 5, 25, 4, 3, 23, '254235252', 4, 3),
-(4, 'AMD RADEON Fury X', 5, 10, 7, 7, 23, '1425253521525', 6, 3),
-(5, 'Razer DeathAdder', 5, 15, 4, 4, 23, '531525235223', 4, 3),
-(6, 'Zalman Z1', 10, 23, 14, 13, 23, '125245235155', 5, 3),
-(7, 'Intel i5-4460', 5, 15, 5, 4, 23, '154858546457455', 7, 3),
-(8, 'NVIDIA GeForce 1080', 5, 15, 14, 14, 23, '136435476858', 6, 3),
-(9, 'Sony Bravia 23\"', 3, 9, 2, 11, 23, '2647434646346', 1, 3),
-(10, 'Sony Bravia 37\"', 3, 16, 5, 16, 23, '7568347444574', 1, 3);
+(3, 'Zowie EC1-A', 5, 25, 4, 25, 23, '254235252', 4, 3),
+(4, 'AMD RADEON Fury X', 5, 10, 7, 23, 23, '1425253521525', 6, 3),
+(5, 'Razer DeathAdder', 5, 15, 4, 15, 23, '531525235223', 4, 3),
+(6, 'Zalman Z1', 10, 23, 14, 43, 23, '125245235155', 5, 3),
+(7, 'Intel i5-4460', 5, 15, 5, 44, 23, '154858546457455', 7, 3),
+(8, 'NVIDIA GeForce 1080', 5, 15, 14, 34, 23, '136435476858', 6, 3),
+(9, 'Sony Bravia 23"', 3, 9, 2, 16, 23, '2647434646346', 1, 3),
+(10, 'Sony Bravia 37"', 3, 16, 5, 18, 23, '7568347444574', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -292,7 +292,7 @@ CREATE TABLE `zamowienie` (
   `IdZamowienie` int(11) NOT NULL,
   `TerminRealizacji` date NOT NULL,
   `DataRealizacji` date DEFAULT NULL,
-  `KosztZamowienia` float NOT NULL,
+  `CalkowitaWartoscZamowienia` float NOT NULL,
   `IdDostawcy` int(11) NOT NULL,
   `DataWystawienia` date NOT NULL,
   `NumerZamowienia` varchar(50) CHARACTER SET latin1 NOT NULL,
@@ -305,25 +305,12 @@ CREATE TABLE `zamowienie` (
 -- Zrzut danych tabeli `zamowienie`
 --
 
-INSERT INTO `zamowienie` (`IdZamowienie`, `TerminRealizacji`, `DataRealizacji`, `KosztZamowienia`, `IdDostawcy`, `DataWystawienia`, `NumerZamowienia`, `IdSposobDostawy`, `KosztDostawy`, `WartoscTowarow`) VALUES
-(1, '2017-03-21', '2017-03-20', 600, 1, '2017-03-20', '2017/03/20/1', 1, 0, 800),
-(2, '2017-03-21', '2017-03-20', 1000, 1, '2017-03-20', '2017/03/20/2', 1, 0, 1000),
-(3, '2017-03-23', '2017-03-22', 1550, 2, '2017-03-22', '2017/03/22/002', 2, 50, 1500),
-(4, '2017-03-08', '2017-03-08', 1230, 1, '2017-03-08', '2017/03/08/020', 2, 30, 1200),
-(5, '2017-03-29', '2017-03-29', 1025, 4, '2017-03-29', '2017/03/29/025', 2, 25, 1000),
-(6, '2017-03-16', '2017-03-16', 289, 4, '2017-03-16', '2017/03/16/012', 2, 10, 279),
-(7, '2017-05-01', NULL, 16978, 2, '2017-04-20', '2017/04/20/01', 2, 100, 16878),
-(8, '2017-05-01', NULL, 16978, 2, '2017-04-20', '2017/04/20/11', 2, 100, 16878),
-(9, '2017-05-01', NULL, 16878, 2, '2017-04-20', '2017/04/20/21', 2, 100, 16878),
-(10, '2017-05-01', NULL, 16878, 2, '2017-04-20', '2017/04/20/31', 2, 100, 16878),
-(11, '2017-06-01', NULL, 11500, 2, '2017-04-21', '2017/04/21/01', 2, 100, 11400),
-(12, '2017-11-11', NULL, 5578, 2, '2017-05-08', '2017/05/08/01', 2, 100, 5478),
-(13, '2017-11-11', NULL, 17000, 2, '2017-05-08', '2017/05/08/11', 2, 200, 16800),
-(14, '2017-11-11', NULL, 1900, 1, '2017-05-09', '2017/05/09/01', 2, 100, 1800),
-(15, '2017-11-11', NULL, 1300, 2, '2017-05-09', '2017/05/09/2', 2, 100, 1200),
-(16, '2017-11-11', NULL, 100, 1, '2017-05-22', '2017/05/22/1', 2, 100, 0),
-(17, '2017-11-11', NULL, 50, 1, '2017-05-23', '2017/05/23/1', 2, 50, 0),
-(18, '2017-11-11', NULL, 2200, 2, '2017-05-23', '2017/05/23/2', 2, 100, 2100);
+INSERT INTO `zamowienie` (`IdZamowienie`, `TerminRealizacji`, `DataRealizacji`, `CalkowitaWartoscZamowienia`, `IdDostawcy`, `DataWystawienia`, `NumerZamowienia`, `IdSposobDostawy`, `KosztDostawy`, `WartoscTowarow`) VALUES
+(19, '2017-05-25', NULL, 9050, 1, '2017-05-23', '2017/05/23/1', 2, 50, 9000),
+(20, '2017-06-06', NULL, 15858, 2, '2017-05-23', '2017/05/23/2', 2, 180, 15678),
+(21, '2017-06-15', NULL, 104704, 3, '2017-05-23', '2017/05/23/3', 2, 160, 104544),
+(22, '2017-06-22', NULL, 5380, 5, '2017-05-23', '2017/05/23/4', 2, 40, 5340),
+(23, '2017-05-25', NULL, 2810, 4, '2017-05-23', '2017/05/23/5', 2, 60, 2750);
 
 -- --------------------------------------------------------
 
@@ -346,23 +333,15 @@ CREATE TABLE `zamowienietowar` (
 --
 
 INSERT INTO `zamowienietowar` (`IdZamowienieTowar`, `Lp`, `IdTowar`, `Cena`, `Ilosc`, `WartoscNetto`, `IdZamowienie`) VALUES
-(1, 1, 1, 100, 6, 600, 1),
-(2, 1, 2, 100, 10, 1000, 2),
-(3, 2, 5, 211, 2, 422, 1),
-(4, 3, 8, 22, 2, 44, 1),
-(7, 6, 10, 200, 5, 1000, 6),
-(8, 1, 9, 1200, 6, 7200, 10),
-(9, 2, 10, 2100, 2, 4200, 10),
-(10, 3, 3, 249, 22, 5478, 10),
-(11, 1, 9, 1200, 6, 7200, 11),
-(12, 2, 10, 2100, 2, 4200, 11),
-(13, 1, 10, 2100, 8, 16800, 13),
-(14, 1, 1, 600, 3, 1800, 14),
-(15, 1, 9, 1200, 1, 1200, 15),
-(16, 1, 1, 600, 4, 0, 16),
-(17, 1, 1, 600, 2, 0, 17),
-(18, 1, 10, 2100, 1, 2100, 18),
-(19, 2, 9, 1200, 2, 0, 18);
+(20, 1, 1, 600, 15, 9000, 19),
+(21, 1, 9, 1200, 5, 6000, 20),
+(22, 2, 10, 2100, 2, 4200, 20),
+(23, 3, 3, 249, 22, 5478, 20),
+(24, 1, 4, 1689, 16, 27024, 21),
+(25, 2, 7, 988, 40, 39520, 21),
+(26, 3, 8, 1900, 20, 38000, 21),
+(27, 1, 6, 178, 30, 5340, 22),
+(28, 1, 5, 250, 11, 2750, 23);
 
 --
 -- Indeksy dla zrzutów tabel
@@ -524,12 +503,12 @@ ALTER TABLE `uzytkownik`
 -- AUTO_INCREMENT dla tabeli `zamowienie`
 --
 ALTER TABLE `zamowienie`
-  MODIFY `IdZamowienie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `IdZamowienie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 --
 -- AUTO_INCREMENT dla tabeli `zamowienietowar`
 --
 ALTER TABLE `zamowienietowar`
-  MODIFY `IdZamowienieTowar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `IdZamowienieTowar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 --
 -- Ograniczenia dla zrzutów tabel
 --
