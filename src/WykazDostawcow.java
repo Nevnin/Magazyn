@@ -100,7 +100,8 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		tablicaTowarow.getTableHeader().setReorderingAllowed(false);
 		tablicaTowarow.setModel(tableModel);
 		tablicaTowarow.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		int[] tabKolSzer = {200,100,100,100,200,200};
+		int[] tabKolSzer = {200,100,250,250};
+		System.out.println(tabNazwyKol.length);
 		for(int i=0; i<tabNazwyKol.length; i++){
 			tablicaTowarow.getColumnModel().getColumn(i).setPreferredWidth(tabKolSzer[i]);
 				DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
@@ -108,10 +109,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 				tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
 				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
 			}
-			else if(i==2 || i ==3){
-				tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
-			}else{
+//			else if(i==2 || i ==3){
+//				tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+//				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+//			}
+			else{
 				tableRenderer.setHorizontalAlignment(SwingConstants.LEFT);
 				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
 			}
@@ -311,6 +313,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         documentListener();
         focusListener();
         keyListener();
+        focusable(false);
 	}
 	private void ustawNasluchZdarzen(){
 		list.addListSelectionListener(this);
@@ -452,7 +455,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
-				sql = "SELECT NazwaTowaru,Cena,DataOd,DataDo,KodTowaruWgDostawcy,NazwaTowaruWgDostawcy FROM dostawcatowar "
+				sql = "SELECT NazwaTowaru,Cena,KodTowaruWgDostawcy,NazwaTowaruWgDostawcy FROM dostawcatowar "
 						+ "INNER JOIN towar ON towar.IdTowar=dostawcatowar.IdTowar "
 						+ "WHERE IdDostawca = '"+tabPom[11]+"'";
 //				System.out.println(sql);
@@ -469,7 +472,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 					tablicaTowarow.setModel(tableModel);					
 					//jtfTelefon3.setText("123");
 					for(int i=0; i<rozmiar; i++){
-						String[] tabPom2 = {rs.getString("NazwaTowaru"),rs.getString("Cena"),rs.getString("DataOd"),rs.getString("DataDo"),rs.getString("KodTowaruWgDostawcy"),rs.getString("NazwaTowaruWgDostawcy")};
+						String[] tabPom2 = {rs.getString("NazwaTowaru"),rs.getString("Cena"),rs.getString("KodTowaruWgDostawcy"),rs.getString("NazwaTowaruWgDostawcy")};
 						tableModel.addRow(tabPom2);
 						rs.next();
 					}
@@ -527,13 +530,13 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //			String sql = "SELECT * FROM dostawcatowar";
 //			ResultSet rs = polaczenie.sqlSelect(sql);
 //			int rozmiarKol = rs.getMetaData().getColumnCount();
-			tabPom = new String[6];
+			tabPom = new String[4];
 			tabPom[0] = "Nazwa Towaru";
 			tabPom[1] = "Cena";
-			tabPom[2] = "Data Od";
-			tabPom[3] = "Data Do";
-			tabPom[4] = "Kod towaru wed³ug dostawcy";
-			tabPom[5] = "Nazwa towaru wed³ug dostawcy";
+//			tabPom[2] = "Data Od";
+//			tabPom[3] = "Data Do";
+			tabPom[2] = "Kod towaru wed³ug dostawcy";
+			tabPom[3] = "Nazwa towaru wed³ug dostawcy";
 	//		
 	//		for(int i=1; i<rozmiarKol-2; i++){
 	//			tabNazwyKol[i] = rs.getMetaData().getColumnName(i+3);
@@ -622,22 +625,22 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //	private void ustawNasluchZdarzen(){
 //		jbtNowyTowar.addActionListener(this);
 //	}
-    private void kartaWalidacja() {
-    	//insertTowaryDostawcy();
-    	String walidacja = walidacjaDanychDostawcy();
-    	if(walidacja.length()>0){
-    		JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
-    	}else {
-	    	boolean spr = insertDostawca();
-	    	if(spr == true){
-	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone powodzeniem","", JOptionPane.INFORMATION_MESSAGE);
-	    		wyczyscDaneKontaktowe();
-	    	}
-	    	else {
-	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone niepowodzeniem","Uwaga!", JOptionPane.ERROR_MESSAGE);
-	    	}
-    	}
-	}
+//    private void kartaWalidacja() {
+//    	//insertTowaryDostawcy();
+//    	String walidacja = walidacjaDanychDostawcy();
+//    	if(walidacja.length()>0){
+//    		JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+//    	}else {
+//	    	boolean spr = insertDostawca();
+//	    	if(spr == true){
+//	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone powodzeniem","", JOptionPane.INFORMATION_MESSAGE);
+//	    		wyczyscDaneKontaktowe();
+//	    	}
+//	    	else {
+//	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone niepowodzeniem","Uwaga!", JOptionPane.ERROR_MESSAGE);
+//	    	}
+//    	}
+//	}
     private boolean insertDostawca(){
 		String nazwaSkrocona = jtfNazwaSkrocona.getText().toString();
 		String nazwaPelna = jtaNazwaPelna.getText().toString();
