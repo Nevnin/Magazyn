@@ -1,9 +1,7 @@
-
 import java.awt.Color;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,21 +11,19 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -47,20 +43,25 @@ import javax.swing.table.DefaultTableModel;
 
 public class WykazDostawcow extends JPanel implements ListSelectionListener, KeyListener, ActionListener{
 	private Polaczenie polaczenie;
-	private JList list;
+	private JList<String> list;
 	private String[] tab, tabTowary;
 	private JSplitPane splitPane, spDaneButt, spListDane;
 	private JScrollPane scrollPane,scPaneTabTow;
 	private JLabel jlbNazSkroc, jlbNazPeln,jlbNIP, jlbTel1, jlbTel2,jlbTel3,jlbNazDzial,jlbNrKonta,jlbAdres,jlbKodPocz,jlbPoczta, jlbKodWgDos, jlbNazwaWgDos, jlbDataDo, jlbDataOd, jlbCena, jlbTowary, jlbTytulTowary;
 	private JTextField search,jtfNazSkroc,jtfNIP,jtfTel1,jtfTel2,jtfTel3,jtfNazDzial,jtfNrKonta,jtfAdres,jtfKodPocz,jtfPoczta, jtfKodWgDos, jtfNazwaWgDos, jtfDataDo, jtfDataOd, jtfCena;
-	private JTextArea area, jtaNazPeln;
-	private JButton jbtDodajDos, jbtDodajTow, jbtNowyTowar;
+	private JTextArea jtaNazPeln;
+	private JButton jbtDodajDos, jbtDodajTow, jbtNowyTowar, jbtZakonczTowar;
 	private JComboBox<String> jcbTowary;
 	private JPanel pTowary;
 	private boolean edycjaListy;
-	private DefaultTableModel tablemodel;
+	private DefaultTableModel tableModel;
 	private JTable tablicaTowarow;
-	private AbstractButton jtfNip;
+	private JDialog dialog;
+    String serverName = "localhost";
+    String mydatabase = "magazyn";
+    String url = "jdbc:mysql://" + serverName + "/" + mydatabase; 
+    String username = "root";
+    String password = "";
 
 	public WykazDostawcow() {
 		JPanel panel = new JPanel();
@@ -105,13 +106,13 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			e.printStackTrace();
 		}	
 
-	      JPanel panelTowaryDolny = new JPanel();
+	    JPanel panelTowaryDolny = new JPanel();
 	    panelTowaryDolny.setLayout(new BoxLayout(panelTowaryDolny, BoxLayout.Y_AXIS));
-	    tablemodel = new DefaultTableModel(0,0);
-		tablemodel.setColumnIdentifiers(tabNazwyKol);
+	    tableModel = new DefaultTableModel(0,0);
+		tableModel.setColumnIdentifiers(tabNazwyKol);
 		tablicaTowarow = new JTable();
 		tablicaTowarow.getTableHeader().setReorderingAllowed(false);
-		tablicaTowarow.setModel(tablemodel);
+		tablicaTowarow.setModel(tableModel);
 		tablicaTowarow.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		int[] tabKolSzer = {200,100,100,100,200,200};
 		for(int i=0; i<tabNazwyKol.length; i++){
@@ -125,7 +126,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 				tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
 			}else{
-				tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+				tableRenderer.setHorizontalAlignment(SwingConstants.LEFT);
 				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
 			}
 		}
@@ -136,7 +137,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		scrollPane = new JScrollPane();
 		scPaneTabTow = new JScrollPane(tablicaTowarow);
 		search = new JTextField();
-		list = new JList(tab);
+		list = new JList<String>(tab);
 		list.setMinimumSize(new Dimension(150,150));
 		list.setPreferredSize(new Dimension(150, 150));
 		list.setAlignmentX(CENTER_ALIGNMENT);
@@ -191,9 +192,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         jbtDodajTow.setEnabled(false);
         jbtDodajTow.setName("addTowary");
         
-        jlbTytulTowary = new JLabel("Dodawanie towaru do Dostawcy");
+        jlbTytulTowary = new JLabel("Dodawanie towaru Dostawcy");
         jlbTytulTowary.setFont(new Font("Calibri", Font.BOLD, 30));
         jbtNowyTowar = new JButton("Nowy Towar");
+        jbtZakonczTowar = new JButton("Zakoncz");
+//        jbtNowyTowar.setSize(new Dimension(10, 10));
         jlbTowary = new JLabel("Nazwa towaru");
 		jcbTowary = new JComboBox<String>(tabTowary);
         jlbCena = new JLabel("Cena");
@@ -204,9 +207,9 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         jtfDataOd = new JTextField("");
         jlbDataDo = new JLabel("Data do");
         jtfDataDo = new JTextField("");
-        jlbKodWgDos = new JLabel("Kod towaru wed³ug dostacy");
+        jlbKodWgDos = new JLabel("Kod towaru wed³ug dostawcy");
         jtfKodWgDos = new JTextField("");
-        jlbNazwaWgDos = new JLabel("Nazwa towaru wed³ug dostacy");
+        jlbNazwaWgDos = new JLabel("Nazwa towaru wed³ug dostawcy");
         jtfNazwaWgDos = new JTextField("");
 
 		panel.add(search);
@@ -260,8 +263,12 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         pButtons.add(jbtDodajDos);
         pButtons.add(jbtDodajTow);
         
-        gbcPanelTowary.gridx = 1; gbcPanelTowary.gridy = 0;
+        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy = 0;
+        gbcPanelTowary.fill = GridBagConstraints.CENTER;
+        gbcPanelTowary.gridwidth = 2;
         pTowary.add(jlbTytulTowary,gbcPanelTowary);
+        gbcPanelTowary.fill = GridBagConstraints.HORIZONTAL;
+        gbcPanelTowary.gridwidth = 1;
         gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
         pTowary.add(jlbTowary,gbcPanelTowary);
         gbcPanelTowary.gridx++;
@@ -270,14 +277,14 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         pTowary.add(jlbCena,gbcPanelTowary);
         gbcPanelTowary.gridx++;
         pTowary.add(jtfCena,gbcPanelTowary);
-        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
-        pTowary.add(jlbDataOd,gbcPanelTowary);
-        gbcPanelTowary.gridx++;
-        pTowary.add(jtfDataOd,gbcPanelTowary);
-        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
-        pTowary.add(jlbDataDo,gbcPanelTowary);
-        gbcPanelTowary.gridx++;
-        pTowary.add(jtfDataDo,gbcPanelTowary);
+//        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
+//        pTowary.add(jlbDataOd,gbcPanelTowary);
+//        gbcPanelTowary.gridx++;
+//        pTowary.add(jtfDataOd,gbcPanelTowary);
+//        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
+//        pTowary.add(jlbDataDo,gbcPanelTowary);
+//        gbcPanelTowary.gridx++;
+//        pTowary.add(jtfDataDo,gbcPanelTowary);
         gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
         pTowary.add(jlbKodWgDos,gbcPanelTowary);
         gbcPanelTowary.gridx++;
@@ -286,8 +293,13 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         pTowary.add(jlbNazwaWgDos,gbcPanelTowary);
         gbcPanelTowary.gridx++;
         pTowary.add(jtfNazwaWgDos,gbcPanelTowary);
+//        gbcPanelTowary = new GridBagConstraints(); 
+//        gbcPanelTowary.fill = GridBagConstraints.NONE;
 //        gbcPanelTowary.gridx = 0; gbcPanelTowary.gridy++;
 //        pTowary.add(jbtNowyTowar,gbcPanelTowary);
+//        gbcPanelTowary.anchor = GridBagConstraints.EAST;
+//        gbcPanelTowary.gridx++;
+//        pTowary.add(jbtZakonczTowar,gbcPanelTowary);
 
         spDaneButt.setTopComponent(p);
         spDaneButt.setBottomComponent(pButtons);
@@ -301,41 +313,21 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         add(splitPane);
         
         ustawNasluchZdarzen();
+        focusListener();
 	}
 	private void ustawNasluchZdarzen(){
 		list.addListSelectionListener(this);
 		search.addKeyListener(this);
 		jbtDodajDos.addActionListener(this);
 		jbtDodajTow.addActionListener(this);
+		jbtNowyTowar.addActionListener(this);
+		jbtZakonczTowar.addActionListener(this);
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		Object e = arg0.getSource();
 		if(e==jbtDodajTow){
-			Object[] options = {"Dodaj towar",
-	                "Odrzuc"};
-			JOptionPane optionPane = new JOptionPane(pTowary,
-				    JOptionPane.PLAIN_MESSAGE,
-					    JOptionPane.YES_NO_OPTION);
-//			JFrame frame = new JFrame();
-//			frame.add(pTowary);
-//			frame.setPreferredSize(new Dimension(400, 300));
-//			frame.setSize(700, 300);
-////			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//			frame.setVisible(true);
-//			JDialog dialog = new JDialog ();
-//			dialog.setContentPane(optionPane);
-//			dialog.setModal (true);
-//			dialog.setAlwaysOnTop (true);
-//			dialog.setModalityType (ModalityType.APPLICATION_MODAL);
-//			dialog.pack();
-//			dialog.setVisible(true);
-//			int value = ((Integer)optionPane.getValue()).intValue();
-//			if (value == JOptionPane.YES_OPTION) {
-//			    wyczyscDaneTowaru();
-//			} else if (value == JOptionPane.NO_OPTION) {
-//			    dialog.dispose();
-//			}
+			dialogTowary();
 		}
 		else if(e==jbtDodajDos){
 			if(jbtDodajDos.getName() == "addDos"){
@@ -357,26 +349,32 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		}
 		else if(e==jbtNowyTowar){
 			String walidacjaTowaru = walidacjaTowaru();
-			if(walidacjaTowaru.length()>0)
+			if(walidacjaTowaru.length()>0){
 	    		JOptionPane.showMessageDialog(null, walidacjaTowaru,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+			}
+			else {
+				insertTowaryDostawcy();
+//				dodajNowyTowar();
+				wyczyscDaneTowaru();
+			}
 		}
-		else {
-			dodajNowyTowar();
+		else if(e==jbtZakonczTowar){
+			dialog.dispose();
 		}
 	}
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
 		if(edycjaListy){
 			if(arg0.getValueIsAdjusting()) {
-				String[] tabPom;
+				String[] tabPom = null;
 				String sel = list.getSelectedValue().toString();
-				String sql = "SELECT NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta  FROM dostawca WHERE NazwaSkrocona='"+sel+"'";
+				String sql = "SELECT NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta, idDostawca  FROM dostawca WHERE NazwaSkrocona='"+sel+"'";
 				//int id = 0;
 				//String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia FROM zamowienie WHERE NumerZamowienia='"+sel+"'";
 				
 				try {
 					ResultSet rs = polaczenie.sqlSelect(sql);
-					tabPom = new String[11];
+					tabPom = new String[12];
 					
 					rs.next();
 					for(int i = 0;i<tabPom.length;i++)
@@ -398,6 +396,31 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		
 				} catch (Exception e) {
 					// TODO: handle exception
+				}
+				sql = "SELECT NazwaTowaru,Cena,DataOd,DataDo,KodTowaruWgDostawcy,NazwaTowaruWgDostawcy FROM dostawcatowar "
+						+ "INNER JOIN towar ON towar.IdTowar=dostawcatowar.IdTowar "
+						+ "WHERE IdDostawca = '"+tabPom[11]+"'";
+				System.out.println(sql);
+				try {
+					ResultSet rs = polaczenie.sqlSelect(sql);
+					rs.last();
+					int rozmiar = rs.getRow();
+					//tabPom = new String[rs.getRow()];
+					rs.beforeFirst();
+					rs.next();
+//					tableModel = new DefaultTableModel(0,0);
+//					tableModel.setColumnIdentifiers(getNazwyKol());
+					tableModel.setRowCount(0);
+					tablicaTowarow.setModel(tableModel);					
+					jtfTel3.setText("123");
+					for(int i=0; i<rozmiar; i++){
+						String[] tabPom2 = {rs.getString("NazwaTowaru"),rs.getString("Cena"),rs.getString("DataOd"),rs.getString("DataDo"),rs.getString("KodTowaruWgDostawcy"),rs.getString("NazwaTowaruWgDostawcy")};
+						tableModel.addRow(tabPom2);
+						rs.next();
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println("error");
 				}
 			}
 		}
@@ -520,110 +543,162 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			polaczenie = new Polaczenie();
 			String sql;
 			String idDostawca;
-			sql = "SELECT idDostawca FROM Dostawca WHERE Nip="+jtfNip.getText().toString()+"";
-			sql = "SELECT * FROM Dostawca WHERE Nip=5645824795";
+    		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    		Date date = new Date();
+			sql = "SELECT idDostawca FROM Dostawca WHERE Nip="+jtfNIP.getText().toString()+"";
+			//sql = "SELECT * FROM Dostawca WHERE Nip=5645824795";
 			ResultSet rs = polaczenie.sqlSelect(sql);
-			ResultSetMetaData rsmd = rs.getMetaData();
+//			ResultSetMetaData rsmd = rs.getMetaData();
 			rs.next();
-			
 			idDostawca = rs.getString("idDostawca");
-			System.out.println(idDostawca);
-			int liczbaWierszy = tablemodel.getRowCount();
-			int liczbaKolumn = tablemodel.getColumnCount();
-			String[][] tabPom = new String[liczbaWierszy][liczbaKolumn];
-			//String
-			for(int i=0; i<liczbaWierszy; i++){
-				for(int j=0; j<liczbaKolumn; j++){
-					tabPom[i][j] = (String) tablemodel.getValueAt(i, j);
-					//System.out.print(tabPom[i][j]+"|");
-					String name = rsmd.getColumnName(j);
-				}
-				//System.out.println();
+			
+			sql = "SELECT IdTowar FROM towar WHERE NazwaTowaru='"+jcbTowary.getSelectedItem()+"'";
+			System.out.println(sql);
+			rs = polaczenie.sqlSelect(sql);
+			rs.next();
+			String idTowaru = rs.getString("IdTowar");
+			
+			sql = "SELECT * FROM dostawcatowar WHERE idTowar='"+idTowaru+"' AND idDostawca='"+idDostawca+"'";
+			System.out.println(sql);
+			rs = polaczenie.sqlSelect(sql);
+			if(!rs.last()){
+				Connection connection = DriverManager.getConnection(url, username, password);
+				connection.createStatement();
+				String query = "INSERT INTO dostawcatowar "
+					+ "(IdDostawca, IdTowar, Cena, DataOd, DataDo, KodTowaruWgDostawcy, NazwaTowaruWgDostawcy)"
+				    + " values (?, ?, ?, ?, ?, ?, ?)";
+				PreparedStatement preparedStmt = connection.prepareStatement(query);
+				preparedStmt.setString (1, idDostawca);
+				preparedStmt.setString (2, idTowaru);
+				preparedStmt.setString (3, jtfCena.getText().toString());
+				preparedStmt.setString (4, dateFormat.format(date));
+				preparedStmt.setString (5, null);
+				preparedStmt.setString (6, jtfKodWgDos.getText().toString());
+				preparedStmt.setString (7, jtfNazwaWgDos.getText().toString());
+				System.out.println("err");
+				// execute the preparedstatement
+				preparedStmt.execute();
+				connection.close();
+				
+		    	String[] tabPom = {jcbTowary.getSelectedItem().toString(),jtfCena.getText(),dateFormat.format(date),jtfDataDo.getText(),jtfKodWgDos.getText(),jtfNazwaWgDos.getText()};
+		    	tableModel.addRow(tabPom);
+		    	tablicaTowarow.setModel(tableModel);
 			}
-			sql="";
-			for(int i=0; i<liczbaWierszy; i++){
-				sql+="Insert";
+			else {
+				errorAlert("W bazie znajduje juz sie ten towar");
+				return false;
 			}
+			
+//			System.out.println(idDostawca+","+idTowaru+" "+jcbTowary.getSelectedItem());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			System.out.println("error");
 			return false;
 		}		
 		return true;
 	}
-
-    private void dodajNowyTowar() {
-    	String walidacjaTowaru = walidacjaTowaru();
-    	if(walidacjaTowaru.length()>0){
-    		JOptionPane.showMessageDialog(null, walidacjaTowaru,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
-    	}else{
-	    	String[] tabPom = {jcbTowary.getSelectedItem().toString(),jtfCena.getText(),jtfDataOd.getText(),jtfDataDo.getText(),jtfKodWgDos.getText(),jtfNazwaWgDos.getText()};
-	    	tablemodel.addRow(tabPom);
-	    	tablicaTowarow.setModel(tablemodel);
-	    	wyczyscDaneTowaru();
-    	}
-	}
+//    private void dodajNowyTowar() {
+////    	String walidacjaTowaru = walidacjaTowaru();
+////    	if(walidacjaTowaru.length()>0){
+////    		JOptionPane.showMessageDialog(null, walidacjaTowaru,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+////    	}else{
+//    		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//    		Date date = new Date();
+//	    	String[] tabPom = {jcbTowary.getSelectedItem().toString(),jtfCena.getText(),dateFormat.format(date),jtfDataDo.getText(),jtfKodWgDos.getText(),jtfNazwaWgDos.getText()};
+//	    	tableModel.addRow(tabPom);
+//	    	tablicaTowarow.setModel(tableModel);
+//	    	wyczyscDaneTowaru();
+////    	}
+//	}
+    /**
+     * Tworzy formularz dodawania towarow dostawcy
+     */
+    private void dialogTowary(){
+//		JFrame frame = new JFrame();
+//		frame.add(pTowary);
+//		frame.setPreferredSize(new Dimension(400, 300));
+//		frame.setSize(700, 300);
+//		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		frame.setVisible(true);
+		JOptionPane optionPane = new JOptionPane(pTowary,
+			    JOptionPane.PLAIN_MESSAGE,
+			    JOptionPane.DEFAULT_OPTION, 
+			    null, new Object[]{jbtNowyTowar,jbtZakonczTowar}, null);
+		dialog = new JDialog ();
+		dialog.setContentPane(optionPane);
+		dialog.setModal (true);
+//		dialog.setAlwaysOnTop (true);
+		dialog.setModalityType (ModalityType.APPLICATION_MODAL);
+		dialog.pack();
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+    }
+    public void errorAlert(String txt){
+    	JOptionPane.showMessageDialog(this,  txt, "Uwaga!", JOptionPane.ERROR_MESSAGE);
+    }
     private String walidacjaTowaru(){
     	String error = "";
     	String cena = jtfCena.getText().toString();
-    	String dataOd = jtfDataOd.getText().toString();
-    	String dataDo = jtfDataDo.getText().toString();
+//    	String dataOd = jtfDataOd.getText().toString();
+//    	String dataDo = jtfDataDo.getText().toString();
     	String kodWgDos = jtfKodWgDos.getText().toString();
     	String nazwaWgDos = jtfNazwaWgDos.getText().toString();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-    	Date dtDataOd = null;
-    	Date dtDataDo = null;
-    	boolean flagaDate = true;
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//    	Date dtDataOd = null;
+//    	Date dtDataDo = null;
+//    	boolean flagaDate = true;
     	if(cena.matches("^\\s*$")){
     		error+="Cena zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
 			jtfCena.setBackground(Color.RED);
     	}
-    	try{
-        	Double.parseDouble(cena);
-    	}catch (Exception e) {
-			error+="Cena zosta³a podana nieprawid³owa(tylko liczby ,np. 20.99)\n";
-			jtfCena.setBackground(Color.RED);
-		}
-    	if(dataOd.length()>11){
-    		error+="DataOd zosta³a podana nieprawid³owa(max 10 znaków, YYYY-MM-DD)\n";
-    		jtfDataOd.setBackground(Color.RED);
-    	}
-    	if(dataOd.isEmpty() || dataOd.matches("^\\s*$")){
-    		error+="DataOd zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
-    		jtfDataOd.setBackground(Color.RED);
-    		flagaDate = false;
-    	}
-    	else{
-            try {
-				dtDataOd = formatter.parse(dataOd);
-			} catch (Exception e) {
-	    		error+="DataOd zosta³a podana nieprawid³owa(YYYY-MM-DD)\n";
-	    		jtfDataOd.setBackground(Color.RED);
-	    		flagaDate = false;
-			}
-    	}    	
-    	if(dataDo.length()>11){
-    		error+="DataDo zosta³a podana nieprawid³owa(max 10 znaków, YYYY-MM-DD)\n";
-    		jtfDataDo.setBackground(Color.RED);
-    	}else if(dataDo.isEmpty()){
-    		flagaDate = false;
-    	}
-    	else if(!dataDo.isEmpty()){
+    	else {
 	    	try{
-	            dtDataDo = formatter.parse(dataDo);
+	        	Double.parseDouble(cena);
 	    	}catch (Exception e) {
-	    		error+="DataDo zosta³a podana nieprawid³owa(YYYY-MM-DD)\n";
-	    		jtfDataDo.setBackground(Color.RED);
-	    		flagaDate = false;
+				error+="Cena zosta³a podana nieprawid³owa(tylko liczby ,np. 20.99)\n";
+				jtfCena.setBackground(Color.RED);
 			}
     	}
-    	if(flagaDate){
-    		if(dtDataOd.after(dtDataDo)){
-	    		error+="DataDo musi byc pózniejsza ni¿ DataOd\n";
-	    		jtfDataDo.setBackground(Color.RED);
-	    		jtfDataOd.setBackground(Color.RED);
-    		}
-    	}
+//    	if(dataOd.length()>11){
+//    		error+="DataOd zosta³a podana nieprawid³owa(max 10 znaków, YYYY-MM-DD)\n";
+//    		jtfDataOd.setBackground(Color.RED);
+//    	}
+//    	if(dataOd.isEmpty() || dataOd.matches("^\\s*$")){
+//    		error+="DataOd zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
+//    		jtfDataOd.setBackground(Color.RED);
+//    		flagaDate = false;
+//    	}
+//    	else{
+//            try {
+//				dtDataOd = formatter.parse(dataOd);
+//			} catch (Exception e) {
+//	    		error+="DataOd zosta³a podana nieprawid³owa(YYYY-MM-DD)\n";
+//	    		jtfDataOd.setBackground(Color.RED);
+//	    		flagaDate = false;
+//			}
+//    	}    	
+//    	if(dataDo.length()>11){
+//    		error+="DataDo zosta³a podana nieprawid³owa(max 10 znaków, YYYY-MM-DD)\n";
+//    		jtfDataDo.setBackground(Color.RED);
+//    	}else if(dataDo.isEmpty()){
+//    		flagaDate = false;
+//    	}
+//    	else if(!dataDo.isEmpty()){
+//	    	try{
+//	            dtDataDo = formatter.parse(dataDo);
+//	    	}catch (Exception e) {
+//	    		error+="DataDo zosta³a podana nieprawid³owa(YYYY-MM-DD)\n";
+//	    		jtfDataDo.setBackground(Color.RED);
+//	    		flagaDate = false;
+//			}
+//    	}
+//    	if(flagaDate){
+//    		if(dtDataOd.after(dtDataDo)){
+//	    		error+="DataDo musi byc pózniejsza ni¿ DataOd\n";
+//	    		jtfDataDo.setBackground(Color.RED);
+//	    		jtfDataOd.setBackground(Color.RED);
+//    		}
+//    	}
     	if(kodWgDos.isEmpty() || kodWgDos.matches("^\\s*$")){
     		error+="Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(nie mo¿e pozostaæ pusty)\n";
     		jtfKodWgDos.setBackground(Color.RED);
@@ -671,14 +746,14 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			public void focusLost(FocusEvent e) {
 				String dataOd = jtfDataOd.getText().toString();
 		    	try{
-		    		if(dataOd.matches("^\\s*$")){
+//		    		if(dataOd.matches("^\\s*$")){
+//		    			throw new Exception("Exception thrown");
+//		    		}
+		    		if(dataOd.length()>11){
 		    			throw new Exception("Exception thrown");
 		    		}
-		    		else if(dataOd.length()>11){
-		    			throw new Exception("Exception thrown");
-		    		}
-		            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		            formatter.parse(dataOd);
+//		            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//		            formatter.parse(dataOd);
 		    	}catch (Exception ex) {
 	//		    		if(dataOd.length()>11){
 		        		jtfDataOd.setBackground(Color.RED);
@@ -696,11 +771,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			@Override
 			public void focusLost(FocusEvent e) {
 				String kodWgDos = jtfKodWgDos.getText().toString();
-		    	if(kodWgDos.isEmpty() || kodWgDos.matches("^\\s*$")){
-		    		jtfKodWgDos.setBackground(Color.RED);
-		    		JOptionPane.showMessageDialog(null, "Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-		    	}
-		    	else if(kodWgDos.length()>50){
+//		    	if(kodWgDos.isEmpty() || kodWgDos.matches("^\\s*$")){
+//		    		jtfKodWgDos.setBackground(Color.RED);
+//		    		JOptionPane.showMessageDialog(null, "Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
+//		    	}
+		    	if(kodWgDos.length()>50){
 		    		jtfKodWgDos.setBackground(Color.RED);
 		    		JOptionPane.showMessageDialog(null, "Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
@@ -715,11 +790,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			@Override
 			public void focusLost(FocusEvent e) {
 				String nazwaWgDos = jtfNazwaWgDos.getText().toString();
-		    	if(nazwaWgDos.isEmpty() || nazwaWgDos.matches("^\\s*$")){
-		    		jtfKodWgDos.setBackground(Color.RED);
-		    		JOptionPane.showMessageDialog(null, "Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-		    	}
-		    	else if(nazwaWgDos.length()>50){
+//		    	if(nazwaWgDos.isEmpty() || nazwaWgDos.matches("^\\s*$")){
+//		    		jtfKodWgDos.setBackground(Color.RED);
+//		    		JOptionPane.showMessageDialog(null, "Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
+//		    	}
+		    	if(nazwaWgDos.length()>50){
 		    		jtfKodWgDos.setBackground(Color.RED);
 		    		JOptionPane.showMessageDialog(null, "Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
