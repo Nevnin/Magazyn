@@ -55,8 +55,8 @@ public class Zamowieniev2 extends JPanel implements ActionListener, TableModelLi
     DecimalFormat df;
     List<String> lista = new ArrayList<String>();
 		JTabbedPane tabbedPane;
-		JLabel jlbTytulZamowienie,jlbTerminRealizacji,jlbDataRealizacji,jlbKosztZamowienia,jlbDostawca,jlbDataWystawienia,jlbNumerZamowienia,jlbSposobDostawy,jlbKosztDostawy,jlbWartoscTowarow;
-		JTextField jtfTerminRealizacji,jtfDostawca,jtfSposobDostawy,jtfDataRealizacji,jtfKosztZamowienia,jtfDataWystawienia,jtfNumerZamowienia,jtfKosztDostawy,jtfWartoscTowarow;
+		JLabel jlbTytulZamowienie,jlbTerminRealizacji,jlbDataRealizacji,jlbCalkowitaWartoscZamowienia,jlbDostawca,jlbDataWystawienia,jlbNumerZamowienia,jlbSposobDostawy,jlbKosztDostawy,jlbWartoscTowarow;
+		JTextField jtfTerminRealizacji,jtfDostawca,jtfSposobDostawy,jtfDataRealizacji,jtfCalkowitaWartoscZamowienia,jtfDataWystawienia,jtfNumerZamowienia,jtfKosztDostawy,jtfWartoscTowarow;
 		JComboBox<String> jcbDostawca,jcbSposobDostawy,jcbTowar;
 		JLabel jlTytulZamTow,jlLP,jlTowar,jlCena,jlIlosc,jlWartoscNetto,jlZamowienie;
 		JTextField jtfLP,jtfTowar,jtfCena,jtfIlosc,jtfWartoscNetto,jtfZamowienie;
@@ -112,15 +112,15 @@ public class Zamowieniev2 extends JPanel implements ActionListener, TableModelLi
 			jlbDataRealizacji.setToolTipText(jlbDataRealizacji.getText()+" :format daty yyyy-mm-dd(2016-10-06)");
 			jtfDataRealizacji.setToolTipText(jlbDataRealizacji.getText()+" :format daty yyyy-mm-dd(2016-10-06)");
 			
-			jlbKosztZamowienia = new JLabel("Koszt zamowienia");
-			jtfKosztZamowienia = new JTextField("");
-			jtfKosztZamowienia.setMaximumSize(new Dimension(100,20));
-			jtfKosztZamowienia.setPreferredSize(new Dimension(400,20));
-			jlbKosztZamowienia.setToolTipText(jlbKosztZamowienia.getText()+" :prosze wpisywac liczby");
-			jtfKosztZamowienia.setToolTipText(jlbKosztZamowienia.getText()+" :prosze wpisywac liczby");
-			jtfKosztZamowienia.setEditable(false);
+			jlbCalkowitaWartoscZamowienia = new JLabel("Koszt zamowienia");
+			jtfCalkowitaWartoscZamowienia = new JTextField("");
+			jtfCalkowitaWartoscZamowienia.setMaximumSize(new Dimension(100,20));
+			jtfCalkowitaWartoscZamowienia.setPreferredSize(new Dimension(400,20));
+			jlbCalkowitaWartoscZamowienia.setToolTipText(jlbCalkowitaWartoscZamowienia.getText()+" :prosze wpisywac liczby");
+			jtfCalkowitaWartoscZamowienia.setToolTipText(jlbCalkowitaWartoscZamowienia.getText()+" :prosze wpisywac liczby");
+			jtfCalkowitaWartoscZamowienia.setEditable(false);
 			kosztZam=wartoscTowarow+kosztDostawy;
-			jtfKosztZamowienia.setText(df.format(kosztZam));
+			jtfCalkowitaWartoscZamowienia.setText(df.format(kosztZam));
 			String sqlDostawca = "SELECT * from dostawca";
 			String sqlSposobDostawy = "SELECT * from sposobdostawy";
 			
@@ -197,9 +197,9 @@ public class Zamowieniev2 extends JPanel implements ActionListener, TableModelLi
 			cPanelDaneZam.gridx++; 
 			panelDaneZam.add(jtfTerminRealizacji, cPanelDaneZam);
 			cPanelDaneZam.gridx = 0; cPanelDaneZam.gridy++;
-			panelDaneZam.add(jlbKosztZamowienia, cPanelDaneZam);
+			panelDaneZam.add(jlbCalkowitaWartoscZamowienia, cPanelDaneZam);
 			cPanelDaneZam.gridx++;
-			panelDaneZam.add(jtfKosztZamowienia, cPanelDaneZam);
+			panelDaneZam.add(jtfCalkowitaWartoscZamowienia, cPanelDaneZam);
 			cPanelDaneZam.gridx = 0; cPanelDaneZam.gridy++;
 			panelDaneZam.add(jlbDostawca, cPanelDaneZam);
 			cPanelDaneZam.gridx++;
@@ -418,7 +418,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 				kosztZam = wartoscTowarow + kosztDostawy;
 				jtfWartoscTowarow.setText(df.format(wartoscTowarow));
 				jtfLP.setText(Integer.toString(lp));
-				jtfKosztZamowienia.setText(df.format(kosztZam));
+				jtfCalkowitaWartoscZamowienia.setText(df.format(kosztZam));
 				String sqlTowar="SELECT * from towar INNER JOIN dostawcatowar ON dostawcatowar.IdTowar=towar.IdTowar INNER JOIN dostawca ON dostawcatowar.IdDostawca=dostawca.IdDostawca WHERE NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"' GROUP BY NazwaTowaru";
 				try {
 					ResultSet rsT = poloczenie.sqlSelect(sqlTowar);
@@ -475,7 +475,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 				wartoscTowarow += wartoscNetto;
 				jtfWartoscTowarow.setText(df.format(wartoscTowarow));
 				kosztZam = wartoscTowarow+kosztDostawy;
-				jtfKosztZamowienia.setText(df.format(kosztZam));
+				jtfCalkowitaWartoscZamowienia.setText(df.format(kosztZam));
 				if(sprawdzenieCzyJestDodanyTowar() || ilosc==0)
 				{
 					jbdodajTowar.setEnabled(false);
@@ -657,14 +657,14 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 		{
 			Connection connection = DriverManager.getConnection(url, username, password);
 			String query = "INSERT INTO zamowienie "
-					+ "(TerminRealizacji,DataRealizacji,KosztZamowienia,IdDostawcy,DataWystawienia,NumerZamowienia,IdSposobDostawy,KosztDostawy,WartoscTowarow)"
+					+ "(TerminRealizacji,DataRealizacji,CalkowitaWartoscZamowienia,IdDostawcy,DataWystawienia,NumerZamowienia,IdSposobDostawy,KosztDostawy,WartoscTowarow)"
 				    + " values (?, ?, ?, ?, ?, ?,?,?,?)";
 			PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setString (1,jtfTerminRealizacji.getText());
 			preparedStmt.setNull(2, java.sql.Types.DATE);
-			Number kosztZam = df.parse(jtfKosztZamowienia.getText());
-			float kosztZamowienia = kosztZam.floatValue();
-			preparedStmt.setDouble(3,kosztZamowienia);
+			Number kosztZam = df.parse(jtfCalkowitaWartoscZamowienia.getText());
+			float CalkowitaWartoscZamowienia = kosztZam.floatValue();
+			preparedStmt.setDouble(3,CalkowitaWartoscZamowienia);
 			String zapDostawca = "Select * from dostawca WHERE NazwaSkrocona='"+jcbDostawca.getSelectedItem()+"'";
 			ResultSet rsDostawca = poloczenie.sqlSelect(zapDostawca);
 			rsDostawca.next();
@@ -771,7 +771,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 						kosztDostawy = 0.00f;
 					}
 					kosztZam = wartoscTowarow + kosztDostawy;
-					jtfKosztZamowienia.setText(df.format(kosztZam));
+					jtfCalkowitaWartoscZamowienia.setText(df.format(kosztZam));
 					jtfKosztDostawy.setText(df.format(kosztDostawy));
 
 					

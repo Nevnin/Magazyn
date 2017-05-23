@@ -32,7 +32,7 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 	public WyszWgWartosci(){
 		try{
 			polaczenie = new Polaczenie();
-			String sql = "SELECT *, CONCAT(KosztZamowienia, ' zl   ', NumerZamowienia) AS Koszt_Numer FROM `zamowienie` GROUP BY KosztZamowienia ORDER BY KosztZamowienia DESC";
+			String sql = "SELECT *, CONCAT(CalkowitaWartoscZamowienia, ' zl   ', NumerZamowienia) AS Koszt_Numer FROM `zamowienie` GROUP BY CalkowitaWartoscZamowienia ORDER BY CalkowitaWartoscZamowienia DESC";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
 			int rozmiar = rs.getRow();
@@ -129,7 +129,7 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 			String[][] zamowienie;
 			String sel = list.getSelectedValue().toString();
 			String tabS[] = sel.split(" ");
-			String sql = "SELECT IdZamowienie FROM zamowienie WHERE KosztZamowienia='"+tabS[0]+"'";
+			String sql = "SELECT IdZamowienie FROM zamowienie WHERE CalkowitaWartoscZamowienia='"+tabS[0]+"'";
 			try {
 				ResultSet rs = polaczenie.sqlSelect(sql);
 				idT = new String[1];
@@ -194,7 +194,7 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 	public void szukaj(String text){
 		try {
 			polaczenie = new Polaczenie();
-			String sql = "SELECT CONCAT(KosztZamowienia, 'zl   ', NumerZamowienia) AS Koszt_Numer FROM `zamowienie` WHERE KosztZamowienia LIKE '%"+text+"%' GROUP BY KosztZamowienia ORDER BY KosztZamowienia DESC ";
+			String sql = "SELECT CONCAT(CalkowitaWartoscZamowienia, 'zl   ', NumerZamowienia) AS Koszt_Numer FROM `zamowienie` WHERE CalkowitaWartoscZamowienia LIKE '%"+text+"%' GROUP BY CalkowitaWartoscZamowienia ORDER BY CalkowitaWartoscZamowienia DESC ";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
 			int rozmiar = rs.getRow();

@@ -196,7 +196,7 @@ public class WyszWgKategorii extends JPanel implements ListSelectionListener, Ke
 	public void szukaj(String text){
 		try {
 			polaczenie = new Polaczenie();
-			String sql = "SELECT CONCAT(KosztZamowienia, 'zl   ', NumerZamowienia) AS Koszt_Numer FROM `zamowienie` WHERE KosztZamowienia LIKE '%"+text+"%' GROUP BY KosztZamowienia ORDER BY KosztZamowienia DESC ";
+			String sql = "SELECT CONCAT(CalkowitaWartoscZamowienia, 'zl   ', NumerZamowienia) AS Koszt_Numer FROM `zamowienie` WHERE CalkowitaWartoscZamowienia LIKE '%"+text+"%' GROUP BY CalkowitaWartoscZamowienia ORDER BY CalkowitaWartoscZamowienia DESC ";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
 			int rozmiar = rs.getRow();

@@ -329,7 +329,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 	{
 		Connection connection = DriverManager.getConnection(url, username, password);
 		String query = "INSERT INTO zamowienie "
-				+ "(TerminReallizacji,DataRealizacji,KosztZamowienia,IdDostawcy,DataWystawienia,NumerZamowienia,SposobDostawy,KosztDostawy,WartoscTowarow)"
+				+ "(TerminReallizacji,DataRealizacji,CalkowitaWartoscZamowienia,IdDostawcy,DataWystawienia,NumerZamowienia,SposobDostawy,KosztDostawy,WartoscTowarow)"
 			    + " values (?, ?, ?, ?, ?, ?,?,?,?)";
 		PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 		preparedStmt.setDate (1,(java.sql.Date) TerminRealizacji);
@@ -362,7 +362,7 @@ public class Zamowienie extends JPanel implements ActionListener {
 		preparedStmt.setDouble (5,wartosc);
 		preparedStmt.setInt (6,idZam);
 		preparedStmt.execute();
-		String query2= "UPDATE zamowienie set KosztZamowienia =KosztZamowienia + ? WHERE IdZamowienie=?";
+		String query2= "UPDATE zamowienie set CalkowitaWartoscZamowienia =CalkowitaWartoscZamowienia + ? WHERE IdZamowienie=?";
 		PreparedStatement preparedStmt2 = connection.prepareStatement(query2);
 		preparedStmt2.setDouble(1,wartosc);
 		preparedStmt2.setInt(2,idZam);

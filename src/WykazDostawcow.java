@@ -370,7 +370,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 				String sel = list.getSelectedValue().toString();
 				String sql = "SELECT NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta, idDostawca  FROM dostawca WHERE NazwaSkrocona='"+sel+"'";
 				//int id = 0;
-				//String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, KosztZamowienia FROM zamowienie WHERE NumerZamowienia='"+sel+"'";
+				//String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, SposobDostawy, KosztDostawy,WartoscTowarow, CalkowitaWartoscZamowienia FROM zamowienie WHERE NumerZamowienia='"+sel+"'";
 				
 				try {
 					ResultSet rs = polaczenie.sqlSelect(sql);
