@@ -13,6 +13,8 @@ import java.awt.event.KeyListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -33,8 +35,8 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     String password = "";
     
     private JButton jbtPrzycisk;
-    private JLabel jlbTytul, jlbNazwaSkrocona, jlbNazwaPelna, jlbNip, jlbTelefon1, jlbTelefon2, jlbTelefon3, jlbNazwaDzialu, jlbNrKonta, jlbAdres, jlbKodPocztowy, jlbPoczta;
-    private JTextField jtfNazwaSkrocona, jtfNip, jtfTelefon1, jtfTelefon2, jtfTelefon3, jtfNazwaDzialu, jtfNrKonta, jtfAdres, jtfKodPocztowy, jtfPoczta;
+    private JLabel jlbTytul, jlbNazwaSkrocona, jlbNazwaPelna, jlbNip, jlbTelefon1, jlbTelefon2, jlbTelefon3, jlbNazwaDzialu, jlbNrKonta, jlbMiejsc, jlbAdres, jlbKodPocztowy, jlbPoczta;
+    private JTextField jtfNazwaSkrocona, jtfNip, jtfTelefon1, jtfTelefon2, jtfTelefon3, jtfNazwaDzialu, jtfNrKonta, jtfMiejsc, jtfAdres, jtfKodPocztowy, jtfPoczta;
     private JTextArea jtfNazwaPelna;
 	Polaczenie polaczenie;
     public KartaDostawcy(){     
@@ -46,12 +48,12 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 
         jlbTytul = new JLabel("Dodawanie Karty Dostawcy");
         jlbTytul.setFont(new Font("Calibri", Font.BOLD, 30));
-        jlbNazwaSkrocona = new JLabel("Nazwa Skrócona*");
+        jlbNazwaSkrocona = new JLabel("Nazwa skrócona*");
         jtfNazwaSkrocona = new JTextField("",35);
         jtfNazwaSkrocona.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 1, 0, 0)));        
         jlbNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : pole wymagane, maksymalna d³ugoœæ to 35 znaków");
         jtfNazwaSkrocona.setToolTipText(jlbNazwaSkrocona.getText()+" : maksymalna d³ugoœæ to 35 znaków");
-        jlbNazwaPelna = new JLabel("Nazwa Pe³na*");
+        jlbNazwaPelna = new JLabel("Nazwa pe³na*");
         jtfNazwaPelna = new JTextArea();
         jtfNazwaPelna.setPreferredSize(new Dimension(400, 40));
         jtfNazwaPelna.setLineWrap(true);
@@ -76,19 +78,23 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfTelefon3 = new JTextField("");
 		jlbTelefon3.setToolTipText(jlbTelefon3.getText()+" : maksymalna d³ugoœæ to 20 znaków");
 		jtfTelefon3.setToolTipText(jlbTelefon3.getText()+" : maksymalna d³ugoœæ to 20 znaków");
-		jlbNazwaDzialu = new JLabel("Nazwa Dzia³u*");
+		jlbNazwaDzialu = new JLabel("Nazwa dzia³u*");
 		jtfNazwaDzialu = new JTextField("");
 		jlbNazwaDzialu.setToolTipText(jlbNazwaDzialu.getText()+" : pole wymagane, maksymalna d³ugoœæ to 50 znaków");
 		jtfNazwaDzialu.setToolTipText(jlbNazwaDzialu.getText()+" : maksymalna d³ugoœæ to 50 znaków");
-        jlbNrKonta = new JLabel("Nr Konta*");
+        jlbNrKonta = new JLabel("Nr konta*");
 		jtfNrKonta = new JTextField("");
 		jlbNrKonta.setToolTipText(jlbNrKonta.getText()+" : pole wymagane, maksymalna d³ugoœæ to 30 znaków");
 		jtfNrKonta.setToolTipText(jlbNrKonta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
+		jlbMiejsc = new JLabel("Miejscowosc*");
+		jtfMiejsc = new JTextField("");
+		jlbMiejsc.setToolTipText(jlbMiejsc.getText()+" : pole wymagane, maksymalna d³ugoœæ to 50 znaków");
+		jtfMiejsc.setToolTipText(jlbMiejsc.getText()+" : maksymalna d³ugoœæ to 50 znaków");
 		jlbAdres = new JLabel("Adres*");
 		jtfAdres = new JTextField("");
 		jlbAdres.setToolTipText(jlbAdres.getText()+" : pole wymagane, maksymalna d³ugoœæ to 50 znaków");
 		jtfAdres.setToolTipText(jlbAdres.getText()+" : maksymalna d³ugoœæ to 50 znaków");
-		jlbKodPocztowy = new JLabel("KodPoczowy*");
+		jlbKodPocztowy = new JLabel("Kod poczowy*");
 		jtfKodPocztowy = new JTextField("");
 		jlbKodPocztowy.setToolTipText(jlbKodPocztowy.getText()+" : pole wymagane, maksymalna d³ugoœæ to 6 znaków");
 		jtfKodPocztowy.setToolTipText(jlbKodPocztowy.getText()+" : maksymalna d³ugoœæ to 6 znaków");
@@ -97,6 +103,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jlbPoczta.setToolTipText(jlbPoczta.getText()+" : pole wymagane, maksymalna d³ugoœæ to 30 znaków");
 		jtfPoczta.setToolTipText(jlbPoczta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
         jbtPrzycisk = new JButton("Zatwierdz");
+        JLabel legenda = new JLabel("* - pole wymagane");
 //        jbtPrzycisk.setMaximumSize(new Dimension(100, 25));
 //        jbtPrzycisk.setPreferredSize(new Dimension(100, 25));
         
@@ -136,6 +143,10 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         gbc.gridx++;
         add(jtfNrKonta,gbc);
         gbc.gridx = 0; gbc.gridy++;
+        add(jlbMiejsc,gbc);
+        gbc.gridx++;
+        add(jtfMiejsc,gbc);
+        gbc.gridx = 0; gbc.gridy++;
         add(jlbAdres,gbc);
         gbc.gridx++;
         add(jtfAdres,gbc);
@@ -148,6 +159,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         gbc.gridx++;
         add(jtfPoczta,gbc);
         gbc.gridx = 0; gbc.gridy++;
+        add(legenda,gbc);
 //       
         gbc.gridy++;
         add(jbtPrzycisk,gbc);
@@ -176,6 +188,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	String telefon3 = jtfTelefon3.getText().toString();
     	String nazwaDzialu = jtfNazwaDzialu.getText().toString();
     	String nrKonta = jtfNrKonta.getText().toString();
+    	String miejsc = jtfMiejsc.getText().toString();
     	String adres = jtfAdres.getText().toString();
     	String kodPocztowy = jtfKodPocztowy.getText().toString();
     	String poczta  = jtfPoczta.getText().toString();
@@ -196,9 +209,10 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 			preparedStmt.setString (6, telefon3);
 			preparedStmt.setString (7, nazwaDzialu);
 			preparedStmt.setString (8, nrKonta);
-			preparedStmt.setString (9, adres);
-			preparedStmt.setString (10, kodPocztowy);
-			preparedStmt.setString (11, poczta);
+			preparedStmt.setString (9, miejsc);
+			preparedStmt.setString (10, adres);
+			preparedStmt.setString (11, kodPocztowy);
+			preparedStmt.setString (12, poczta);
 			
 			// execute the preparedstatement
 			preparedStmt.execute();
@@ -236,11 +250,37 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	String telefon3 = jtfTelefon3.getText().toString();
     	String nazwaDzialu = jtfNazwaDzialu.getText().toString();
     	String nrKonta = jtfNrKonta.getText().toString();
+    	String miejsc = jtfMiejsc.getText().toString();
     	String adres = jtfAdres.getText().toString();
     	String kodPocztowy = jtfKodPocztowy.getText().toString();
     	String poczta  = jtfPoczta.getText().toString();
-    	if(nazwaSkrocona.length()>100){ 
-    		error+="Nazwa Skrócona zosta³a podana nieprawid³owa(100max znaków)\n";
+    	String[][] tabPom = null;
+    	boolean czyDosJest = false;
+    	try {
+			Polaczenie polacz = new Polaczenie();
+	    	String sql = "SELECT * FROM dostawca WHERE NazwaSkrocona='"+nazwaSkrocona+"' AND NazwaPelna='"+nazwaPelna+"'";
+//	    	System.out.println(sql);
+			ResultSet rs = polacz.sqlSelect(sql);
+			rs.last();
+			int rozmiar = rs.getRow();
+			if(rozmiar>0){
+				czyDosJest = true;
+				rs.first();
+				tabPom = new String[rozmiar][13];
+				for(int i=0; i<rozmiar; i++){
+					for(int j=0; j<13; j++){
+						tabPom[i][j]=rs.getString(j+1);
+						System.out.print(tabPom[i][j]+"|");
+					}
+					System.out.println();
+				}
+				System.out.println(rozmiar);
+			}
+		} catch (SQLException e) {
+    		JOptionPane.showMessageDialog(null, "B³¹d po³¹czenia z baz¹","Uwaga!", JOptionPane.ERROR_MESSAGE);
+		}
+    	if(nazwaSkrocona.length()>35){ 
+    		error+="Nazwa Skrócona zosta³a podana nieprawid³owa(35max znaków)\n";
     		jtfNazwaSkrocona.setBackground(Color.RED);
     	}
     	if(nazwaSkrocona.matches("^\\s*$")){
@@ -290,6 +330,14 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	if(nrKonta.matches("^\\s*$")){
     		error+="Nr Konta zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)\n";
     		jtfNrKonta.setBackground(Color.RED);
+    	}
+    	if(miejsc.length()>50){
+    		error+="Miejscowosc zosta³a podana zbyt d³uga(50max)\n";
+    		jtfAdres.setBackground(Color.RED);
+    	}
+    	if(miejsc.matches("^\\s*$")){
+    		error+="Miejscowosc zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
+    		jtfAdres.setBackground(Color.RED);
     	}
     	if(adres.length()>50){
     		error+="Adres zosta³ podany zbyt d³ugi(50max)\n";
@@ -499,6 +547,26 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 			public void focusGained(FocusEvent e) {
 				jtfNrKonta.selectAll();
 				jtfNrKonta.setBackground(Color.WHITE);
+			}
+		});
+		jtfMiejsc.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+		    	String adres = jtfMiejsc.getText().toString();
+		    	if(adres.length()>50){
+		    		jtfMiejsc.setBackground(Color.RED);
+		    		JOptionPane.showMessageDialog(null, "Miescowosc zosta³a podana zbyt d³uga(50max)","Uwaga!", JOptionPane.ERROR_MESSAGE);
+		    	}
+		    	jtfPoczta.setText(jtfMiejsc.getText());
+//		    	if(adres.matches("^\\s*$")){
+//		    		jtfAdres.setBackground(Color.RED);
+//		    		JOptionPane.showMessageDialog(null, "Adres zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
+//		    	}
+			}
+			@Override
+			public void focusGained(FocusEvent e) {
+				jtfAdres.selectAll();
+				jtfAdres.setBackground(Color.WHITE);
 			}
 		});
 		jtfAdres.addFocusListener(new FocusListener() {
