@@ -1,3 +1,4 @@
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -19,7 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class WyszWgWartosci extends JPanel implements ListSelectionListener, KeyListener{
+public class WyszWgKategorii extends JPanel implements ListSelectionListener, KeyListener{
 	private Polaczenie polaczenie;
 	private JList<String>list;
 	private String[] tab;
@@ -29,10 +30,10 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 	private JTable tabela;
 	
 	
-	public WyszWgWartosci(){
+	public WyszWgKategorii(){
 		try{
 			polaczenie = new Polaczenie();
-			String sql = "SELECT *, CONCAT(KosztZamowienia, ' zl   ', NumerZamowienia) AS Koszt_Numer FROM `zamowienie` GROUP BY KosztZamowienia ORDER BY KosztZamowienia DESC";
+			String sql = "SELECT * FROM kategoria";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
 			int rozmiar = rs.getRow();
@@ -40,13 +41,12 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 			int i = 0;
 			tab = new String [rozmiar];
 			while(rs.next()){
-				tab[i] = rs.getString("Koszt_Numer");
+				tab[i] = rs.getString("Nazwa");
 				i++;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	
 		splitPane = new JSplitPane();
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -109,7 +109,7 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		szukaj(search.getText());
+		//szukaj(search.getText());
 		
 	}
 
@@ -128,8 +128,8 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 			String[] idT;
 			String[][] zamowienie;
 			String sel = list.getSelectedValue().toString();
-			String tabS[] = sel.split(" ");
-			String sql = "SELECT IdZamowienie FROM zamowienie WHERE KosztZamowienia='"+tabS[0]+"'";
+			String sql = "SELECT IdKategoria FROM kategoria WHERE IdKategoria='"+sel+"'";
+			System.out.println(sel);
 			try {
 				ResultSet rs = polaczenie.sqlSelect(sql);
 				idT = new String[1];
@@ -137,7 +137,7 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 				rs.next();
 				for(int i = 0;i<idT.length;i++)
 				{
-					idT[i]=rs.getString("IdZamowienie");
+					idT[i]=rs.getString("IdKategoria");
 				}
 		
 				int id = Integer.parseInt(idT[0]);
@@ -148,7 +148,9 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 						+ "INNER JOIN towar ON towar.IdTowar = zamowienietowar.IdZamowienieTowar "
 						+ "INNER JOIN dostawca ON dostawca.IdDostawca = zamowienie.IdDostawcy "
 						+ "INNER JOIN sposobdostawy ON sposobdostawy.IdSposobDostawy = zamowienie.IdSposobDostawy "
-						+ "WHERE zamowienie.IdZamowienie  = '"+id+"'";
+						+ "INNER JOIN kategoria ON kategoria.IdKategoria = towar.IdKategoria" 
+						+ "WHERE kategoria.IdKategoria  = '"+id+"'";
+				System.out.println(query1);
 				ResultSet result = polaczenie.sqlSelect(query1);
 				result.last();
 				int rozmiar = result.getRow();
@@ -190,7 +192,7 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 		}
 		
 	}
-	
+	/*
 	public void szukaj(String text){
 		try {
 			polaczenie = new Polaczenie();
@@ -210,6 +212,6 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 }

@@ -17,6 +17,7 @@ public class Magazyn extends JFrame implements ActionListener {
 	OdbiorZamowien oz= new OdbiorZamowien();
 	WyszZamNaDanyTowar dt = new WyszZamNaDanyTowar();
 	WyszWgWartosci wgWartosci = new WyszWgWartosci();
+	WyszWgKategorii wgKategorii = new WyszWgKategorii();
 	Menu menu;
 	Polaczenie polaczenie;
 	StanMagazynowy stanMag = new StanMagazynowy();
@@ -51,6 +52,7 @@ public class Magazyn extends JFrame implements ActionListener {
 		menu.odbiorzamowien.addActionListener(this);
 		menu.danyTowar.addActionListener(this);
 		menu.wgWartosci.addActionListener(this);
+		menu.wgKategorii.addActionListener(this);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -129,6 +131,13 @@ public class Magazyn extends JFrame implements ActionListener {
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
+        }else if(z==menu.wgKategorii){
+        	removeP();
+        	wgKategorii = new WyszWgKategorii();
+        	add(wgKategorii);
+        	validate();
+        	dopasujSieDoZawartosci();
+        	repaint();
         }
         if(z==zamowienie.jbZamow)
 		{
@@ -180,5 +189,6 @@ public class Magazyn extends JFrame implements ActionListener {
 		remove(oz);
 		remove(dt);
 		remove(wgWartosci);
+		remove(wgKategorii);
 	}
 }
