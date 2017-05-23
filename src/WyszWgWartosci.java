@@ -130,6 +130,7 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 			String sel = list.getSelectedValue().toString();
 			String tabS[] = sel.split(" ");
 			String sql = "SELECT IdZamowienie FROM zamowienie WHERE CalkowitaWartoscZamowienia='"+tabS[0]+"'";
+			System.out.println(tabS[0]);
 			try {
 				ResultSet rs = polaczenie.sqlSelect(sql);
 				idT = new String[1];
@@ -145,10 +146,11 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 				String query1 = "SELECT towar.NazwaTowaru, zamowienie.DataRealizacji, zamowienie.TerminRealizacji, dostawca.NazwaSkrocona, sposobdostawy.SposobDostawy "
 						+ "FROM `zamowienie` "
 						+ "INNER JOIN zamowienietowar ON zamowienie.IdZamowienie = zamowienietowar.IdZamowienie "
-						+ "INNER JOIN towar ON towar.IdTowar = zamowienietowar.IdZamowienieTowar "
+						+ "INNER JOIN towar ON towar.IdTowar = zamowienietowar.IdTowar "
 						+ "INNER JOIN dostawca ON dostawca.IdDostawca = zamowienie.IdDostawcy "
 						+ "INNER JOIN sposobdostawy ON sposobdostawy.IdSposobDostawy = zamowienie.IdSposobDostawy "
 						+ "WHERE zamowienie.IdZamowienie  = '"+id+"'";
+				System.out.println(query1);
 				ResultSet result = polaczenie.sqlSelect(query1);
 				result.last();
 				int rozmiar = result.getRow();
