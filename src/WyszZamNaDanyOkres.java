@@ -22,7 +22,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener, KeyListener{
+public class WyszZamNaDanyOkres extends JPanel implements ListSelectionListener, KeyListener{
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private JTable tabela;
@@ -31,7 +31,7 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbNrZam,jlbTermin,jlbDataReal,jlbDataWys,jlbSposDos,jlbKosztDos,jlbWartoscTow,jlbKosztZam,jlbDostawca;
 	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
-	public WyszZamNaDanyTowar()
+	public WyszZamNaDanyOkres()
 	{
 		try {
 			polaczenie = new Polaczenie();

@@ -16,6 +16,8 @@ public class Magazyn extends JFrame implements ActionListener {
 	TowaryDostawcy td = new TowaryDostawcy();
 	OdbiorZamowien oz= new OdbiorZamowien();
 	WyszZamNaDanyTowar dt = new WyszZamNaDanyTowar();
+	WyszZamNaDanyOkres okres = new WyszZamNaDanyOkres();
+	WyszZamZrealizowane zreal = new WyszZamZrealizowane();
 	WyszWgWartosci wgWartosci = new WyszWgWartosci();
 	WyszWgKategorii wgKategorii = new WyszWgKategorii();
 	Menu menu;
@@ -51,6 +53,8 @@ public class Magazyn extends JFrame implements ActionListener {
 		menu.towarydostawcy.addActionListener(this);
 		menu.odbiorzamowien.addActionListener(this);
 		menu.danyTowar.addActionListener(this);
+		menu.danyOkres.addActionListener(this);
+		menu.zrealizowane.addActionListener(this);
 		menu.wgWartosci.addActionListener(this);
 		menu.wgKategorii.addActionListener(this);
 	}
@@ -138,6 +142,20 @@ public class Magazyn extends JFrame implements ActionListener {
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
+        }else if(z==menu.danyOkres){
+        	removeP();
+        	okres = new WyszZamNaDanyOkres();
+        	add(okres);
+        	validate();
+        	dopasujSieDoZawartosci();
+        	repaint();
+        }else if(z==menu.zrealizowane){
+        	removeP();
+        	zreal = new WyszZamZrealizowane();
+        	add(zreal);
+        	validate();
+        	dopasujSieDoZawartosci();
+        	repaint();
         }
         if(z==zamowienie.jbZamow)
 		{
@@ -191,5 +209,7 @@ public class Magazyn extends JFrame implements ActionListener {
 		remove(dt);
 		remove(wgWartosci);
 		remove(wgKategorii);
+		remove(okres);
+		remove(zreal);
 	}
 }
