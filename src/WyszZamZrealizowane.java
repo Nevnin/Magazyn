@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -22,56 +23,57 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener, KeyListener{
+public class WyszZamZrealizowane extends JPanel implements ListSelectionListener, KeyListener{
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private JTable tabela;
 	private String[] tab;
 	private JSplitPane splitPane,splitPane1;
 	private JScrollPane scrollPane,scrollPane1;
-	private JLabel jlbNrZam,jlbTermin,jlbDataReal,jlbDataWys,jlbSposDos,jlbKosztDos,jlbWartoscTow,jlbKosztZam,jlbDostawca;
-	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
-	public WyszZamNaDanyTowar()
+	private JLabel jlbOkres,jlbOd,jlbDo;
+	private JTextField jtfOd,jtfDo;
+	public WyszZamZrealizowane()
 	{
-		try {
-			polaczenie = new Polaczenie();
-			String sql = "SELECT * FROM towar";
-			ResultSet rs = polaczenie.sqlSelect(sql);
-			rs.last();
-			int rozmiar = rs.getRow();
-			rs.beforeFirst();
-			int i = 0;
-			tab = new String [rozmiar];
-			while(rs.next())
-			{
-				tab[i] = rs.getString("NazwaTowaru");
-				i++;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		
 		
 		splitPane = new JSplitPane();
 		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-		panel.setPreferredSize(new Dimension(200,600));
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		panel.setPreferredSize(new Dimension(200, 200));
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(0, 10, 0, 10);
 		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		
 		scrollPane = new JScrollPane();
 		
-		search = new JTextField();
-		list = new JList<String>(tab);
-		list.setMinimumSize(new Dimension(150,150));
-		list.setPreferredSize(new Dimension(150, 150));
-		list.setAlignmentX(CENTER_ALIGNMENT);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		jlbOkres = new JLabel("Podaj ramy czasowe");
+		jlbOkres.setFont(new Font("Calibri", Font.BOLD, 20));
 		
+		jlbOd = new JLabel("Od:");
+		jtfOd = new JTextField();
+		jlbDo = new JLabel("Do:");
+		jtfDo = new JTextField();
 		scrollPane.setViewportView(list);
-		panel.add(search);
-		search.setMaximumSize(new Dimension(200, 20));
+		jtfOd.setPreferredSize(new Dimension(70, 20));
+		jtfDo.setPreferredSize(new Dimension(70, 20));
 		panel.add(scrollPane);
 		splitPane.setLeftComponent(panel);
 		//scrollPane1.setViewportView(list1);
+		
+		
+		c.gridx = 2; c.gridy = 0;
+		panel.add(jlbOkres,c);
+		c.gridx = 0; c.gridy = 4;
+        panel.add(jlbOd,c);
+        c.gridx += 2;
+        panel.add(jtfOd,c);
+        c.gridx = 0; c.gridy = 6 ;
+        panel.add(jlbDo,c);
+        c.gridx += 2;
+        panel.add(jtfDo,c);
+		
+		
 		
 		String[] columnNames = 
 			{"Lp",
@@ -87,12 +89,7 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 		tabela.getTableHeader().setReorderingAllowed(false);
 		
 		scrollPane1 = new JScrollPane(tabela);
-		JPanel p = new JPanel();
-		p.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		p.setPreferredSize(new Dimension(600, 200));
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(0, 10, 0, 10);
+		
 		
 	
      
@@ -124,8 +121,8 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 	}
      
 	private void ustawNasluchZdarzen(){
-		list.addListSelectionListener(this);
-		search.addKeyListener(this);
+		
+	
 	}
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
@@ -213,7 +210,7 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 	@Override
 	public void keyPressed(KeyEvent arg0) { }
 	@Override
-	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
+	public void keyReleased(KeyEvent arg0) { }
 	@Override
 	public void keyTyped(KeyEvent arg0) { }
 }
