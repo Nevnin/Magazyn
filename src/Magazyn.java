@@ -158,42 +158,7 @@ public class Magazyn extends JFrame implements ActionListener {
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
-        }
-        if(z==zamowienie.jbZamow)
-		{
-			String TerminRealizacji = zamowienie.jtfTerminRealizacji.getText().toString();
-			try {
-				 String walidacja = zamowienie.walidacjaDat(TerminRealizacji);
-				 walidacja+=zamowienie.walidacjaTabeli();
-				 if(walidacja.length()>0)
-				 {
-			    	JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
-				 }else
-				 {
-					 try {
-						zamowienie.Zamowienie();
-						zamowienie.dodanieTowarowDoZamowienia();
-						JOptionPane.showMessageDialog(null, "Pomyœlnie dodane zamówienie!!!");
-						removeP();
-			        	zamowienie = new Zamowieniev2();
-			        	add(zamowienie);
-			        	zamowienie.jbZamow.addActionListener(this);
-			        	validate();
-			        	dopasujSieDoZawartosci();
-			        	repaint();
-						
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					 
-				 }
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-        
+        }    
 	}
 	private void dopasujSieDoZawartosci() {
 		 pack();   
