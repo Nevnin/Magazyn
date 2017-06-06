@@ -25,11 +25,7 @@ public class Magazyn extends JFrame implements ActionListener {
 	public Magazyn() {
 		super("Magazyn");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		try {
-			 polaczenie = new Polaczenie();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		polaczenie = new Polaczenie();
 		//setMinimumSize(new Dimension(400, 350));	
 		menu = new Menu();
 		setJMenuBar(menu);
@@ -180,16 +176,16 @@ public class Magazyn extends JFrame implements ActionListener {
 	     setLocationRelativeTo(null); 
 	}
 	public void removeP(){
-		remove(p1);
-		remove(kartaDostawcy);
-		remove(zamowienie);
-		remove(hs);
-		remove(stanMag);
-		remove(wykazDostawcow);
-		remove(td);
-		remove(oz);
-		remove(dt);
-		remove(wgWartosci);
-		remove(wgKategorii);
+		if(p1 != null){ remove(p1); }
+		if(kartaDostawcy != null){ remove(kartaDostawcy); }
+		if(zamowienie != null){ remove(zamowienie); }
+		if(hs != null){ remove(hs); }
+		if(stanMag != null){ remove(stanMag); }
+		if(wykazDostawcow != null){ remove(wykazDostawcow); }
+		if(td != null){ remove(td); }
+		if(oz != null){ remove(oz); }
+		if(dt != null){ remove(dt); }
+		if(wgWartosci != null){ remove(wgWartosci); }
+		if(wgKategorii != null){ remove(wgKategorii); }
 	}
 }

@@ -1,12 +1,8 @@
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import javax.swing.JFrame;
-
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.Statement;
-
+import java.sql.Statement;
 
 
 public class Polaczenie{
@@ -17,26 +13,44 @@ public class Polaczenie{
 	private final static String DBDRIVER = "com.mysql.jdbc.Driver";
 	
 	private Connection connection;
-	private Statement statement;
 	
-	public Polaczenie() throws SQLException{
+	public Polaczenie(){
 		try {
+			//Register JDBC driver
 			Class.forName(DBDRIVER);
+			//Open a connection
 			connection = (Connection) DriverManager.getConnection(DBURL, DBUSER, DBPASS);
-			statement = (Statement) connection.createStatement();
 		} catch (ClassNotFoundException e) {
-			System.out.println("Problem ze sterownikiem ");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (SQLException e) {
-			System.out.println("SQLException:" + e.getMessage());
-			System.out.println("SQLSTATE:" + e.getSQLState());
-			System.out.println("VendorError:"+e.getErrorCode());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 	}
-	public ResultSet sqlSelect(String query) throws SQLException{
-		return statement.executeQuery(query);
+	public ResultSet sqlSelect(String query){
+		Statement stmt = null;  
+		ResultSet rs = null;
+		try {
+			stmt = connection.createStatement();  
+			System.out.println(query);
+			rs = stmt.executeQuery(query);
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		return rs;
 	} 
-	public void print(){
-		System.out.println("test");
+	public void closeConn(){
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
