@@ -86,17 +86,14 @@ public class Magazyn extends JFrame implements ActionListener {
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
-        }else if(z==menu.historiazamowien)
-        {
+        }else if(z==menu.historiazamowien){
         	removeP();
         	hs = new HistoriaZamowien();
         	add(hs);
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
-        }
-        else if(z==menu.odbiorzamowien)
-        {
+        }else if(z==menu.odbiorzamowien){
         	removeP();
         	oz = new OdbiorZamowien();
         	add(oz);
