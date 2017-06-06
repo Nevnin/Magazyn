@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.6.5.2
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 23 Maj 2017, 18:20
--- Wersja serwera: 10.1.10-MariaDB
--- Wersja PHP: 5.6.19
+-- Czas generowania: 06 Cze 2017, 14:36
+-- Wersja serwera: 10.1.21-MariaDB
+-- Wersja PHP: 7.1.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -57,7 +57,7 @@ CREATE TABLE `dostawca` (
 --
 
 INSERT INTO `dostawca` (`IdDostawca`, `NazwaSkrocona`, `NazwaPelna`, `NIP`, `Telefon1`, `Telefon2`, `Telefon3`, `NazwaDzialu`, `NrKonta`, `Miejscowosc`, `Adres`, `KodPocztowy`, `Poczta`) VALUES
-(1, 'Hurtownia "BHEU"', 'Hurtownia "BHEU"SP. z o.o.', '5645824795', '785315745', NULL, NULL, 'Sprzeda?', '43897654135416984', '', 'Majkowska 14', '99-999', 'Kalisz'),
+(1, 'Hurtownia \"BHEU\"', 'Hurtownia \"BHEU\"SP. z o.o.', '5645824795', '785315745', NULL, NULL, 'Sprzeda?', '43897654135416984', '', 'Majkowska 14', '99-999', 'Kalisz'),
 (2, 'Pharma Store', 'Pharma Store Spó?ka z ograniczon? odpowiedzialno?ci? Spó?ka Komandytowa', '7401693405', '435096845', '549038504', NULL, 'Sprzedaz', '121234124594039405443', '', 'ul. Mazowiecka', '89-999', 'Torun'),
 (3, 'Gadget-Master', 'GADGET-MASTER Hurtownia Dystrybutor Importer Gad?etów Upominków Prezentów Smolec hurtownia', '7830284593', '403854923', NULL, NULL, 'Sprzedaz', '21124125613591285', '', 'ul.Parczewskiego', '34-999', 'Smolec '),
 (4, 'Best Buy', 'BEST BUTY Hurtownia obuwia sportowego Kostrzyn nad Odr? hurtownia', '1243234353', '122123512', NULL, NULL, 'Sprzedaz', '2152515412351561553', '', 'ul. Aleja Pokoju 12', '33-223', 'Kostrzyn nad Odr?'),
@@ -73,7 +73,7 @@ CREATE TABLE `dostawcatowar` (
   `IdDostawcaTowar` int(11) NOT NULL,
   `IdDostawca` int(11) NOT NULL,
   `IdTowar` int(11) NOT NULL,
-  `Cena` float NOT NULL,
+  `Cena` decimal(10,2) NOT NULL,
   `DataOd` date NOT NULL,
   `DataDo` date DEFAULT NULL,
   `KodTowaruWgDostawcy` varchar(50) CHARACTER SET latin1 NOT NULL,
@@ -85,21 +85,21 @@ CREATE TABLE `dostawcatowar` (
 --
 
 INSERT INTO `dostawcatowar` (`IdDostawcaTowar`, `IdDostawca`, `IdTowar`, `Cena`, `DataOd`, `DataDo`, `KodTowaruWgDostawcy`, `NazwaTowaruWgDostawcy`) VALUES
-(1, 1, 1, 600, '2017-03-13', '2017-03-23', '648464168464', 'DELL 24"'),
-(2, 2, 3, 250, '2017-03-07', '2017-03-30', '2655355253', 'Mysz Zowie EC1-A '),
-(3, 2, 3, 249, '2017-03-31', '2017-04-04', '1551555131353', 'Mysz Zowie EC1-A '),
-(4, 2, 3, 259, '2017-02-01', '2017-03-01', '3532673774775', 'Mysz Zowie EC1-A '),
-(5, 3, 4, 1700, '2017-03-01', '2017-03-15', '235637643762636', 'AMD RADEON Fury X'),
-(6, 3, 4, 1689, '2017-03-16', '2017-03-31', '25563674564646', 'AMD RADEON Fury X'),
-(7, 4, 5, 289, '2017-03-01', '2017-03-14', '4364562466', 'Razer DeathAdder Black'),
-(8, 4, 5, 279, '2017-03-15', '2017-03-24', '25225252523', 'Razer DeathAdder Black'),
-(9, 4, 5, 250, '2017-03-24', '2017-03-31', '534646263', 'Razer DeathAdder Black'),
-(10, 5, 6, 190, '2017-03-01', '2017-03-30', '1525253535', 'Zalman Z1 Black'),
-(11, 5, 6, 178, '2017-03-31', '2017-04-12', '125245634747', 'Zalman Z1 Black'),
-(12, 3, 7, 988, '2017-03-08', '2017-03-30', '1353736443', 'Intel i5-4460'),
-(13, 3, 8, 1900, '2017-03-01', '2017-03-30', '3156463464', 'NVIDIA GeForce 1080'),
-(14, 2, 9, 1200, '2017-03-01', '2017-03-31', '13543645673', 'Sony Bravia 23"'),
-(15, 2, 10, 2100, '2017-03-01', '2017-03-31', '25624626262', 'Sony Bravia 37"');
+(1, 1, 1, '600.00', '2017-03-13', '2017-03-23', '648464168464', 'DELL 24\"'),
+(2, 2, 3, '250.00', '2017-03-07', '2017-03-30', '2655355253', 'Mysz Zowie EC1-A '),
+(3, 2, 3, '249.00', '2017-03-31', '2017-04-04', '1551555131353', 'Mysz Zowie EC1-A '),
+(4, 2, 3, '259.00', '2017-02-01', '2017-03-01', '3532673774775', 'Mysz Zowie EC1-A '),
+(5, 3, 4, '1700.00', '2017-03-01', '2017-03-15', '235637643762636', 'AMD RADEON Fury X'),
+(6, 3, 4, '1689.00', '2017-03-16', '2017-03-31', '25563674564646', 'AMD RADEON Fury X'),
+(7, 4, 5, '289.00', '2017-03-01', '2017-03-14', '4364562466', 'Razer DeathAdder Black'),
+(8, 4, 5, '279.00', '2017-03-15', '2017-03-24', '25225252523', 'Razer DeathAdder Black'),
+(9, 4, 5, '250.00', '2017-03-24', '2017-03-31', '534646263', 'Razer DeathAdder Black'),
+(10, 5, 6, '190.00', '2017-03-01', '2017-03-30', '1525253535', 'Zalman Z1 Black'),
+(11, 5, 6, '178.00', '2017-03-31', '2017-04-12', '125245634747', 'Zalman Z1 Black'),
+(12, 3, 7, '988.00', '2017-03-08', '2017-03-30', '1353736443', 'Intel i5-4460'),
+(13, 3, 8, '1900.00', '2017-03-01', '2017-03-30', '3156463464', 'NVIDIA GeForce 1080'),
+(14, 2, 9, '1200.00', '2017-03-01', '2017-03-31', '13543645673', 'Sony Bravia 23\"'),
+(15, 2, 10, '2100.00', '2017-03-01', '2017-03-31', '25624626262', 'Sony Bravia 37\"');
 
 -- --------------------------------------------------------
 
@@ -157,6 +157,14 @@ CREATE TABLE `magazyn` (
   `NazwaMagazyn` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Zrzut danych tabeli `magazyn`
+--
+
+INSERT INTO `magazyn` (`IdMagazyn`, `NazwaMagazyn`) VALUES
+(1, 'Magazyn 1'),
+(2, 'Magazyn 2');
+
 -- --------------------------------------------------------
 
 --
@@ -199,7 +207,7 @@ CREATE TABLE `pz` (
   `DataWystawienia` date NOT NULL,
   `Magazyn` int(11) NOT NULL,
   `Zamowienie` int(11) NOT NULL,
-  `PodsumowanieNetto` float NOT NULL,
+  `PodsumowanieNetto` decimal(10,2) NOT NULL,
   `Uwagi` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -246,16 +254,16 @@ CREATE TABLE `towar` (
 --
 
 INSERT INTO `towar` (`IdTowar`, `NazwaTowaru`, `MinStanMagazynowy`, `MaxStanMagazynowy`, `StanMagazynowyRzeczywisty`, `StanMagazynowyDysponowany`, `StawkaVat`, `KodTowaru`, `IdKategoria`, `IdJednostkaMiary`) VALUES
-(1, 'Monitor DELL 24"', 5, 10, 8, 31, 23, '98764164135186497', 1, 3),
+(1, 'Monitor DELL 24\"', 5, 10, 8, 31, 23, '98764164135186497', 1, 3),
 (2, 'Klawiatura Razer Chroma', 10, 25, 22, 18, 23, '5416168461536847', 1, 3),
-(3, 'Zowie EC1-A', 5, 25, 4, 25, 23, '254235252', 4, 3),
+(3, 'Zowie EC1-A', 5, 25, 4, 26, 23, '254235252', 4, 3),
 (4, 'AMD RADEON Fury X', 5, 10, 7, 23, 23, '1425253521525', 6, 3),
 (5, 'Razer DeathAdder', 5, 15, 4, 15, 23, '531525235223', 4, 3),
 (6, 'Zalman Z1', 10, 23, 14, 43, 23, '125245235155', 5, 3),
 (7, 'Intel i5-4460', 5, 15, 5, 44, 23, '154858546457455', 7, 3),
 (8, 'NVIDIA GeForce 1080', 5, 15, 14, 34, 23, '136435476858', 6, 3),
-(9, 'Sony Bravia 23"', 3, 9, 2, 16, 23, '2647434646346', 1, 3),
-(10, 'Sony Bravia 37"', 3, 16, 5, 18, 23, '7568347444574', 1, 3);
+(9, 'Sony Bravia 23\"', 3, 9, 2, 16, 23, '2647434646346', 1, 3),
+(10, 'Sony Bravia 37\"', 3, 16, 5, 18, 23, '7568347444574', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -292,13 +300,13 @@ CREATE TABLE `zamowienie` (
   `IdZamowienie` int(11) NOT NULL,
   `TerminRealizacji` date NOT NULL,
   `DataRealizacji` date DEFAULT NULL,
-  `CalkowitaWartoscZamowienia` float NOT NULL,
+  `CalkowitaWartoscZamowienia` decimal(10,2) NOT NULL,
   `IdDostawcy` int(11) NOT NULL,
   `DataWystawienia` date NOT NULL,
   `NumerZamowienia` varchar(50) CHARACTER SET latin1 NOT NULL,
   `IdSposobDostawy` int(11) NOT NULL,
-  `KosztDostawy` float NOT NULL,
-  `WartoscTowarow` float NOT NULL
+  `KosztDostawy` decimal(10,2) NOT NULL,
+  `WartoscTowarow` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 --
@@ -306,11 +314,12 @@ CREATE TABLE `zamowienie` (
 --
 
 INSERT INTO `zamowienie` (`IdZamowienie`, `TerminRealizacji`, `DataRealizacji`, `CalkowitaWartoscZamowienia`, `IdDostawcy`, `DataWystawienia`, `NumerZamowienia`, `IdSposobDostawy`, `KosztDostawy`, `WartoscTowarow`) VALUES
-(19, '2017-05-25', NULL, 9050, 1, '2017-05-23', '2017/05/23/1', 2, 50, 9000),
-(20, '2017-06-06', NULL, 15858, 2, '2017-05-23', '2017/05/23/2', 2, 180, 15678),
-(21, '2017-06-15', NULL, 104704, 3, '2017-05-23', '2017/05/23/3', 2, 160, 104544),
-(22, '2017-06-22', NULL, 5380, 5, '2017-05-23', '2017/05/23/4', 2, 40, 5340),
-(23, '2017-05-25', NULL, 2810, 4, '2017-05-23', '2017/05/23/5', 2, 60, 2750);
+(19, '2017-05-25', NULL, '9050.00', 1, '2017-05-23', '2017/05/23/1', 2, '50.00', '9000.00'),
+(20, '2017-06-06', NULL, '15858.00', 2, '2017-05-23', '2017/05/23/2', 2, '180.00', '15678.00'),
+(21, '2017-06-15', NULL, '104704.00', 3, '2017-05-23', '2017/05/23/3', 2, '160.00', '104544.00'),
+(22, '2017-06-22', NULL, '5380.00', 5, '2017-05-23', '2017/05/23/4', 2, '40.00', '5340.00'),
+(23, '2017-05-25', NULL, '2810.00', 4, '2017-05-23', '2017/05/23/5', 2, '60.00', '2750.00'),
+(24, '2017-11-11', NULL, '359.00', 2, '2017-06-05', '2017/06/05/1', 2, '110.00', '249.00');
 
 -- --------------------------------------------------------
 
@@ -322,9 +331,9 @@ CREATE TABLE `zamowienietowar` (
   `IdZamowienieTowar` int(11) NOT NULL,
   `Lp` int(11) NOT NULL,
   `IdTowar` int(11) NOT NULL,
-  `Cena` float NOT NULL,
+  `Cena` decimal(10,2) NOT NULL,
   `Ilosc` int(11) NOT NULL,
-  `WartoscNetto` float NOT NULL,
+  `WartoscNetto` decimal(10,2) NOT NULL,
   `IdZamowienie` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
@@ -333,15 +342,16 @@ CREATE TABLE `zamowienietowar` (
 --
 
 INSERT INTO `zamowienietowar` (`IdZamowienieTowar`, `Lp`, `IdTowar`, `Cena`, `Ilosc`, `WartoscNetto`, `IdZamowienie`) VALUES
-(20, 1, 1, 600, 15, 9000, 19),
-(21, 1, 9, 1200, 5, 6000, 20),
-(22, 2, 10, 2100, 2, 4200, 20),
-(23, 3, 3, 249, 22, 5478, 20),
-(24, 1, 4, 1689, 16, 27024, 21),
-(25, 2, 7, 988, 40, 39520, 21),
-(26, 3, 8, 1900, 20, 38000, 21),
-(27, 1, 6, 178, 30, 5340, 22),
-(28, 1, 5, 250, 11, 2750, 23);
+(20, 1, 1, '600.00', 15, '9000.00', 19),
+(21, 1, 9, '1200.00', 5, '6000.00', 20),
+(22, 2, 10, '2100.00', 2, '4200.00', 20),
+(23, 3, 3, '249.00', 22, '5478.00', 20),
+(24, 1, 4, '1689.00', 16, '27024.00', 21),
+(25, 2, 7, '988.00', 40, '39520.00', 21),
+(26, 3, 8, '1900.00', 20, '38000.00', 21),
+(27, 1, 6, '178.00', 30, '5340.00', 22),
+(28, 1, 5, '250.00', 11, '2750.00', 23),
+(29, 1, 3, '249.00', 1, '249.00', 24);
 
 --
 -- Indeksy dla zrzutów tabel
@@ -473,7 +483,7 @@ ALTER TABLE `kategoria`
 -- AUTO_INCREMENT dla tabeli `magazyn`
 --
 ALTER TABLE `magazyn`
-  MODIFY `IdMagazyn` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `IdMagazyn` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT dla tabeli `pracownik`
 --
@@ -503,12 +513,12 @@ ALTER TABLE `uzytkownik`
 -- AUTO_INCREMENT dla tabeli `zamowienie`
 --
 ALTER TABLE `zamowienie`
-  MODIFY `IdZamowienie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `IdZamowienie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT dla tabeli `zamowienietowar`
 --
 ALTER TABLE `zamowienietowar`
-  MODIFY `IdZamowienieTowar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `IdZamowienieTowar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 --
 -- Ograniczenia dla zrzutów tabel
 --

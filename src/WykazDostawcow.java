@@ -18,8 +18,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -66,6 +69,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
     String url = "jdbc:mysql://" + serverName + "/" + mydatabase; 
     String username = "root";
     String password = "";
+    DecimalFormat df;
     
 	public WykazDostawcow() {
 		JPanel panel = new JPanel();
@@ -122,6 +126,12 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 	    scrollPane = new JScrollPane(tablicaTowarow);
 	    scrollPane.setPreferredSize(new Dimension(400, 200));
 	    scrollPane.setMinimumSize(new Dimension(400, 200));
+	    
+		df = new DecimalFormat("### ###.00z³");
+		DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		symbols.setGroupingSeparator(' ');
+		df.setDecimalFormatSymbols(symbols);
 		
 		scrollPane = new JScrollPane();
 		scPaneTabTow = new JScrollPane(tablicaTowarow);
@@ -481,7 +491,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 					
 					for(int i=0; i<rozmiar; i++){
 						double cenaD = Double.parseDouble(rs.getString("Cena"));
-						DecimalFormat df = new DecimalFormat("###,###.00z³");
 						System.out.println(rs.getString("Cena"));
 						String[] tabPom2 = {rs.getString("NazwaTowaru"),rs.getString("KodTowaru"),rs.getString("KodTowaruWgDostawcy"),rs.getString("NazwaTowaruWgDostawcy"),""+df.format(cenaD)};
 						tableModel.addRow(tabPom2);
@@ -873,7 +882,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 				preparedStmt.execute();
 				connection.close();
 				double cenaD = Double.parseDouble(jtfCena.getText().toString());
-				DecimalFormat df = new DecimalFormat("###,###.00z³");
 				System.out.println(df.format(cenaD));
 		    	String[] tabPom = {jcbTowary.getSelectedItem().toString(),kodTowaru,jtfKodWgDos.getText(),jtfNazwaWgDos.getText(),""+df.format(cenaD)};
 		    	tableModel.addRow(tabPom);

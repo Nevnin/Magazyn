@@ -11,6 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -23,8 +26,10 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class OdbiorZamowien extends JPanel implements ListSelectionListener, KeyListener{
@@ -36,15 +41,29 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private JTable tabela;
-	private String[] tab,tabMagazyn;
+	private String[] tab,tabMagazyn,tabNazwyKol = 
+		{"Lp",
+	            "Nazwa Towaru",
+	            "Cena",
+	            "Ilosc",
+	            "Wartosc Netto"};;
 	private JSplitPane splitPane,splitPane1;
 	private JComboBox<String> jcbNumerMagazynu;
 	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbNrZam,jlbNumerPZ,jlbDataWystawienia,jlbNumerMagazynu,jlbDostawca,jlbWartoscNetto,jlbUwagi;
-	private JTextField jtfNrZam,search,jtfNumerPZ,jtfDataWystawienia,jtfNumerMagazynu,jtfWartoscNetto,jtfUwagi,jtfDostawca;
+	private JTextField jtfNrZam,search,jtfDataWystawienia,jtfNumerMagazynu,jtfWartoscNetto,jtfUwagi,jtfDostawca;
 	private JButton jbZatwierdz;
+	private String teraz,nazwaPZ;
+	 DecimalFormat df;
 	public OdbiorZamowien()
 	{
+		df=new java.text.DecimalFormat(); 
+		df.setMaximumFractionDigits(2); 
+		df.setMinimumFractionDigits(2); 
+		SimpleDateFormat dt= new SimpleDateFormat("yyyy-MM-dd"); 
+		 Date data = new Date(); 
+		 teraz = dt.format(data);
+		 nazwaPZ=tworzenieNazwyPZ();
 		try {
 			polaczenie = new Polaczenie();
 			String sql = "SELECT * FROM zamowienie";
@@ -83,35 +102,29 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 		splitPane.setLeftComponent(panel);
 		//scrollPane1.setViewportView(list1);
 		
-		String[] columnNames = 
-			{"Lp",
-			"Kod towaru",
-            "Nazwa towaru",
-            "j.m",
-            "Ilosc",
-            "Cena", 
-            "Wartosc Netto"};
+
 		
-		String[][] data = new String[0][0];
+		String[][] data1 = new String[0][0];
 		
-		tabela = new JTable(data, columnNames);
+		tabela = new JTable(data1, tabNazwyKol);
 		tabela.setDefaultEditor(Object.class, null);
 		tabela.setPreferredScrollableViewportSize(new Dimension(400,200));
 		tabela.getTableHeader().setReorderingAllowed(false);
-		
+		ustawRozmiarTablicu();
 		scrollPane1 = new JScrollPane(tabela);
 		JPanel p = new JPanel();
 		p.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(0, 10, 0, 10);
-		jlbNumerPZ = new JLabel("Numer PZ:");
+		jlbNumerPZ = new JLabel("PZ nr:"+nazwaPZ);
 		jlbNumerPZ.setFont(new Font("Calibri", Font.BOLD, 30));
 		jlbNrZam = new JLabel("Numer zamowienia");
 		jtfNrZam = new JTextField();
 		jtfNrZam.setEditable(false);
 		jlbDataWystawienia = new JLabel("Data wystawienia:");
 		jtfDataWystawienia = new JTextField();
+		jtfDataWystawienia.setText(teraz);
 		jtfDataWystawienia.setPreferredSize(new Dimension(400,20));
 		String sqlMagazyn = "SELECT * from magazyn";
 		
@@ -239,24 +252,21 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 					wynik+=Double.parseDouble(result.getString(5));
 					j++;
 				}
-				jtfWartoscNetto.setText(Double.toString(wynik));
+				jtfWartoscNetto.setText(df.format(wynik));
 	
-				String[] columnNames = 
-					{"Lp",
-		            "Nazwa Towaru",
-		            "Cena",
-		            "Ilosc",
-		            "Wartosc Netto"};
+				
 				DefaultTableModel tableModel = new DefaultTableModel(0,0);
-				tableModel.setColumnIdentifiers(columnNames);
+				tableModel.setColumnIdentifiers(tabNazwyKol);
 				tabela.setModel(tableModel);
 				for (int i = 0; i < towary.length; i++) {
 					String[] data = new String[towary[0].length];
 					for(int z = 0;z<5;z++){
+						
 						data[z]= towary[i][z];
 					}
 					tableModel.addRow(data);
 				}
+				ustawRozmiarTablicu();
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -298,5 +308,49 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
 	@Override
 	public void keyTyped(KeyEvent arg0) { }
+	public String tworzenieNazwyPZ()
+	{
+		String nazwa="";
+		int k=0;
+		String[] tablica = teraz.split("-");
+		String data = tablica[0]+"-"+tablica[1];
+		
+		PreparedStatement ps;
+		try {
+			Connection connection = DriverManager.getConnection(url, username, password);
+			String count = "SELECT count(*) from pz WHERE DataWystawienia LIKE '"+data+"'";
+			ps = connection.prepareStatement(count);
+			ResultSet rsc= ps.executeQuery();
+			while(rsc.next())
+			{
+				k=rsc.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		nazwa+=tablica[0]+"/"+tablica[1]+"/"+tablica[2]+"/"+k;
+		return nazwa;
+		
+	}
+	private void ustawRozmiarTablicu()
+	{
+		tabela.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    	int[] tabKolSzer = {50,180,100,100,150};
+    	for(int i=0; i<tabNazwyKol.length; i++){
+    		tabela.getColumnModel().getColumn(i).setPreferredWidth(tabKolSzer[i]);
+			DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
+    		if(i==2 || i==4){
+    			tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+    			tabela.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+    		}
+    		else if(i==0 || i ==1 || i==3){
+    			tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+    			tabela.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+    		}
+    	}
+	}
+	
 }
 
