@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.BorderFactory;
@@ -100,18 +101,20 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		tablicaTowarow.getTableHeader().setReorderingAllowed(false);
 		tablicaTowarow.setModel(tableModel);
 		tablicaTowarow.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		int[] tabKolSzer = {200,100,100,100,200,200};
+		int[] tabKolSzer = {155,175,175,155,105};
+		System.out.println(tabNazwyKol.length);
 		for(int i=0; i<tabNazwyKol.length; i++){
 			tablicaTowarow.getColumnModel().getColumn(i).setPreferredWidth(tabKolSzer[i]);
 				DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
-			if(i==1){
+			if(i==4){
 				tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
 				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
 			}
-			else if(i==2 || i ==3){
-				tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
-			}else{
+//			else if(i==2 || i ==3){
+//				tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+//				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+//			}
+			else{
 				tableRenderer.setHorizontalAlignment(SwingConstants.LEFT);
 				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
 			}
@@ -133,10 +136,10 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		edycjaListy = true;
 		
 		Border border = BorderFactory.createLineBorder(Color.lightGray);
-		jlbNazSkroc = new JLabel("Nazwa Skrocona:");
+		jlbNazSkroc = new JLabel("Nazwa skrocona:");
 		jtfNazwaSkrocona = new JTextField();
 		jtfNazwaSkrocona.setEditable(false);
-		jlbNazPeln = new JLabel("Nazwa Pelna:");
+		jlbNazPeln = new JLabel("Nazwa pelna:");
 		jtaNazwaPelna = new JTextArea();
 		jtaNazwaPelna.setEditable(false);
 		jtaNazwaPelna.setPreferredSize(new Dimension(400, 40));
@@ -155,10 +158,10 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		jlbTel3 = new JLabel("Telefon 3:");
 		jtfTelefon3 = new JTextField();
 		jtfTelefon3.setEditable(false);
-		jlbNazDzial = new JLabel("Nazwa Dzialu:");
+		jlbNazDzial = new JLabel("Nazwa dzialu:");
 		jtfNazwaDzialu = new JTextField();
 		jtfNazwaDzialu.setEditable(false);
-		jlbNrKonta = new JLabel("Numer Konta:");
+		jlbNrKonta = new JLabel("Numer konta:");
 		jtfNrKonta = new JTextField();
 		jtfNrKonta.setEditable(false);
 		jlbMiejsc = new JLabel("Miejscowoœæ:");
@@ -167,7 +170,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		jlbAdres = new JLabel("Adres:");
 		jtfAdres = new JTextField();
 		jtfAdres.setEditable(false);
-		jlbKodPocz = new JLabel("Kod Pocztowy:");
+		jlbKodPocz = new JLabel("Kod pocztowy:");
 		jtfKodPocztowy = new JTextField();
 		jtfKodPocztowy.setEditable(false);
 		jlbPoczta = new JLabel("Poczta:");
@@ -184,7 +187,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         
         jlbTytulTowary = new JLabel("Dodawanie towaru Dostawcy");
         jlbTytulTowary.setFont(new Font("Calibri", Font.BOLD, 30));
-        jbtNowyTowar = new JButton("Nowy Towar");
+        jbtNowyTowar = new JButton("Nowy towar");
         jbtZakonczTowar = new JButton("Zakoncz");
 //        jbtNowyTowar.setSize(new Dimension(10, 10));
         jlbTowary = new JLabel("Nazwa towaru");
@@ -311,6 +314,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         documentListener();
         focusListener();
         keyListener();
+        focusable(false);
 	}
 	private void ustawNasluchZdarzen(){
 		list.addListSelectionListener(this);
@@ -396,6 +400,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			dialog.dispose();
 		}
 	}
+	/**
+	 * Wykonuje zapytanie(SELECT) do bazy danych na tabelê 'dostawcy'
+	 * <b>listaDostawcow()</b> zwraca posortowane nazwy skrócone dostawcow 
+	 * @return String[] - tablica
+	 */
 	private String[] listaDostawcow() {
 		String[] tabPom;
 		try {
@@ -452,9 +461,10 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
-				sql = "SELECT NazwaTowaru,Cena,DataOd,DataDo,KodTowaruWgDostawcy,NazwaTowaruWgDostawcy FROM dostawcatowar "
+				sql = "SELECT NazwaTowaru,KodTowaru,Cena,KodTowaruWgDostawcy,NazwaTowaruWgDostawcy FROM dostawcatowar "
 						+ "INNER JOIN towar ON towar.IdTowar=dostawcatowar.IdTowar "
-						+ "WHERE IdDostawca = '"+tabPom[11]+"'";
+						+ "WHERE IdDostawca = '"+tabPom[11]+"' ORDER BY Cena DESC"
+								+ "";
 //				System.out.println(sql);
 				try {
 					ResultSet rs = polaczenie.sqlSelect(sql);
@@ -468,8 +478,12 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 					tableModel.setRowCount(0);
 					tablicaTowarow.setModel(tableModel);					
 					//jtfTelefon3.setText("123");
+					
 					for(int i=0; i<rozmiar; i++){
-						String[] tabPom2 = {rs.getString("NazwaTowaru"),rs.getString("Cena"),rs.getString("DataOd"),rs.getString("DataDo"),rs.getString("KodTowaruWgDostawcy"),rs.getString("NazwaTowaruWgDostawcy")};
+						double cenaD = Double.parseDouble(rs.getString("Cena"));
+						DecimalFormat df = new DecimalFormat("###,###.00z³");
+						System.out.println(rs.getString("Cena"));
+						String[] tabPom2 = {rs.getString("NazwaTowaru"),rs.getString("KodTowaru"),rs.getString("KodTowaruWgDostawcy"),rs.getString("NazwaTowaruWgDostawcy"),""+df.format(cenaD)};
 						tableModel.addRow(tabPom2);
 						rs.next();
 					}
@@ -480,6 +494,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		}
 	}
+	/**
+	 * Okno wyszukiwania nad list¹.
+	 * Po wprowadzeniu tekstu, wykonywanie jest zapytanie do bazy. Lista wyœwietla nazwy skrócone dostawców posuj¹ce do wzorca.
+	 * @param text - wzorzec(string), jesli zostaniu pusty, lista powinna wyswietlic wszystkich dostawcow
+	 */
 	public void szukaj(String text){
 		try {
 			polaczenie = new Polaczenie();
@@ -527,13 +546,14 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //			String sql = "SELECT * FROM dostawcatowar";
 //			ResultSet rs = polaczenie.sqlSelect(sql);
 //			int rozmiarKol = rs.getMetaData().getColumnCount();
-			tabPom = new String[6];
-			tabPom[0] = "Nazwa Towaru";
-			tabPom[1] = "Cena";
-			tabPom[2] = "Data Od";
-			tabPom[3] = "Data Do";
-			tabPom[4] = "Kod towaru wed³ug dostawcy";
-			tabPom[5] = "Nazwa towaru wed³ug dostawcy";
+			tabPom = new String[5];
+			tabPom[0] = "Nazwa towaru";
+			tabPom[1] = "Kod towaru";
+//			tabPom[2] = "Data Od";
+//			tabPom[3] = "Data Do";
+			tabPom[2] = "Kod towaru wed³ug dostawcy";
+			tabPom[3] = "Nazwa towaru wed³ug dostawcy";
+			tabPom[4] = "Cena";
 	//		
 	//		for(int i=1; i<rozmiarKol-2; i++){
 	//			tabNazwyKol[i] = rs.getMetaData().getColumnName(i+3);
@@ -622,22 +642,22 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //	private void ustawNasluchZdarzen(){
 //		jbtNowyTowar.addActionListener(this);
 //	}
-    private void kartaWalidacja() {
-    	//insertTowaryDostawcy();
-    	String walidacja = walidacjaDanychDostawcy();
-    	if(walidacja.length()>0){
-    		JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
-    	}else {
-	    	boolean spr = insertDostawca();
-	    	if(spr == true){
-	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone powodzeniem","", JOptionPane.INFORMATION_MESSAGE);
-	    		wyczyscDaneKontaktowe();
-	    	}
-	    	else {
-	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone niepowodzeniem","Uwaga!", JOptionPane.ERROR_MESSAGE);
-	    	}
-    	}
-	}
+//    private void kartaWalidacja() {
+//    	//insertTowaryDostawcy();
+//    	String walidacja = walidacjaDanychDostawcy();
+//    	if(walidacja.length()>0){
+//    		JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+//    	}else {
+//	    	boolean spr = insertDostawca();
+//	    	if(spr == true){
+//	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone powodzeniem","", JOptionPane.INFORMATION_MESSAGE);
+//	    		wyczyscDaneKontaktowe();
+//	    	}
+//	    	else {
+//	    		JOptionPane.showMessageDialog(null, "Dodawanie dostawcy zakoñczone niepowodzeniem","Uwaga!", JOptionPane.ERROR_MESSAGE);
+//	    	}
+//    	}
+//	}
     private boolean insertDostawca(){
 		String nazwaSkrocona = jtfNazwaSkrocona.getText().toString();
 		String nazwaPelna = jtaNazwaPelna.getText().toString();
@@ -824,11 +844,12 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			rs.next();
 			idDostawca = rs.getString("idDostawca");
 			
-			sql = "SELECT IdTowar FROM towar WHERE NazwaTowaru='"+jcbTowary.getSelectedItem()+"'";
+			sql = "SELECT IdTowar,KodTowaru FROM towar WHERE NazwaTowaru='"+jcbTowary.getSelectedItem()+"'";
 			System.out.println(sql);
 			rs = polaczenie.sqlSelect(sql);
 			rs.next();
 			String idTowaru = rs.getString("IdTowar");
+			String kodTowaru = rs.getString("KodTowaru");
 			
 			sql = "SELECT * FROM dostawcatowar WHERE idTowar='"+idTowaru+"' AND idDostawca='"+idDostawca+"'";
 			System.out.println(sql);
@@ -851,8 +872,10 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 				// execute the preparedstatement
 				preparedStmt.execute();
 				connection.close();
-				
-		    	String[] tabPom = {jcbTowary.getSelectedItem().toString(),jtfCena.getText(),dateFormat.format(date),jtfDataDo.getText(),jtfKodWgDos.getText(),jtfNazwaWgDos.getText()};
+				double cenaD = Double.parseDouble(jtfCena.getText().toString());
+				DecimalFormat df = new DecimalFormat("###,###.00z³");
+				System.out.println(df.format(cenaD));
+		    	String[] tabPom = {jcbTowary.getSelectedItem().toString(),kodTowaru,jtfKodWgDos.getText(),jtfNazwaWgDos.getText(),""+df.format(cenaD)};
 		    	tableModel.addRow(tabPom);
 		    	tablicaTowarow.setModel(tableModel);
 			}

@@ -16,6 +16,8 @@ public class Magazyn extends JFrame implements ActionListener {
 	TowaryDostawcy td = new TowaryDostawcy();
 	OdbiorZamowien oz= new OdbiorZamowien();
 	WyszZamNaDanyTowar dt = new WyszZamNaDanyTowar();
+	WyszZamNaDanyOkres okres = new WyszZamNaDanyOkres();
+	WyszZamZrealizowane zreal = new WyszZamZrealizowane();
 	WyszWgWartosci wgWartosci = new WyszWgWartosci();
 	WyszWgKategorii wgKategorii = new WyszWgKategorii();
 	Menu menu;
@@ -25,11 +27,7 @@ public class Magazyn extends JFrame implements ActionListener {
 	public Magazyn() {
 		super("Magazyn");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		try {
-			 polaczenie = new Polaczenie();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		polaczenie = new Polaczenie();
 		//setMinimumSize(new Dimension(400, 350));	
 		menu = new Menu();
 		setJMenuBar(menu);
@@ -51,6 +49,8 @@ public class Magazyn extends JFrame implements ActionListener {
 		menu.towarydostawcy.addActionListener(this);
 		menu.odbiorzamowien.addActionListener(this);
 		menu.danyTowar.addActionListener(this);
+		menu.danyOkres.addActionListener(this);
+		menu.zrealizowane.addActionListener(this);
 		menu.wgWartosci.addActionListener(this);
 		menu.wgKategorii.addActionListener(this);
 	}
@@ -86,17 +86,14 @@ public class Magazyn extends JFrame implements ActionListener {
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
-        }else if(z==menu.historiazamowien)
-        {
+        }else if(z==menu.historiazamowien){
         	removeP();
         	hs = new HistoriaZamowien();
         	add(hs);
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
-        }
-        else if(z==menu.odbiorzamowien)
-        {
+        }else if(z==menu.odbiorzamowien){
         	removeP();
         	oz = new OdbiorZamowien();
         	add(oz);
@@ -135,6 +132,20 @@ public class Magazyn extends JFrame implements ActionListener {
         	removeP();
         	wgKategorii = new WyszWgKategorii();
         	add(wgKategorii);
+        	validate();
+        	dopasujSieDoZawartosci();
+        	repaint();
+        }else if(z==menu.danyOkres){
+        	removeP();
+        	okres = new WyszZamNaDanyOkres();
+        	add(okres);
+        	validate();
+        	dopasujSieDoZawartosci();
+        	repaint();
+        }else if(z==menu.zrealizowane){
+        	removeP();
+        	zreal = new WyszZamZrealizowane();
+        	add(zreal);
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
@@ -180,16 +191,18 @@ public class Magazyn extends JFrame implements ActionListener {
 	     setLocationRelativeTo(null); 
 	}
 	public void removeP(){
-		remove(p1);
-		remove(kartaDostawcy);
-		remove(zamowienie);
-		remove(hs);
-		remove(stanMag);
-		remove(wykazDostawcow);
-		remove(td);
-		remove(oz);
-		remove(dt);
-		remove(wgWartosci);
-		remove(wgKategorii);
+		if(p1 != null){ remove(p1); }
+		if(kartaDostawcy != null){ remove(kartaDostawcy); }
+		if(zamowienie != null){ remove(zamowienie); }
+		if(hs != null){ remove(hs); }
+		if(stanMag != null){ remove(stanMag); }
+		if(wykazDostawcow != null){ remove(wykazDostawcow); }
+		if(td != null){ remove(td); }
+		if(oz != null){ remove(oz); }
+		if(dt != null){ remove(dt); }
+		if(wgWartosci != null){ remove(wgWartosci); }
+		if(wgKategorii != null){ remove(wgKategorii); }
+		if(okres != null){ remove(okres); }
+		if(zreal != null){ remove(zreal); }
 	}
 }
