@@ -9,6 +9,8 @@ import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -31,6 +33,8 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbNrZam,jlbTermin,jlbDataReal,jlbDataWys,jlbSposDos,jlbKosztDos,jlbWartoscTow,jlbKosztZam,jlbDostawca;
 	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
+	private JDialog dialog;
+	SzczegolyZamowienia szzam;
 	public WyszZamNaDanyTowar()
 	{
 		try {
@@ -74,11 +78,11 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 		//scrollPane1.setViewportView(list1);
 		
 		String[] columnNames = 
-			{"Lp",
-            "Nazwa Towaru",
-            "Cena",
-            "Ilosc",
-            "Wartosc Netto"};
+			{"Nr Zamowienia",
+            "Termin Realizacji",
+            "Data Realizacji",
+            "Data Wystawienia",
+            "Wartosc Zamowienia"};
 		
 		String[][] data = new String[0][0];
 		
@@ -112,7 +116,20 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
             public void mouseClicked(MouseEvent e)
             {
               if (e.getClickCount() == 2)
-              {
+              {		
+            	  int selected=tabela.getSelectedRow();
+            	  System.out.print(selected);
+            	  String nrZam=tabela.getValueAt(selected, 0).toString();
+            	  System.out.println(nrZam);
+            	  dialog = new JDialog();
+            	  szzam= new SzczegolyZamowienia(nrZam);
+//            	  his.list.setSelectedValue();
+            	  dialog.setContentPane(szzam);
+            	  dialog.setVisible(true);
+            	 // dialog.setMinimumSize(new Dimension(900, 600));
+            	  dialog.pack();
+            	  dialog.setLocationRelativeTo(p);
+            	  
             	  
               }
               if (e.getClickCount() == 1)
@@ -169,11 +186,11 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 			
 	
 				String[] columnNames = 
-					{"Lp",
-		            "Nazwa Towaru",
-		            "Cena",
-		            "Ilosc",
-		            "Wartosc Netto"};
+					{"Nr Zamowienia",
+		            "Termin Realizacji",
+		            "Data Realizacji",
+		            "Data Wystawienia",
+		            "Wartosc Zamowienia"};
 				DefaultTableModel tableModel = new DefaultTableModel(0,0);
 				tableModel.setColumnIdentifiers(columnNames);
 				tabela.setModel(tableModel);
