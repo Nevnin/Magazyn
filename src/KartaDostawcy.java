@@ -454,6 +454,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		    	if(nip.length()!=10){
 		    		jtfNip.setBackground(Color.RED);
 		    		JOptionPane.showMessageDialog(null, "D³ugoœæ Nip'u musi byc 10(cyfr)","Uwaga!", JOptionPane.ERROR_MESSAGE);
+		    		setNextFocusableComponent(jtfTelefon1);
 		    	} 
 		    	else if(!nip.matches("[0-9]{10}")){
 		    		jtfNip.setBackground(Color.RED);

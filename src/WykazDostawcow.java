@@ -127,7 +127,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 	    scrollPane.setPreferredSize(new Dimension(400, 200));
 	    scrollPane.setMinimumSize(new Dimension(400, 200));
 	    
-		df = new DecimalFormat("### ###.00z³");
+	    df = new DecimalFormat("###,###.00");
 		DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
 		symbols.setDecimalSeparator('.');
 		symbols.setGroupingSeparator(' ');
@@ -491,8 +491,8 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 					
 					for(int i=0; i<rozmiar; i++){
 						double cenaD = Double.parseDouble(rs.getString("Cena"));
-						System.out.println(rs.getString("Cena"));
-						String[] tabPom2 = {rs.getString("NazwaTowaru"),rs.getString("KodTowaru"),rs.getString("KodTowaruWgDostawcy"),rs.getString("NazwaTowaruWgDostawcy"),""+df.format(cenaD)};
+//						System.out.println(rs.getString("Cena"));
+						String[] tabPom2 = {rs.getString("NazwaTowaru"),rs.getString("KodTowaru"),rs.getString("KodTowaruWgDostawcy"),rs.getString("NazwaTowaruWgDostawcy"),df.format(cenaD)};
 						tableModel.addRow(tabPom2);
 						rs.next();
 					}
@@ -882,6 +882,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 				preparedStmt.execute();
 				connection.close();
 				double cenaD = Double.parseDouble(jtfCena.getText().toString());
+				DecimalFormat df = new DecimalFormat("###,###.00z³");
+				DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
+				symbols.setDecimalSeparator('.');
+				symbols.setGroupingSeparator(' ');
+				df.setDecimalFormatSymbols(symbols);
 				System.out.println(df.format(cenaD));
 		    	String[] tabPom = {jcbTowary.getSelectedItem().toString(),kodTowaru,jtfKodWgDos.getText(),jtfNazwaWgDos.getText(),""+df.format(cenaD)};
 		    	tableModel.addRow(tabPom);
@@ -1229,7 +1234,8 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			@Override
 			public void focusLost(FocusEvent e) {
 		    	try{
-		        	Double.parseDouble(jtfCena.getText().toString());
+		        	double cenaD = Double.parseDouble(jtfCena.getText().toString());
+					jtfCena.setText(df.format(cenaD));
 		    	}catch (Exception ex) {
 		    		jtfCena.setBackground(Color.RED);
 		    		JOptionPane.showMessageDialog(null, "Cena zosta³a podana nieprawid³owa(tylko liczby ,np. 20.99)","Uwaga!", JOptionPane.ERROR_MESSAGE);

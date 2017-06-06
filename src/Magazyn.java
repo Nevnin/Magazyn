@@ -23,7 +23,6 @@ public class Magazyn extends JFrame implements ActionListener {
 	Menu menu;
 	Polaczenie polaczenie;
 	StanMagazynowy stanMag = new StanMagazynowy();
-	String query="Select * from uzytkownik";
 	public Magazyn() {
 		super("Magazyn");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,6 +36,16 @@ public class Magazyn extends JFrame implements ActionListener {
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
+		Object[] tabPom1 = {"1"};
+		String[][] tabPom;
+		String query="Select idDostawca,NazwaPelna,NazwaSkrocona from dostawca where idDostawca=?";
+		tabPom = polaczenie.sqlSelectTest(query,tabPom1);
+		System.out.println(tabPom.length+", ");
+		for(int i=0; i<tabPom.length; i++){
+			for(int j=0; j<tabPom[0].length; j++){
+				System.out.println(tabPom[i][j]);
+			}
+		}
 	}
 	private void ustawNasluchZdarzen() {
 		menu.szukanietowarow.addActionListener(this);

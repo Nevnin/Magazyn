@@ -54,20 +54,26 @@ public class Polaczenie{
 		return dbConnection;
 
 	}
-	public String[] sqlSelectTest(String query){
+	public String[][] sqlSelectTest(String query, Object[] obj){
 		Connection dbConnection = null;
 		PreparedStatement preparedStatement = null;
-		String[] tabPom = null;
+		String[][] tabPom = null;
 		try {
 			dbConnection = getDBConnection();
 			preparedStatement = dbConnection.prepareStatement(query);
-			preparedStatement.setInt(1, 1001);
+			preparedStatement.setObject(1, obj[0]);
 			ResultSet rs = preparedStatement.executeQuery();
+			tabPom = new String[rs.getRow()][rs.getMetaData().getColumnCount()];
 			while (rs.next()) {
-				String userid = rs.getString("USER_ID");
-				String username = rs.getString("USERNAME");
-				System.out.println("userid : " + userid);
-				System.out.println("username : " + username);
+				for(int i=0; i<tabPom.length; i++){
+					for(int j=0; j<tabPom[0].length; j++){
+						tabPom[i][j] = rs.getString(j);
+					}
+				}
+//				String userid = rs.getString("USER_ID");
+//				String username = rs.getString("USERNAME");
+//				System.out.println("userid : " + userid);
+//				System.out.println("username : " + username);
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
