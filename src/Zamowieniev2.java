@@ -64,7 +64,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener, TableModelLi
 		String[] tabDostawca,tabSposobDostawy,tabTowar,tabNazwyKol;
 		JPanel panelDaneZam,panelZamTow;
 		String teraz,nazwaZam;
-		float kosztZam=0.00f,cena=0.00f,wartoscNetto=0.00f,wartoscTowarow=0.00f,kosztDostawy=0.00f;
+		double kosztZam=0,cena=0,wartoscNetto=0,wartoscTowarow=0,kosztDostawy=0;
 		int ilosc,lp;
 		JSplitPane splitPane;
 		DefaultTableModel tablemodel;
@@ -73,9 +73,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener, TableModelLi
 		JButton jbdodajTowar,jbZamow; 
 		public Zamowieniev2()
 		{
-			df=new java.text.DecimalFormat(); 
-			df.setMaximumFractionDigits(2); 
-			df.setMinimumFractionDigits(2); 
+			df=new java.text.DecimalFormat("###,##0.00"); 
 			setLayout(new GridBagLayout());
 			GridBagConstraints c= new GridBagConstraints();
 			c.insets= new Insets(0,10,1,10);
@@ -406,6 +404,35 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object z = e.getSource();
+			 if(z==jbZamow)
+				{
+					String TerminRealizacji = jtfTerminRealizacji.getText().toString();
+					try {
+						 String walidacja = walidacjaDat(TerminRealizacji);
+						 walidacja+=walidacjaTabeli();
+						 if(walidacja.length()>0)
+						 {
+					    	JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+						 }else
+						 {
+							 try {
+								Zamowienie();
+								dodanieTowarowDoZamowienia();
+								JOptionPane.showMessageDialog(null, "Pomyœlnie dodane zamówienie!!!");
+								
+								new Zamowieniev2();
+								
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							 
+						 }
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
 			if(z==jcbDostawca)
 			{
 				tablemodel = new DefaultTableModel(0,0);
@@ -540,7 +567,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 		private void ustawNasluchZdarzen() 
 		{
 			jbdodajTowar.addActionListener(this);
-			//jbZamow.addActionListener(this);
+			jbZamow.addActionListener(this);
 			jcbDostawca.addActionListener(this);
 			jcbSposobDostawy.addActionListener(this);
 			jtfKosztDostawy.addActionListener(this);

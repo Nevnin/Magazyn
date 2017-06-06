@@ -3,6 +3,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.Connection;
@@ -32,7 +34,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class OdbiorZamowien extends JPanel implements ListSelectionListener, KeyListener{
+public class OdbiorZamowien extends JPanel implements ListSelectionListener, KeyListener, ActionListener{
 	String serverName = "localhost";
     String mydatabase = "magazyn";
     String url = "jdbc:mysql://" + serverName + "/" + mydatabase; 
@@ -57,9 +59,8 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 	 DecimalFormat df;
 	public OdbiorZamowien()
 	{
-		df=new java.text.DecimalFormat(); 
-		df.setMaximumFractionDigits(2); 
-		df.setMinimumFractionDigits(2); 
+		df=new java.text.DecimalFormat("###,###.00"); 
+		
 		SimpleDateFormat dt= new SimpleDateFormat("yyyy-MM-dd"); 
 		 Date data = new Date(); 
 		 teraz = dt.format(data);
@@ -201,6 +202,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
         ustawNasluchZdarzen();
 	}
 	private void ustawNasluchZdarzen(){
+		jbZatwierdz.addActionListener(this);
 		list.addListSelectionListener(this);
 		search.addKeyListener(this);
 	}
@@ -246,9 +248,9 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 				{
 					towary[j][0]=result.getString(1);
 					towary[j][1]=result.getString(2);
-					towary[j][2]=result.getString(3);
+					towary[j][2]=df.format(Double.parseDouble(result.getString(3)));
 					towary[j][3]=result.getString(4);
-					towary[j][4]=result.getString(5);
+					towary[j][4]=df.format(Double.parseDouble(result.getString(5)));
 					wynik+=Double.parseDouble(result.getString(5));
 					j++;
 				}
@@ -350,6 +352,11 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
     			tabela.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
     		}
     	}
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
