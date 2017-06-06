@@ -19,6 +19,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class WyszWgWartosci extends JPanel implements ListSelectionListener, KeyListener{
@@ -30,7 +31,7 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 	private JTextField search, jtfDostawcaNazwaSkrocona, jtfSposobDostawy, jtfCenaCalkowita, jtfNumerZamowienia, jtfTerminRealizacji;
 	private JTable tabela;
 	private JLabel jlbDostawcaNazwaSkrocona, jlbSposobDostawy, jlbCenaCalkowita, jlbNumerZamowienia, jlbTerminRealizacji;
-	
+	private DefaultTableModel tableModel;
 	
 	public WyszWgWartosci(){
 		try{
@@ -74,17 +75,37 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 		
 		String[] columnNames = 
 			{"Nazwa Towaru",
-			"Data realizacji",
-            "Termin realizacji",
-            "Nazwa dostawcy",
-            "Sposob dostawy"};
-		
-		String[][] data = new String[0][0];
-		
-		tabela = new JTable(data, columnNames);
-		tabela.setDefaultEditor(Object.class, null);
+					"Kod towaru",
+		            "Ilosc",
+		            "Cena"};
+
+		tableModel = new DefaultTableModel(0,0);
+		tableModel.setColumnIdentifiers(columnNames);
+		tabela = new JTable();
 		tabela.getTableHeader().setReorderingAllowed(false);
-		
+		tabela.setModel(tableModel);
+		tabela.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tabela.setEnabled(false);
+		tabela.setAutoCreateRowSorter(true);
+		int[] tabKolSzer = {155,175,175,125};
+		System.out.println(columnNames.length+" , ");
+		for(int i=0; i<columnNames.length; i++){
+			tabela.getColumnModel().getColumn(i).setPreferredWidth(tabKolSzer[i]);
+			DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
+			if(i==3|| i==2){
+				tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+				tabela.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+			}
+//			else if(i==2 || i ==3){
+//				tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+//				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+//			}
+			else{
+				tableRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+				tabela.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
+			}
+		}
+
 		scrollPane1 = new JScrollPane(tabela);
 		JPanel p = new JPanel();
 		p.setLayout(new GridBagLayout());
@@ -192,7 +213,7 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 				jtfSposobDostawy.setText(idT[5]);
 				int id = Integer.parseInt(idT[0]);
 	
-				String query1 = "SELECT towar.NazwaTowaru, zamowienietowar.cena, CONCAT(zamowienietowar.ilosc,' ',jednostkimiary.NazwaSkrocona), towar.KodTowaru "
+				String query1 = "SELECT towar.NazwaTowaru, towar.KodTowaru, CONCAT(zamowienietowar.ilosc,' ',jednostkimiary.NazwaSkrocona), CONCAT(zamowienietowar.cena,' zl')  "
 						+ "FROM `zamowienie` "
 						+ "INNER JOIN zamowienietowar ON zamowienie.IdZamowienie = zamowienietowar.IdZamowienie "
 						+ "INNER JOIN towar ON towar.IdTowar = zamowienietowar.IdTowar "
@@ -215,15 +236,9 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 					j++;
 				}
 			
-	
-				String[] columnNames = 
-					{"Nazwa Towaru",
-							"Cena",
-				            "Ilosc",
-				            "Kod towaru"};
-				DefaultTableModel tableModel = new DefaultTableModel(0,0);
-				tableModel.setColumnIdentifiers(columnNames);
+				tableModel.setRowCount(0);
 				tabela.setModel(tableModel);
+				
 				for (int i = 0; i < zamowienie.length; i++) {
 					String[] data = new String[zamowienie[0].length];
 					for(int z = 0;z<zamowienie[0].length;z++){
