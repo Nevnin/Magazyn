@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -37,6 +38,7 @@ public class SzczegolyZamowienia extends JPanel {
 		tabela.setDefaultEditor(Object.class, null);
 		tabela.getTableHeader().setReorderingAllowed(false);
 		tabela.setAutoCreateRowSorter(true);
+		tabela.setPreferredScrollableViewportSize(new Dimension(400, 200));
 		
 		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		scrollPane1 = new JScrollPane(tabela);
@@ -45,11 +47,13 @@ public class SzczegolyZamowienia extends JPanel {
 		GridBagConstraints c = new GridBagConstraints();
 		p.setPreferredSize(new Dimension(600, 200));
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(0, 10, 0, 10);
+		c.insets = new Insets(0, 10, 1, 10);
 		
-		jlbNrZam = new JLabel("Numer Zamowienia:");
-		jtfNrZam = new JTextField("Numer Zamowienia");
-		jtfNrZam.setEditable(false);
+		jlbNrZam = new JLabel("Zamówienie nr: xxxx/xx/xx/x");
+		jlbNrZam.setFont(new Font("Calibri", Font.BOLD, 30));
+		//jlbNrZam.setPreferredSize(new Dimension(150, 20));
+		
+		//jtfNrZam.setEditable(false);
 		jlbTermin = new JLabel("Termin Realizacji:");
 		jtfTermin = new JTextField();
 		jtfTermin.setEditable(false);
@@ -81,41 +85,41 @@ public class SzczegolyZamowienia extends JPanel {
 //		jlbWartosc = new JLabel("Wartosc");
 		//area = new JTextArea();
 		
-		c.gridx = 0; c.gridy = 0;
+		c.gridx = 1; c.gridy = 0;
         p.add(jlbNrZam,c);
-        c.gridx += 2;
-        p.add(jtfNrZam,c);
+//        c.gridx = 1;
+//        p.add(jtfNrZam,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbTermin,c);
-        c.gridx += 2;
+        c.gridx = 1;
         p.add(jtfTermin,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbDataReal,c);
-        c.gridx += 2;
+        c.gridx = 1;
         p.add(jtfDataReal,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbDataWys,c);
-        c.gridx += 2;
+        c.gridx = 1;
         p.add(jtfDataWys,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbSposDos,c);
-        c.gridx += 2;
+        c.gridx += 1;
         p.add(jtfSposDos,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbKosztDos,c);
-        c.gridx += 2;
+        c.gridx += 1;
         p.add(jtfKosztDos,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbWartoscTow,c);
-        c.gridx += 2;
+        c.gridx += 1;
         p.add(jtfWartoscTow,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbKosztZam,c);
-        c.gridx += 2;
+        c.gridx += 1;
         p.add(jtfKosztZam,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbDostawca,c);
-        c.gridx += 2;
+        c.gridx += 1;
         p.add(jtfDostawca,c);
 
         splitPane1.setTopComponent(p);
@@ -143,6 +147,7 @@ public class SzczegolyZamowienia extends JPanel {
 		tabela.setDefaultEditor(Object.class, null);
 		tabela.getTableHeader().setReorderingAllowed(false);
 		tabela.setAutoCreateRowSorter(true);
+		tabela.setPreferredScrollableViewportSize(new Dimension(400, 200));
 		
 		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		scrollPane1 = new JScrollPane(tabela);
@@ -151,11 +156,15 @@ public class SzczegolyZamowienia extends JPanel {
 		GridBagConstraints c = new GridBagConstraints();
 		p.setPreferredSize(new Dimension(600, 200));
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(0, 10, 0, 10);
+		c.insets = new Insets(0, 10, 1, 10);
 		
-		jlbNrZam = new JLabel("Numer Zamowienia:");
-		jtfNrZam = new JTextField("Numer Zamowienia");
-		jtfNrZam.setEditable(false);
+		jlbNrZam = new JLabel(" ");
+		jlbNrZam.setFont(new Font("Calibri", Font.BOLD, 30));
+//		jlbNrZam = new JLabel("Numer Zamowienia:");
+//		jlbNrZam.setPreferredSize(new Dimension(150, 20));
+//		jtfNrZam = new JTextField("Numer Zamowienia");
+//		jtfNrZam.setPreferredSize(new Dimension(400, 20));
+//		jtfNrZam.setEditable(false);
 		jlbTermin = new JLabel("Termin Realizacji:");
 		jtfTermin = new JTextField();
 		jtfTermin.setEditable(false);
@@ -187,41 +196,41 @@ public class SzczegolyZamowienia extends JPanel {
 //		jlbWartosc = new JLabel("Wartosc");
 		//area = new JTextArea();
 		
-		c.gridx = 0; c.gridy = 0;
+		c.gridx = 1; c.gridy = 0;
         p.add(jlbNrZam,c);
-        c.gridx += 2;
-        p.add(jtfNrZam,c);
+//        c.gridx = 1;
+//        p.add(jtfNrZam,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbTermin,c);
-        c.gridx += 2;
+        c.gridx = 1;
         p.add(jtfTermin,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbDataReal,c);
-        c.gridx += 2;
+        c.gridx = 1;
         p.add(jtfDataReal,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbDataWys,c);
-        c.gridx += 2;
+        c.gridx = 1;
         p.add(jtfDataWys,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbSposDos,c);
-        c.gridx += 2;
+        c.gridx += 1;
         p.add(jtfSposDos,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbKosztDos,c);
-        c.gridx += 2;
+        c.gridx += 1;
         p.add(jtfKosztDos,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbWartoscTow,c);
-        c.gridx += 2;
+        c.gridx += 1;
         p.add(jtfWartoscTow,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbKosztZam,c);
-        c.gridx += 2;
+        c.gridx += 1;
         p.add(jtfKosztZam,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbDostawca,c);
-        c.gridx += 2;
+        c.gridx += 1;
         p.add(jtfDostawca,c);
 
         splitPane1.setTopComponent(p);
@@ -240,6 +249,7 @@ public class SzczegolyZamowienia extends JPanel {
 		System.out.println(sql);
 		
 		try {
+			polaczenie = new Polaczenie();
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			tabPom = new String[10];
 			
@@ -247,8 +257,9 @@ public class SzczegolyZamowienia extends JPanel {
 			for(int i = 0;i<tabPom.length;i++)
 			{
 				tabPom[i]=rs.getString(i+1);
+				System.out.print(tabPom[i]);
 			}
-			jtfNrZam.setText(tabPom[1]);
+			jlbNrZam.setText("Zamówienie nr: "+tabPom[1]);
 			jtfTermin.setText(tabPom[2]);
 			jtfDataReal.setText(tabPom[3]);
 			jtfDataWys.setText(tabPom[4]);
@@ -296,7 +307,7 @@ int j=0;
 			}
 
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getMessage()+"1");
 			e.printStackTrace();
 		}
         

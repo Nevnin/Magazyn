@@ -34,7 +34,7 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 	private JLabel jlbNrZam,jlbTermin,jlbDataReal,jlbDataWys,jlbSposDos,jlbKosztDos,jlbWartoscTow,jlbKosztZam,jlbDostawca;
 	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
 	private JDialog dialog;
-	HistoriaZamowien his;
+	SzczegolyZamowienia szzam;
 	public WyszZamNaDanyTowar()
 	{
 		try {
@@ -119,13 +119,16 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
               {		
             	  int selected=tabela.getSelectedRow();
             	  System.out.print(selected);
-            	  String nrZam=tabela.getCellEditor(selected, 0).toString();
+            	  String nrZam=tabela.getValueAt(selected, 0).toString();
+            	  System.out.println(nrZam);
             	  dialog = new JDialog();
-            	  his= new HistoriaZamowien();
+            	  szzam= new SzczegolyZamowienia(nrZam);
 //            	  his.list.setSelectedValue();
-            	  dialog.setContentPane(new HistoriaZamowien());
+            	  dialog.setContentPane(szzam);
             	  dialog.setVisible(true);
-            	  dialog.setMinimumSize(new Dimension(900, 600));
+            	 // dialog.setMinimumSize(new Dimension(900, 600));
+            	  dialog.pack();
+            	  dialog.setLocationRelativeTo(p);
             	  
             	  
               }

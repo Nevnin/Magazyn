@@ -52,7 +52,7 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 		splitPane = new JSplitPane();
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-		panel.setPreferredSize(new Dimension(200,600));
+		panel.setPreferredSize(new Dimension(150,400));
 		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		
 		scrollPane = new JScrollPane();
@@ -60,9 +60,10 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 		search = new JTextField();
 		list = new JList<String>(tab);
 		list.setMinimumSize(new Dimension(150,150));
-		list.setPreferredSize(new Dimension(150, 150));
+		//list.setPreferredSize(new Dimension(150, 150));
 		list.setAlignmentX(CENTER_ALIGNMENT);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		//list.setPreferredSize(new Dimension(200, 200));
 		
 		scrollPane.setViewportView(list);
 		panel.add(search);
@@ -92,7 +93,9 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 		{	
 			String sel = list.getSelectedValue().toString();
 			remove(sz);
+			repaint();
 			sz = new SzczegolyZamowienia(sel);
+		    splitPane.setRightComponent(sz);
 		}
 	}
 	public void szukaj(String text){
