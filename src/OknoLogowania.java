@@ -35,12 +35,7 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
         GridLayout gl =  new GridLayout(3,2);
         setLayout(gl);
         setVisible(true);
-		try {
-			poloczenie = new Polaczenie();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		poloczenie = new Polaczenie();
 		
         login =  new Label("Login:");
         add(login);
@@ -119,14 +114,9 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
     } 
     public void sprawdzanieUzytkownika(){
 		boolean f = false;
-		String query="Select * from uzytkownik";
-		ResultSet rs = null;
-		try {
-			rs = poloczenie.sqlSelect(query);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		String query="Select * from dostawca";
+		poloczenie = new Polaczenie();
+		ResultSet rs = poloczenie.sqlSelect(query);
 		try {
 			String passText = new String(tfhaslo.getPassword());
 			while(rs.next()){
