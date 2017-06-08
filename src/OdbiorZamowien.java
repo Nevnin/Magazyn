@@ -14,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -22,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -53,14 +56,23 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 	private JComboBox<String> jcbNumerMagazynu;
 	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbNrZam,jlbNumerPZ,jlbDataWystawienia,jlbNumerMagazynu,jlbDostawca,jlbWartoscNetto,jlbUwagi;
-	private JTextField jtfNrZam,search,jtfDataWystawienia,jtfNumerMagazynu,jtfWartoscNetto,jtfUwagi,jtfDostawca;
-	private JButton jbZatwierdz;
+	private JTextField jtfNrZam,search;
+	JTextField jtfDataWystawienia;
+	private JTextField jtfNumerMagazynu;
+	private JTextField jtfWartoscNetto;
+	private JTextField jtfUwagi;
+	private JTextField jtfDostawca;
+	public JButton jbZatwierdz;
 	private String teraz,nazwaPZ;
 	 DecimalFormat df;
 	public OdbiorZamowien()
 	{
-		df=new java.text.DecimalFormat("###,###.00"); 
 		
+		df=new java.text.DecimalFormat("###,###.00"); 
+		DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		symbols.setGroupingSeparator(' ');
+		df.setDecimalFormatSymbols(symbols);
 		SimpleDateFormat dt= new SimpleDateFormat("yyyy-MM-dd"); 
 		 Date data = new Date(); 
 		 teraz = dt.format(data);
@@ -125,7 +137,6 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 		jtfNrZam.setEditable(false);
 		jlbDataWystawienia = new JLabel("Data wystawienia:");
 		jtfDataWystawienia = new JTextField();
-		jtfDataWystawienia.setText(teraz);
 		jtfDataWystawienia.setPreferredSize(new Dimension(400,20));
 		String sqlMagazyn = "SELECT * from magazyn";
 		
@@ -228,7 +239,12 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 				jtfNrZam.setText(tabPom[1]);
 //				jtfTermin.setText(tabPom[2]);
 //				jtfDataReal.setText(tabPom[3]);
-//				jtfDataWys.setText(tabPom[4]);
+				if(tabPom[3]!=null){
+					jtfDataWystawienia.setText(tabPom[3]);
+				}else
+				{
+					jtfDataWystawienia.setText(teraz);
+				}
 //				jtfSposDos.setText(tabPom[5]);
 //				jtfKosztDos.setText(tabPom[6]);
 //				jtfWartoscTow.setText(tabPom[7]);
@@ -295,13 +311,42 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 			e.printStackTrace();
 		}
 	}
-	public void dodajPZ() throws SQLException
+	public void dodajPZ() throws ParseException, SQLException 
 	{
-		Connection connection = DriverManager.getConnection(url, username, password);
-		String query = "INSERT INTO zamowienie "
-				+ "(NumerPZ,Data,Towar,Cena,Ilosc,Wartosc,IdSposobDostawy,KosztDostawy,WartoscTowarow)"
-			    + " values (?, ?, ?, ?, ?, ?,?,?,?)";
-		PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+		
+		Connection connection;
+			connection = DriverManager.getConnection(url, username, password);
+			String query = "INSERT INTO pz "
+					+ "(NumerPZ,DataWystawienia, Magazyn, Zamowienie, PodsumowanieNetto, Uwagi)"
+					+ " VALUES (?,?, ?, ?, ?,?)";
+			PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+			preparedStmt.setString (1,nazwaPZ);
+				preparedStmt.setString(2,(jtfDataWystawienia.getText()));
+			String zapMagazyn = "Select * from magazyn WHERE NazwaMagazyn='"+jcbNumerMagazynu.getSelectedItem()+"'";
+			Polaczenie poloczenie = new Polaczenie();
+			ResultSet rsMagazyn = poloczenie.sqlSelect(zapMagazyn);
+			rsMagazyn.next();
+			int idMagazyn = rsMagazyn.getInt("IdMagazyn");
+			preparedStmt.setInt(3,idMagazyn);
+			String zapZamowienie = "Select * from zamowienie WHERE NumerZamowienia='"+jtfNrZam.getText()+"'";
+			ResultSet rsZamowienie = poloczenie.sqlSelect(zapZamowienie);
+			rsZamowienie.next();
+			int idZamowienie = rsZamowienie.getInt("IdZamowienie");
+			preparedStmt.setInt (4,idZamowienie);
+			Number warNetto;
+				warNetto = df.parse(jtfWartoscNetto.getText());
+				float wartNetto=warNetto.floatValue();
+				preparedStmt.setFloat (5,wartNetto);
+			preparedStmt.setString (6,jtfUwagi.getText());
+			preparedStmt.execute();
+			
+			String query2= "UPDATE zamowienie set DataRealizacji = ? WHERE IdZamowienie=?";
+			PreparedStatement preparedStmt2 = connection.prepareStatement(query2);
+			preparedStmt2.setString(1,jtfDataWystawienia.getText());
+			preparedStmt2.setInt(2,idZamowienie);
+			preparedStmt2.execute();
+			connection.close();
+		
 		
 	}
 	@Override
@@ -320,7 +365,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 		PreparedStatement ps;
 		try {
 			Connection connection = DriverManager.getConnection(url, username, password);
-			String count = "SELECT count(*) from pz WHERE DataWystawienia LIKE '"+data+"'";
+			String count = "SELECT count(*) from pz WHERE DataWystawienia LIKE '"+data+"%'";
 			ps = connection.prepareStatement(count);
 			ResultSet rsc= ps.executeQuery();
 			while(rsc.next())
@@ -331,10 +376,70 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		k=k+1;
 		nazwa+=tablica[0]+"/"+tablica[1]+"/"+tablica[2]+"/"+k;
 		return nazwa;
 		
+	}
+	public String sprawdzenieDaty(String data) throws ParseException
+	{
+		
+		String error="";
+		String[] podzial= null;
+		podzial = data.split("-");
+		int miesiac = Integer.parseInt(podzial[1]);
+		int rok = Integer.parseInt(podzial[0]);
+		int dzien = Integer.parseInt(podzial[2]);
+		if(miesiac>12){
+			error+="Zosta³ podany niepoprawny miesi¹c , nie powinien byæ wiêkszy ni¿ 12.\n"; }
+		else{
+		 if(miesiac==1 ||miesiac==3 || miesiac==5 || miesiac==7 || miesiac==8 || miesiac==10 || miesiac==12)
+		 {
+			 if(dzien>31)
+			 {
+				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 31.\n";
+			 }
+		 }
+		 else if(miesiac==4 || miesiac==6 || miesiac==9 || miesiac==11)
+		 {
+			 if(dzien>30)
+			 {
+				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 30.\n";
+			 }
+		 }
+		 else
+		 {
+			 if(((rok%4== 0) && (rok%100!= 0)) || (rok%400 == 0))
+			 {
+				 if(dzien>29)
+				 {
+					 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 29.\n";
+				 }
+			 }
+			 else
+			 {
+				 error+="Zosta³ podany niepoprawny dzien, nie powinien byæ wiêkszy ni¿ 28.\n";
+			 }
+		 }
+		 }
+		
+		return error;
+	}
+	String walidacjaDat(String TerminRealizacji) throws ParseException
+	{
+		String error="";
+		
+		if(TerminRealizacji.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
+			String walidacjaDaty = sprawdzenieDaty(TerminRealizacji);
+			if(walidacjaDaty.length()>0)
+				{
+					error+=walidacjaDaty;	
+				}
+		}else
+			{
+				error+="Niepoprawny format daty przy DataWystawienia \n";}
+		
+		return error;
 	}
 	private void ustawRozmiarTablicu()
 	{
@@ -355,9 +460,6 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	
+}
 }
 

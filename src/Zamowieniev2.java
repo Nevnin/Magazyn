@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,6 +75,10 @@ public class Zamowieniev2 extends JPanel implements ActionListener, TableModelLi
 		public Zamowieniev2()
 		{
 			df=new java.text.DecimalFormat("###,##0.00"); 
+			DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
+			symbols.setDecimalSeparator('.');
+			symbols.setGroupingSeparator(' ');
+			df.setDecimalFormatSymbols(symbols);
 			setLayout(new GridBagLayout());
 			GridBagConstraints c= new GridBagConstraints();
 			c.insets= new Insets(0,10,1,10);
@@ -404,35 +409,6 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object z = e.getSource();
-			 if(z==jbZamow)
-				{
-					String TerminRealizacji = jtfTerminRealizacji.getText().toString();
-					try {
-						 String walidacja = walidacjaDat(TerminRealizacji);
-						 walidacja+=walidacjaTabeli();
-						 if(walidacja.length()>0)
-						 {
-					    	JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
-						 }else
-						 {
-							 try {
-								Zamowienie();
-								dodanieTowarowDoZamowienia();
-								JOptionPane.showMessageDialog(null, "Pomyœlnie dodane zamówienie!!!");
-								
-								new Zamowieniev2();
-								
-							} catch (SQLException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							 
-						 }
-					} catch (ParseException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
 			if(z==jcbDostawca)
 			{
 				tablemodel = new DefaultTableModel(0,0);

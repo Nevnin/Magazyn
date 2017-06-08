@@ -9,20 +9,20 @@ import javax.swing.JOptionPane;
 public class Magazyn extends JFrame implements ActionListener {
 	Panel panel;
 	Panel p1;
-	WykazDostawcow wykazDostawcow = new WykazDostawcow();
-	KartaDostawcy kartaDostawcy = new KartaDostawcy();
-	Zamowieniev2 zamowienie = new Zamowieniev2();
-	HistoriaZamowien hs = new HistoriaZamowien();
-	TowaryDostawcy td = new TowaryDostawcy();
-	OdbiorZamowien oz= new OdbiorZamowien();
-	WyszZamNaDanyTowar dt = new WyszZamNaDanyTowar();
-	WyszZamNaDanyOkres okres = new WyszZamNaDanyOkres();
-	WyszZamZrealizowane zreal = new WyszZamZrealizowane();
-	WyszWgWartosci wgWartosci = new WyszWgWartosci();
-	WyszWgKategorii wgKategorii = new WyszWgKategorii();
+	WykazDostawcow wykazDostawcow;
+	KartaDostawcy kartaDostawcy;
+	Zamowieniev2 zamowienie;
+	HistoriaZamowien hs;
+	TowaryDostawcy td;
+	OdbiorZamowien oz;
+	WyszZamNaDanyTowar dt;
+	WyszZamNaDanyOkres okres;
+	WyszZamZrealizowane zreal;
+	WyszWgWartosci wgWartosci;
+	WyszWgKategorii wgKategorii;
 	Menu menu;
 	Polaczenie polaczenie;
-	StanMagazynowy stanMag = new StanMagazynowy();
+	StanMagazynowy stanMag;
 	public Magazyn() {
 		super("Magazyn");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,6 +62,7 @@ public class Magazyn extends JFrame implements ActionListener {
 		menu.zrealizowane.addActionListener(this);
 		menu.wgWartosci.addActionListener(this);
 		menu.wgKategorii.addActionListener(this);
+		if(oz !=null){oz.jbZatwierdz.addActionListener(this);}
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -105,6 +106,7 @@ public class Magazyn extends JFrame implements ActionListener {
         }else if(z==menu.odbiorzamowien){
         	removeP();
         	oz = new OdbiorZamowien();
+        	oz.jbZatwierdz.addActionListener(this);
         	add(oz);
         	validate();
         	dopasujSieDoZawartosci();
@@ -158,7 +160,70 @@ public class Magazyn extends JFrame implements ActionListener {
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
-        }    
+        }
+        if(z==zamowienie.jbZamow)
+		{
+			String TerminRealizacji = zamowienie.jtfTerminRealizacji.getText().toString();
+			try {
+				 String walidacja = zamowienie.walidacjaDat(TerminRealizacji);
+				 walidacja+=zamowienie.walidacjaTabeli();
+				 if(walidacja.length()>0)
+				 {
+			    	JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+				 }else
+				 {
+					 try {
+						zamowienie.Zamowienie();
+						zamowienie.dodanieTowarowDoZamowienia();
+						JOptionPane.showMessageDialog(null, "Pomyœlnie dodane zamówienie!!!");
+						removeP();
+			        	zamowienie = new Zamowieniev2();
+			        	add(zamowienie);
+			        	zamowienie.jbZamow.addActionListener(this);
+			        	validate();
+			        	dopasujSieDoZawartosci();
+			        	repaint();
+						
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					 
+				 }
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+        if(oz!=null)
+        {
+        	 if(z==oz.jbZatwierdz)
+     		{
+     			String TerminRealizacji = oz.jtfDataWystawienia.getText().toString();
+     			try {
+     				 String walidacja = oz.walidacjaDat(TerminRealizacji);
+     				 if(walidacja.length()>0)
+     				 {
+     			    	JOptionPane.showMessageDialog(null, walidacja,"B³¹d", JOptionPane.INFORMATION_MESSAGE);
+     				 }else
+     				 {			
+     					 oz.dodajPZ();
+     					 JOptionPane.showMessageDialog(null, "Pomyœlnie dodane zamówienie!!!");
+     					 removeP();
+     			        	oz = new OdbiorZamowien();
+     			        	add(oz);
+     			        	oz.jbZatwierdz.addActionListener(this);
+     			        	validate();
+     			        	dopasujSieDoZawartosci();
+     			        	repaint();
+     				 }
+     				 
+     		}catch (Exception e1) {
+     			// TODO: handle exception
+     		}
+     		
+     	}
+        }
 	}
 	private void dopasujSieDoZawartosci() {
 		 pack();   
