@@ -161,6 +161,7 @@ public class Magazyn extends JFrame implements ActionListener {
         	dopasujSieDoZawartosci();
         	repaint();
         }
+        if(zamowienie!=null){
         if(z==zamowienie.jbZamow)
 		{
 			String TerminRealizacji = zamowienie.jtfTerminRealizacji.getText().toString();
@@ -195,6 +196,7 @@ public class Magazyn extends JFrame implements ActionListener {
 				e1.printStackTrace();
 			}
 		}
+        }
         if(oz!=null)
         {
         	 if(z==oz.jbZatwierdz)
