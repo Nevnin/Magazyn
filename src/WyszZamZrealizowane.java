@@ -29,7 +29,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class WyszZamZrealizowane extends JPanel implements ActionListener, ListSelectionListener, KeyListener{
+public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyListener{
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private JTable tabela;
@@ -137,7 +137,7 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, ListS
 		Object z = e.getSource();
 		String pocz = jtfOd.getText();
 		String konc = jtfDo.getText();
-		System.out.print("pocz"+pocz);
+		
 		
 		String[][] zamowienia;
 		if(z==szukaj)
@@ -147,7 +147,9 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, ListS
 				polaczenie = new Polaczenie();
 				
 				String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, CalkowitaWartoscZamowienia from zamowienie where DataRealizacji BETWEEN '"+pocz+"' AND '"+konc+"'";
+				
 				ResultSet rs=polaczenie.sqlSelect(sql);
+				rs.last();
 				int rozmiar = rs.getRow();
 				rs.beforeFirst();
 				zamowienia = new String [rozmiar][5];
@@ -194,89 +196,7 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, ListS
 		szukaj.addActionListener(this);	
 	
 	}
-	@Override
-	public void valueChanged(ListSelectionEvent arg0) {
-		
-		if(arg0.getValueIsAdjusting())
-		{
-			String[] idT;
-			String[][] towary;
-			String sel = list.getSelectedValue().toString();
-			String sql = "SELECT IdTowar FROM towar WHERE NazwaTowaru='"+sel+"'";
-			
-			try {
-				ResultSet rs = polaczenie.sqlSelect(sql);
-				idT = new String[1];
-				
-				rs.next();
-				for(int i = 0;i<idT.length;i++)
-				{
-					idT[i]=rs.getString("IdTowar");
-				}
-		
-				int id = Integer.parseInt(idT[0]);
 	
-				String query1 = "SELECT DISTINCT zamowienie.NumerZamowienia, zamowienie.TerminRealizacji, zamowienie.DataRealizacji, zamowienie.DataWystawienia, zamowienie.CalkowitaWartoscZamowienia FROM `zamowienietowar` INNER JOIN zamowienie ON zamowienie.IdZamowienie = zamowienietowar.IdZamowienie WHERE IdTowar = '"+id+"'";
-				ResultSet result = polaczenie.sqlSelect(query1);
-				result.last();
-				int rozmiar = result.getRow();
-				result.beforeFirst();
-				towary = new String[rozmiar][5]; 
-	int j=0;
-				while(result.next())
-				{
-					towary[j][0]=result.getString(1);
-					towary[j][1]=result.getString(2);
-					towary[j][2]=result.getString(3);
-					towary[j][3]=result.getString(4);
-					towary[j][4]=result.getString(5);
-					
-					j++;
-				}
-			
-	
-				String[] columnNames = 
-					{"Lp",
-		            "Nazwa Towaru",
-		            "Cena",
-		            "Ilosc",
-		            "Wartosc Netto"};
-				DefaultTableModel tableModel = new DefaultTableModel(0,0);
-				tableModel.setColumnIdentifiers(columnNames);
-				tabela.setModel(tableModel);
-				for (int i = 0; i < towary.length; i++) {
-					String[] data = new String[towary[0].length];
-					for(int z = 0;z<5;z++){
-						data[z]= towary[i][z];
-					}
-					tableModel.addRow(data);
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	public void szukaj(String text){
-		try {
-			polaczenie = new Polaczenie();
-			String sql = "SELECT NumerZamowienia FROM zamowienie WHERE NumerZamowienia LIKE '%"+text+"%'";
-			ResultSet rs = polaczenie.sqlSelect(sql);
-			rs.last();
-			int rozmiar = rs.getRow();
-			rs.beforeFirst();
-			int i = 0;
-			tab = new String[rozmiar];
-			while(rs.next()){
-				tab[i] = rs.getString("NumerZamowienia");
-				i++;
-			}
-			//list.clearSelection();
-			list.setListData(tab);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 	@Override
 	public void keyPressed(KeyEvent arg0) { }
 	@Override
