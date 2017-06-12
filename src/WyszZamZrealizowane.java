@@ -11,6 +11,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -25,8 +27,10 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -41,6 +45,7 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyLi
 	private JLabel jlbOkres,jlbOd,jlbDo;
 	private JTextField jtfOd,jtfDo;
 	private JButton szukaj;
+	DecimalFormat df;
 	public WyszZamZrealizowane()
 	{
 		
@@ -56,6 +61,12 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyLi
 		
 		
 		scrollPane = new JScrollPane();
+		
+	 	df = new DecimalFormat("###,###.00");
+		DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		symbols.setGroupingSeparator(' ');
+		df.setDecimalFormatSymbols(symbols);
 		
 		jlbOkres = new JLabel("Podaj ramy czasowe");
 		jlbOkres.setFont(new Font("Calibri", Font.BOLD, 20));
@@ -161,7 +172,8 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyLi
 					zamowienia[j][1] = rs.getString(2);
 					zamowienia[j][2] = rs.getString(3);
 					zamowienia[j][3] = rs.getString(4);
-					zamowienia[j][4] = rs.getString(5);
+					double cena = Double.parseDouble(rs.getString(5));
+					zamowienia[j][4] = df.format(cena);
 					j++;
 				}
 				
@@ -174,6 +186,9 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyLi
 				DefaultTableModel tableModel = new DefaultTableModel(0,0);
 				tableModel.setColumnIdentifiers(columnNames);
 				tabela.setModel(tableModel);
+				DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
+				tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+				tabela.getColumnModel().getColumn(4).setCellRenderer(tableRenderer);
 				for (int i = 0; i < zamowienia.length; i++) {
 					String[] data = new String[zamowienia[0].length];
 					for(int p = 0;p<5;p++){
