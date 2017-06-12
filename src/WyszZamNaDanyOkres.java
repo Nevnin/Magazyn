@@ -33,44 +33,18 @@ public class WyszZamNaDanyOkres extends JPanel implements ListSelectionListener,
 	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
 	public WyszZamNaDanyOkres()
 	{
-		try {
-			polaczenie = new Polaczenie();
-			String sql = "SELECT * FROM towar";
-			ResultSet rs = polaczenie.sqlSelect(sql);
-			rs.last();
-			int rozmiar = rs.getRow();
-			rs.beforeFirst();
-			int i = 0;
-			tab = new String [rozmiar];
-			while(rs.next())
-			{
-				tab[i] = rs.getString("NazwaTowaru");
-				i++;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		splitPane = new JSplitPane();
+	
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.setPreferredSize(new Dimension(200,600));
-		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		
-		scrollPane = new JScrollPane();
 		
-		search = new JTextField();
-		list = new JList<String>(tab);
-		list.setMinimumSize(new Dimension(150,150));
-		list.setPreferredSize(new Dimension(150, 150));
-		list.setAlignmentX(CENTER_ALIGNMENT);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	
 		
-		scrollPane.setViewportView(list);
-		panel.add(search);
-		search.setMaximumSize(new Dimension(200, 20));
-		panel.add(scrollPane);
-		splitPane.setLeftComponent(panel);
+	
+		
+		splitPane.setTopComponent(panel);
 		//scrollPane1.setViewportView(list1);
 		
 		String[] columnNames = 
@@ -96,7 +70,7 @@ public class WyszZamNaDanyOkres extends JPanel implements ListSelectionListener,
 		
 	
      
-        splitPane.setRightComponent(scrollPane1);
+        splitPane.setBottomComponent(scrollPane1);
  
      
         add(splitPane);
@@ -124,8 +98,7 @@ public class WyszZamNaDanyOkres extends JPanel implements ListSelectionListener,
 	}
      
 	private void ustawNasluchZdarzen(){
-		list.addListSelectionListener(this);
-		search.addKeyListener(this);
+	
 	}
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
