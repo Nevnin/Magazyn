@@ -9,7 +9,7 @@ public class Menu extends JMenuBar {
 
     JMenuBar menuBar;
     JMenu plik , pomoc ,towar , dostawcy ,zamowienie, wyszukiwanie;
-    JMenuItem zaklkartdostawcy, wykazdostawcow, szukanietowarow, historiazamowien, zamowienietowaru, stanmagazynowy , reklamacja,towarydostawcy,odbiorzamowien, danyOkres, danyTowar, zrealizowane, wgWartosci, wgKategorii,rankingTowarow;  
+    JMenuItem zaklkartdostawcy, wykazdostawcow, szukanietowarow, historiazamowien, zamowienietowaru, stanmagazynowy , reklamacja,towarydostawcy,odbiorzamowien, danyOkres, danyTowar, zrealizowane, wgWartosci, wgKategorii,rankingTowarow,kartoteka;  
 
     public Menu() {
         menuBar =  new JMenuBar();
@@ -38,7 +38,8 @@ public class Menu extends JMenuBar {
         stanmagazynowy = new JMenuItem("Stan magazynowy");
         reklamacja = new JMenuItem("Reklamacja towaru");
         towarydostawcy = new JMenuItem("Wyszukiwanie");
-
+        kartoteka= new JMenuItem("Kartoteka");
+        
         wyszukiwanie = new JMenu("Wyszukiwanie");
         rankingTowarow = new JMenuItem("Ranking Towarow");
         
@@ -74,7 +75,7 @@ public class Menu extends JMenuBar {
         dostawcy.add(wykazdostawcow);
         
         zamowienie.add(zamowienietowaru);
-
+        zamowienie.add(kartoteka);
         zamowienie.add(historiazamowien);
         zamowienie.add(wyszukiwanie);
         

@@ -29,7 +29,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+
 public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyListener{
+
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private JTable tabela;
@@ -137,12 +139,12 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyLi
 		Object z = e.getSource();
 		String pocz = jtfOd.getText();
 		String konc = jtfDo.getText();
-		
+
 		
 		String[][] zamowienia;
 		if(z==szukaj)
 		{
-			
+			Polaczenie polaczenie= new Polaczenie();
 			try {
 				polaczenie = new Polaczenie();
 				
