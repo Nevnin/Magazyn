@@ -139,7 +139,6 @@ public class WyszZamZrealizowane extends JPanel implements ListSelectionListener
 		Object z = e.getSource();
 		String pocz = jtfOd.getText();
 		String konc = jtfDo.getText();
-		System.out.print("pocz"+pocz);
 		
 		String[][] zamowienia;
 		if(z==szukaj)
@@ -150,6 +149,7 @@ public class WyszZamZrealizowane extends JPanel implements ListSelectionListener
 				
 				String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, CalkowitaWartoscZamowienia from zamowienie where DataRealizacji BETWEEN '"+pocz+"' AND '"+konc+"'";
 				ResultSet rs=polaczenie.sqlSelect(sql);
+				rs.last();
 				int rozmiar = rs.getRow();
 				rs.beforeFirst();
 				zamowienia = new String [rozmiar][5];
