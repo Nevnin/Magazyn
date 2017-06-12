@@ -175,6 +175,7 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyLi
 					double cena = Double.parseDouble(rs.getString(5));
 					zamowienia[j][4] = df.format(cena);
 					j++;
+					
 				}
 				
 				String[] columnNames = 

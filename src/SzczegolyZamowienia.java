@@ -297,6 +297,7 @@ int j=0;
 				double cena1 = Double.parseDouble(result.getString(5));
 				towary[j][4] = df.format(cena1);
 				
+				
 				j++;
 			}
 		

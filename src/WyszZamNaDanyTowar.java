@@ -130,7 +130,7 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
             	  dialog.pack();
             	  dialog.setLocationRelativeTo(p);
             	  
-            	  
+            	
               }
               if (e.getClickCount() == 1)
               {

@@ -175,6 +175,7 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
 					double cena = Double.parseDouble(rs.getString(5));
 					zamowienia[j][4] = df.format(cena);
 					j++;
+					
 				}
 				
 				String[] columnNames = 
