@@ -40,10 +40,12 @@ public class Magazyn extends JFrame implements ActionListener {
 		String[][] tabPom;
 		String query="Select idDostawca,NazwaPelna,NazwaSkrocona from dostawca where idDostawca=?";
 		tabPom = polaczenie.sqlSelectTest(query,tabPom1);
-		System.out.println(tabPom.length+", ");
-		for(int i=0; i<tabPom.length; i++){
-			for(int j=0; j<tabPom[0].length; j++){
-				System.out.println(tabPom[i][j]);
+		if(tabPom != null){
+			System.out.println(tabPom.length+", ");
+			for(int i=0; i<tabPom.length; i++){
+				for(int j=0; j<tabPom[0].length; j++){
+					System.out.println(tabPom[i][j]);
+				}
 			}
 		}
 	}
@@ -161,7 +163,7 @@ public class Magazyn extends JFrame implements ActionListener {
         	dopasujSieDoZawartosci();
         	repaint();
         }
-        if(z==zamowienie.jbZamow)
+        else if(z==zamowienie.jbZamow)
 		{
 			String TerminRealizacji = zamowienie.jtfTerminRealizacji.getText().toString();
 			try {
