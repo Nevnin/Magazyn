@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -28,7 +29,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class WyszZamZrealizowane extends JPanel implements ListSelectionListener, KeyListener{
+public class WyszZamZrealizowane extends JPanel implements ActionListener, ListSelectionListener, KeyListener{
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private JTable tabela;
@@ -134,14 +135,17 @@ public class WyszZamZrealizowane extends JPanel implements ListSelectionListener
 	
 	public void actionPerformed(ActionEvent e) {
 		Object z = e.getSource();
+		String pocz = jtfOd.getText();
+		String konc = jtfDo.getText();
+		System.out.print("pocz"+pocz);
 		
 		String[][] zamowienia;
 		if(z==szukaj)
 		{
 			
 			try {
-				String pocz = jtfOd.getText();
-				String konc = jtfDo.getText();
+				polaczenie = new Polaczenie();
+				
 				String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, CalkowitaWartoscZamowienia from zamowienie where DataRealizacji BETWEEN '"+pocz+"' AND '"+konc+"'";
 				ResultSet rs=polaczenie.sqlSelect(sql);
 				int rozmiar = rs.getRow();
