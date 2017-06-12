@@ -91,9 +91,10 @@ public class Kartoteka extends JPanel {
 		String[][] data = new String[0][0];
 		
 		tabela = new JTable(data, columnNames);
+		tabela.setPreferredScrollableViewportSize(new Dimension(650,200));
 		tabela.setDefaultEditor(Object.class, null);
 		tabela.getTableHeader().setReorderingAllowed(false);
-		
+		ustawRozmiarTablicu();
 		scrollPane1 = new JScrollPane(tabela);
         splitPane.setBottomComponent(scrollPane1);
         add(splitPane);
@@ -107,15 +108,15 @@ public class Kartoteka extends JPanel {
 	private void ustawRozmiarTablicu()
 	{
 		tabela.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-    	int[] tabKolSzer = {50,155,100,100,150};
+    	int[] tabKolSzer = {100,50,50,100,50,100,100,100};
     	for(int i=0; i<columnNames.length; i++){
     		tabela.getColumnModel().getColumn(i).setPreferredWidth(tabKolSzer[i]);
 			DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
-    		if(i==2 || i==4){
+    		if(i==3 || i==5 || i==7){
     			tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
     			tabela.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
     		}
-    		else if(i==0 || i ==1 || i==3){
+    		else {
     			tableRenderer.setHorizontalAlignment(SwingConstants.CENTER);
     			tabela.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
     		}
