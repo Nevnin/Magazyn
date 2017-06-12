@@ -29,7 +29,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+<<<<<<< HEAD
 public class WyszZamZrealizowane extends JPanel implements ListSelectionListener, KeyListener, ActionListener{
+=======
+public class WyszZamZrealizowane extends JPanel implements ActionListener, ListSelectionListener, KeyListener{
+>>>>>>> branch 'master' of https://github.com/Nevnin/Magazyn.git
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private JTable tabela;
@@ -135,14 +139,17 @@ public class WyszZamZrealizowane extends JPanel implements ListSelectionListener
 	
 	public void actionPerformed(ActionEvent e) {
 		Object z = e.getSource();
+		String pocz = jtfOd.getText();
+		String konc = jtfDo.getText();
+		System.out.print("pocz"+pocz);
 		
 		String[][] zamowienia;
 		if(z==szukaj)
 		{
 			Polaczenie polaczenie= new Polaczenie();
 			try {
-				String pocz = jtfOd.getText();
-				String konc = jtfDo.getText();
+				polaczenie = new Polaczenie();
+				
 				String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, CalkowitaWartoscZamowienia from zamowienie where DataRealizacji BETWEEN '"+pocz+"' AND '"+konc+"'";
 				ResultSet rs=polaczenie.sqlSelect(sql);
 				int rozmiar = rs.getRow();
