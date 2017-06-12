@@ -29,11 +29,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-<<<<<<< HEAD
+
 public class WyszZamZrealizowane extends JPanel implements ListSelectionListener, KeyListener, ActionListener{
-=======
-public class WyszZamZrealizowane extends JPanel implements ActionListener, ListSelectionListener, KeyListener{
->>>>>>> branch 'master' of https://github.com/Nevnin/Magazyn.git
+
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private JTable tabela;
