@@ -118,9 +118,9 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
               if (e.getClickCount() == 2)
               {		
             	  int selected=tabela.getSelectedRow();
-            	  System.out.print(selected);
+            	  
             	  String nrZam=tabela.getValueAt(selected, 0).toString();
-            	  System.out.println(nrZam);
+            	  
             	  dialog = new JDialog();
             	  szzam= new SzczegolyZamowienia(nrZam);
 //            	  his.list.setSelectedValue();

@@ -159,6 +159,12 @@ public class SzczegolyZamowienia extends JPanel {
 		tabela.setAutoCreateRowSorter(true);
 		tabela.setPreferredScrollableViewportSize(new Dimension(400, 200));
 		
+		df = new DecimalFormat("###,###.00");
+		DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		symbols.setGroupingSeparator(' ');
+		df.setDecimalFormatSymbols(symbols);
+		
 		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		scrollPane1 = new JScrollPane(tabela);
 		JPanel p = new JPanel();
@@ -296,6 +302,9 @@ int j=0;
 				towary[j][3] = df.format(cena);
 				double cena1 = Double.parseDouble(result.getString(5));
 				towary[j][4] = df.format(cena1);
+//				towary[j][3] = result.getString(4);
+//				towary[j][4] = result.getString(5);
+				
 				
 				
 				j++;

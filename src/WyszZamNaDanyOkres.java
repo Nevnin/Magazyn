@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -44,6 +45,8 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
 	private JTextField jtfOd,jtfDo;
 	private JButton szukaj;
 	DecimalFormat df;
+	private JDialog dialog;
+	SzczegolyZamowienia szzam;
 	public WyszZamNaDanyOkres()
 	{
 		
@@ -134,7 +137,18 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
             {
               if (e.getClickCount() == 2)
               {
-            	  
+            	  int selected=tabela.getSelectedRow();
+            	  System.out.print(selected);
+            	  String nrZam=tabela.getValueAt(selected, 0).toString();
+            	  System.out.println(nrZam);
+            	  dialog = new JDialog();
+            	  szzam= new SzczegolyZamowienia(nrZam);
+//            	  his.list.setSelectedValue();
+            	  dialog.setContentPane(szzam);
+            	  dialog.setVisible(true);
+            	 // dialog.setMinimumSize(new Dimension(900, 600));
+            	  dialog.pack();
+            	  dialog.setLocationRelativeTo(panel);
               }
               if (e.getClickCount() == 1)
               {
