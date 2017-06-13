@@ -8,6 +8,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -20,8 +23,10 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener, KeyListener{
@@ -35,6 +40,7 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
 	private JDialog dialog;
 	SzczegolyZamowienia szzam;
+	DecimalFormat df;
 	public WyszZamNaDanyTowar()
 	{
 		try {
@@ -62,6 +68,13 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		
 		scrollPane = new JScrollPane();
+		
+		df = new DecimalFormat("###,###.00");
+		DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		symbols.setGroupingSeparator(' ');
+		df.setDecimalFormatSymbols(symbols);
+
 		
 		search = new JTextField();
 		list = new JList<String>(tab);
@@ -118,9 +131,9 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
               if (e.getClickCount() == 2)
               {		
             	  int selected=tabela.getSelectedRow();
-            	  System.out.print(selected);
+            	  
             	  String nrZam=tabela.getValueAt(selected, 0).toString();
-            	  System.out.println(nrZam);
+            	  
             	  dialog = new JDialog();
             	  szzam= new SzczegolyZamowienia(nrZam);
 //            	  his.list.setSelectedValue();
@@ -130,7 +143,7 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
             	  dialog.pack();
             	  dialog.setLocationRelativeTo(p);
             	  
-            	  
+            	
               }
               if (e.getClickCount() == 1)
               {
@@ -179,7 +192,8 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 					towary[j][1]=result.getString(2);
 					towary[j][2]=result.getString(3);
 					towary[j][3]=result.getString(4);
-					towary[j][4]=result.getString(5);
+					double cena = Double.parseDouble(result.getString(5));
+					towary[j][4] = df.format(cena);
 					
 					j++;
 				}
@@ -194,6 +208,9 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 				DefaultTableModel tableModel = new DefaultTableModel(0,0);
 				tableModel.setColumnIdentifiers(columnNames);
 				tabela.setModel(tableModel);
+				DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
+				tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+				tabela.getColumnModel().getColumn(4).setCellRenderer(tableRenderer);
 				for (int i = 0; i < towary.length; i++) {
 					String[] data = new String[towary[0].length];
 					for(int z = 0;z<5;z++){

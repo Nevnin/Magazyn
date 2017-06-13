@@ -4,6 +4,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,6 +13,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class SzczegolyZamowienia extends JPanel {
@@ -22,14 +26,14 @@ public class SzczegolyZamowienia extends JPanel {
 	private JScrollPane scrollPane,scrollPane1;
 	private JLabel jlbNrZam,jlbTermin,jlbDataReal,jlbDataWys,jlbSposDos,jlbKosztDos,jlbWartoscTow,jlbKosztZam,jlbDostawca;
 	private JTextField search,jtfNrZam,jtfTermin,jtfDataReal,jtfDataWys,jtfSposDos,jtfKosztDos,jtfWartoscTow,jtfKosztZam,jtfDostawca;
-	
+	DecimalFormat df ;
 	public SzczegolyZamowienia(){
 		
 		String[] columnNames = 
 			{"Lp",
             "Nazwa Towaru",
-            "Cena",
             "Ilosc",
+            "Cena",
             "Wartosc Netto"};
 		
 		String[][] data = new String[0][0];
@@ -39,6 +43,12 @@ public class SzczegolyZamowienia extends JPanel {
 		tabela.getTableHeader().setReorderingAllowed(false);
 		tabela.setAutoCreateRowSorter(true);
 		tabela.setPreferredScrollableViewportSize(new Dimension(400, 200));
+		
+		df = new DecimalFormat("###,###.00");
+		DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		symbols.setGroupingSeparator(' ');
+		df.setDecimalFormatSymbols(symbols);
 		
 		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		scrollPane1 = new JScrollPane(tabela);
@@ -137,8 +147,8 @@ public class SzczegolyZamowienia extends JPanel {
 		String[] columnNames = 
 			{"Lp",
             "Nazwa Towaru",
-            "Cena",
             "Ilosc",
+            "Cena",
             "Wartosc Netto"};
 		
 		String[][] data = new String[0][0];
@@ -148,6 +158,12 @@ public class SzczegolyZamowienia extends JPanel {
 		tabela.getTableHeader().setReorderingAllowed(false);
 		tabela.setAutoCreateRowSorter(true);
 		tabela.setPreferredScrollableViewportSize(new Dimension(400, 200));
+		
+		df = new DecimalFormat("###,###.00");
+		DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		symbols.setGroupingSeparator(' ');
+		df.setDecimalFormatSymbols(symbols);
 		
 		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		scrollPane1 = new JScrollPane(tabela);
@@ -270,7 +286,7 @@ public class SzczegolyZamowienia extends JPanel {
 			jtfDostawca.setText(tabPom[9]);
 			int id = Integer.parseInt(tabPom[0]);
 
-			String query1 = "SELECT Lp,towar.NazwaTowaru,Cena,Ilosc,WartoscNetto FROM zamowienietowar INNER JOIN towar ON towar.IdTowar = zamowienietowar.IdTowar WHERE zamowienietowar.IdZamowienie = '"+id+"'";
+			String query1 = "SELECT Lp,towar.NazwaTowaru,Ilosc,Cena,WartoscNetto FROM zamowienietowar INNER JOIN towar ON towar.IdTowar = zamowienietowar.IdTowar WHERE zamowienietowar.IdZamowienie = '"+id+"'";
 			ResultSet result = polaczenie.sqlSelect(query1);
 			result.last();
 			int rozmiar = result.getRow();
@@ -282,8 +298,14 @@ int j=0;
 				towary[j][0]=result.getString(1);
 				towary[j][1]=result.getString(2);
 				towary[j][2]=result.getString(3);
-				towary[j][3]=result.getString(4);
-				towary[j][4]=result.getString(5);
+				double cena = Double.parseDouble(result.getString(4));
+				towary[j][3] = df.format(cena);
+				double cena1 = Double.parseDouble(result.getString(5));
+				towary[j][4] = df.format(cena1);
+//				towary[j][3] = result.getString(4);
+//				towary[j][4] = result.getString(5);
+				
+				
 				
 				j++;
 			}
@@ -298,6 +320,10 @@ int j=0;
 			DefaultTableModel tableModel = new DefaultTableModel(0,0);
 			tableModel.setColumnIdentifiers(columnNames);
 			tabela.setModel(tableModel);
+			DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
+			tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+			tabela.getColumnModel().getColumn(3).setCellRenderer(tableRenderer);
+			tabela.getColumnModel().getColumn(4).setCellRenderer(tableRenderer);
 			for (int i = 0; i < towary.length; i++) {
 				String[] data1 = new String[towary[0].length];
 				for(int z = 0;z<5;z++){
