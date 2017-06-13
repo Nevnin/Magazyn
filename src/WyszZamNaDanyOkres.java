@@ -96,8 +96,9 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
             "Wartosc Zamowienia"};
 		
 		String[][] data = new String[0][0];
-		
+		DefaultTableModel tableModel = new DefaultTableModel(0,0);
 		tabela = new JTable(data, columnNames);
+		tabela.setModel(tableModel);
 		tabela.setDefaultEditor(Object.class, null);
 		tabela.getTableHeader().setReorderingAllowed(false);
 		

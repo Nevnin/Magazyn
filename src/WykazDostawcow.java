@@ -11,6 +11,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -45,10 +48,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
-public class WykazDostawcow extends JPanel implements ListSelectionListener, KeyListener, ActionListener{
+public class WykazDostawcow extends JPanel implements ListSelectionListener, KeyListener, ActionListener, TableModelListener{
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private String[] tab, tabTowary;
@@ -99,17 +105,38 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 
 	    JPanel panelTowaryDolny = new JPanel();
 	    panelTowaryDolny.setLayout(new BoxLayout(panelTowaryDolny, BoxLayout.Y_AXIS));
-	    tableModel = new DefaultTableModel(0,0);
-		tableModel.setColumnIdentifiers(tabNazwyKol);
+	    tableModel = new DefaultTableModel(tabNazwyKol,0){
+	        @Override 
+	        public boolean isCellEditable(int row, int column)
+	        {
+	        	return  column==2 || column == 3 || column==4 ? true : false;
+	        }
+	    };
+
+	    tableModel.addTableModelListener(this);
+//		tableModel.setColumnIdentifiers(tabNazwyKol);
 		tablicaTowarow = new JTable();
 		tablicaTowarow.getTableHeader().setReorderingAllowed(false);
 		tablicaTowarow.setModel(tableModel);
 		tablicaTowarow.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+//		tablicaTowarow.addMouseListener(new MouseAdapter() {
+//			@Override
+//	        public void mouseClicked(MouseEvent e) {
+//				
+////	            DefaultTableModel tableModel = new DefaultTableModel(tabNazwyKol, 0);
+////	            tableModel = (DefaultTableModel) tablicaTowarow.getModel();
+////	            System.out.println(
+////	            		tableModel.getValueAt(tablicaTowarow.getSelectedRow(), 0).toString()+", \n"
+////	            		+tableModel.getValueAt(tablicaTowarow.getSelectedRow(), 1).toString()+",\n"
+////	            		+tableModel.getValueAt(tablicaTowarow.getSelectedRow(), 2).toString()+",\n"
+////	            		+tableModel.getValueAt(tablicaTowarow.getSelectedRow(), 3).toString()+"");
+////	        }
+//		}});
 		int[] tabKolSzer = {155,175,175,155,105};
 		System.out.println(tabNazwyKol.length);
 		for(int i=0; i<tabNazwyKol.length; i++){
 			tablicaTowarow.getColumnModel().getColumn(i).setPreferredWidth(tabKolSzer[i]);
-				DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
+			DefaultTableCellRenderer tableRenderer = new DefaultTableCellRenderer();
 			if(i==4){
 				tableRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
 				tablicaTowarow.getColumnModel().getColumn(i).setCellRenderer(tableRenderer);
@@ -1357,5 +1384,13 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
     }
-
+	@Override
+	public void tableChanged(TableModelEvent e) {
+        if (e.getType() == TableModelEvent.UPDATE){
+			int row = e.getFirstRow();
+	        int column = e.getColumn();
+	        TableModel model = (TableModel)e.getSource();
+	        System.out.println(model.getValueAt(row, column));
+        }
+	}
 }
