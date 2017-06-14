@@ -62,7 +62,7 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
 		
 		
 		GridBagConstraints c = new GridBagConstraints();
-		panel.setPreferredSize(new Dimension(200, 200));
+		//panel.setPreferredSize(new Dimension(200, 200));
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(0, 10, 2, 10);
 		
