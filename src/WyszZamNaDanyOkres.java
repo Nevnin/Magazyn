@@ -41,7 +41,7 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
 	private String[] tab;
 	private JSplitPane splitPane,splitPane1;
 	private JScrollPane scrollPane,scrollPane1;
-	private JLabel jlbOkres,jlbOd,jlbDo;
+	private JLabel jlbOkres,jlbOd,jlbDo,tytul;
 	private JTextField jtfOd,jtfDo;
 	private JButton szukaj;
 	DecimalFormat df;
@@ -53,7 +53,13 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
 		
 		splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		JPanel panel = new JPanel();
+		JPanel panel1 = new JPanel();
 		panel.setLayout(new GridBagLayout());
+		tytul = new JLabel("Wyszukiwanie zamówieñ na dany okres");
+		tytul.setFont(new Font("Calibri", Font.BOLD, 20));
+		panel1.add(tytul);
+		splitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		
 		
 		GridBagConstraints c = new GridBagConstraints();
 		panel.setPreferredSize(new Dimension(200, 200));
@@ -82,7 +88,9 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
 		jtfOd.setPreferredSize(new Dimension(70, 20));
 		jtfDo.setPreferredSize(new Dimension(70, 20));
 		panel.add(scrollPane);
-		splitPane.setTopComponent(panel);
+		splitPane1.setTopComponent(panel1);
+		splitPane1.setBottomComponent(panel);
+		splitPane.setTopComponent(splitPane1);
 		//scrollPane1.setViewportView(list1);
 		
 		
@@ -111,7 +119,7 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
 		String[][] data = new String[0][0];
 		DefaultTableModel tableModel = new DefaultTableModel(0,0);
 		tabela = new JTable(data, columnNames);
-		tabela.setModel(tableModel);
+		//tabela.setModel(tableModel);
 		tabela.setDefaultEditor(Object.class, null);
 		tabela.getTableHeader().setReorderingAllowed(false);
 		
