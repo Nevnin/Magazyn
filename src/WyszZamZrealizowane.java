@@ -109,7 +109,6 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyLi
         panel.add(szukaj,c);
 		
 		
-		
         String[] columnNames = 
 			{"Nr Zamowienia",
             "Termin Realizacji",

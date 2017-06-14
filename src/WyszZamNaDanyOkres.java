@@ -108,7 +108,6 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
         panel.add(szukaj,c);
 		
 		
-		
         String[] columnNames = 
 			{"Nr Zamowienia",
             "Termin Realizacji",
