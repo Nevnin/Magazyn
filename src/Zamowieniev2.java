@@ -406,7 +406,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 				focusListener();
 				tablemodel.addTableModelListener(this);
 		}
-		@Override
+		
 		public void actionPerformed(ActionEvent e) {
 			Object z = e.getSource();
 			if(z==jcbDostawca)
@@ -754,7 +754,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 			}
 			connection.close();
 		}
-		@Override
+		
 		public void tableChanged(TableModelEvent e) {
 			// TODO Auto-generated method stub
 			
@@ -763,7 +763,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 		 {
 			 jtfKosztDostawy.addFocusListener(new FocusListener() {
 				
-				@Override
+				
 				public void focusLost(FocusEvent e) {
 					try {
 						if(jtfKosztDostawy.getText().isEmpty())
@@ -783,7 +783,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 					
 				}
 				
-				@Override
+				
 				public void focusGained(FocusEvent e) {
 					// TODO Auto-generated method stub
 					
@@ -791,7 +791,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 			});
 			 jtfIlosc.addFocusListener(new FocusListener() {
 				
-				@Override
+				
 				public void focusLost(FocusEvent e) {
 					
 						ilosc=Integer.parseInt(jtfIlosc.getText());
@@ -817,7 +817,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 					
 				}
 				
-				@Override
+				
 				public void focusGained(FocusEvent e) {
 					// TODO Auto-generated method stub
 					

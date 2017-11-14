@@ -66,7 +66,7 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
     	tflogin.addKeyListener(this);
     	tfhaslo.addKeyListener(this);
     }
-    @Override
+    
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
     	if (e.getKeyCode()==KeyEvent.VK_ENTER){
@@ -74,12 +74,12 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
     	}
 		
 	}
-	@Override
+	
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+	
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		
@@ -87,7 +87,7 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
     public void zamykanieOkna(WindowEvent evt) {
         dispose();
     }
-    @Override
+    
     public void actionPerformed(ActionEvent e) {
     	Object logowanie = e.getSource();
     	if(logowanie==zaloguj) {
@@ -97,7 +97,7 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
     public void glowneOkno() {
     	dispose();
         EventQueue.invokeLater(new Runnable() {
-            @Override
+            
             public void run() {
                 new Magazyn();
             }
@@ -106,7 +106,7 @@ public class OknoLogowania extends JFrame implements ActionListener, KeyListener
     public void oknoLogowania() {
     	dispose();
 		EventQueue.invokeLater(new Runnable() {
-            @Override
+            
             public void run() {
                 new OknoLogowania();
             }

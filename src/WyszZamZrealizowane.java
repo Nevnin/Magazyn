@@ -54,7 +54,7 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyLi
 		
 		
 		splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		JPanel panel = new JPanel();
+		final JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		JPanel panel1 = new JPanel();
 		tytul = new JLabel("Wyszukiwanie zamówieñ zrealizowanych w danym okresie");
@@ -238,11 +238,11 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyLi
 	
 	}
 	
-	@Override
+	
 	public void keyPressed(KeyEvent arg0) { }
-	@Override
+	
 	public void keyReleased(KeyEvent arg0) { }
-	@Override
+	
 	public void keyTyped(KeyEvent arg0) { }
 }
 

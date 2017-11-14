@@ -52,7 +52,7 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
 		
 		
 		splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		JPanel panel = new JPanel();
+		final JPanel panel = new JPanel();
 		JPanel panel1 = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		tytul = new JLabel("Wyszukiwanie zamówieñ na dany okres");
@@ -237,11 +237,11 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
 	
 	}
 
-	@Override
+	
 	public void keyPressed(KeyEvent arg0) { }
-	@Override
+	
 	public void keyReleased(KeyEvent arg0) { }
-	@Override
+	
 	public void keyTyped(KeyEvent arg0) { }
 }
 

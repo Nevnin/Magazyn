@@ -104,15 +104,15 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		
 		panel.add(scrollPane);
 		search2.addKeyListener(new KeyListener(){
-			@Override
+			
 			public void keyPressed(KeyEvent e) { }
-			@Override
+			
 			public void keyReleased(KeyEvent e) 
 			{
 				szukajTowaru(search2.getText()); 
 				
 			}
-			@Override
+			
 			public void keyTyped(KeyEvent e) { }
 		});
 		
@@ -124,7 +124,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.addListSelectionListener(new ListSelectionListener(){
 	
-			@Override
+			
 	public void valueChanged(ListSelectionEvent e) {
 		
 		if(e.getValueIsAdjusting())
@@ -201,11 +201,11 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		search.setMaximumSize(new Dimension(200, 20));
 		panel.add(scrollPane);
 		search.addKeyListener(new KeyListener(){
-			@Override
+			
 			public void keyPressed(KeyEvent e) { }
-			@Override
+			
 			public void keyReleased(KeyEvent e) { szukaj(search.getText());}
-			@Override
+			
 			public void keyTyped(KeyEvent e) { }
 			
 		});
@@ -273,15 +273,15 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		
 		panel.add(scrollPane);
 		search3.addKeyListener(new KeyListener(){
-			@Override
+			
 			public void keyPressed(KeyEvent e) { }
-			@Override
+			
 			public void keyReleased(KeyEvent e) 
 			{
 				szukajTowaru2(search3.getText()); 
 				
 			}
-			@Override
+			
 			public void keyTyped(KeyEvent e) { }
 		});
 		
@@ -292,7 +292,7 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		listaTowary.setPreferredSize(new Dimension(150, 150));
 		listaTowary.setAlignmentX(CENTER_ALIGNMENT);
 		listaTowary.addListSelectionListener(new ListSelectionListener(){
-			@Override
+			
 			public void valueChanged(ListSelectionEvent e) {
 			
 			if(e.getValueIsAdjusting()==true)
@@ -371,11 +371,11 @@ public class TowaryDostawcy extends JPanel implements ListSelectionListener, Key
 		search1.setMaximumSize(new Dimension(200, 20));
 		panel2.add(scrollPane2);
 		search1.addKeyListener(new KeyListener(){
-			@Override
+			
 			public void keyPressed(KeyEvent e) { }
-			@Override
+			
 			public void keyReleased(KeyEvent e) { szukaj2(search1.getText());}
-			@Override
+			
 			public void keyTyped(KeyEvent e) { }
 			
 		});
@@ -556,22 +556,22 @@ public void szukajTowaru2(String text){
 	}
 }
 	
-	@Override
+	
 	public void valueChanged(ListSelectionEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+	
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+	
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+	
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		

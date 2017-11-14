@@ -217,7 +217,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 		list.addListSelectionListener(this);
 		search.addKeyListener(this);
 	}
-	@Override
+	
 	public void valueChanged(ListSelectionEvent arg0) {
 		
 		if(arg0.getValueIsAdjusting())
@@ -349,11 +349,11 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 		
 		
 	}
-	@Override
+	
 	public void keyPressed(KeyEvent arg0) { }
-	@Override
+	
 	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
-	@Override
+	
 	public void keyTyped(KeyEvent arg0) { }
 	public String tworzenieNazwyPZ()
 	{
@@ -458,7 +458,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
     		}
     	}
 	}
-	@Override
+	
 	public void actionPerformed(ActionEvent e) {
 }
 }

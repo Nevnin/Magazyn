@@ -86,10 +86,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		jtfNrKonta = new JTextField("");
 		jlbNrKonta.setToolTipText(jlbNrKonta.getText()+" : pole wymagane, maksymalna d³ugoœæ to 30 znaków");
 		jtfNrKonta.setToolTipText(jlbNrKonta.getText()+" : maksymalna d³ugoœæ to 30 znaków");
-		jlbMiejsc = new JLabel("Miejscowosc*");
-		jtfMiejsc = new JTextField("");
-		jlbMiejsc.setToolTipText(jlbMiejsc.getText()+" : pole wymagane, maksymalna d³ugoœæ to 50 znaków");
-		jtfMiejsc.setToolTipText(jlbMiejsc.getText()+" : maksymalna d³ugoœæ to 50 znaków");
 		jlbAdres = new JLabel("Adres*");
 		jtfAdres = new JTextField("");
 		jlbAdres.setToolTipText(jlbAdres.getText()+" : pole wymagane, maksymalna d³ugoœæ to 50 znaków");
@@ -143,10 +139,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
         gbc.gridx++;
         add(jtfNrKonta,gbc);
         gbc.gridx = 0; gbc.gridy++;
-        add(jlbMiejsc,gbc);
-        gbc.gridx++;
-        add(jtfMiejsc,gbc);
-        gbc.gridx = 0; gbc.gridy++;
         add(jlbAdres,gbc);
         gbc.gridx++;
         add(jtfAdres,gbc);
@@ -172,7 +164,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 	private void ustawNasluchZdarzen(){
 		jbtPrzycisk.addActionListener(this);
 	}
-	@Override
 	public void actionPerformed(ActionEvent e) {
         Object z= e.getSource();
     	if(z==jbtPrzycisk){
@@ -188,7 +179,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	String telefon3 = jtfTelefon3.getText().toString();
     	String nazwaDzialu = jtfNazwaDzialu.getText().toString();
     	String nrKonta = jtfNrKonta.getText().toString();
-    	String miejsc = jtfMiejsc.getText().toString();
     	String adres = jtfAdres.getText().toString();
     	String kodPocztowy = jtfKodPocztowy.getText().toString();
     	String poczta  = jtfPoczta.getText().toString();
@@ -197,7 +187,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 			connection.createStatement();
 			String query = "INSERT INTO dostawca "
 				+ "(NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta)"
-			    + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			    + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 			
 			// create the mysql insert preparedstatement
 			PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
@@ -209,10 +199,9 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 			preparedStmt.setString (6, telefon3);
 			preparedStmt.setString (7, nazwaDzialu);
 			preparedStmt.setString (8, nrKonta);
-			preparedStmt.setString (9, miejsc);
-			preparedStmt.setString (10, adres);
-			preparedStmt.setString (11, kodPocztowy);
-			preparedStmt.setString (12, poczta);
+			preparedStmt.setString (9, adres);
+			preparedStmt.setString (10, kodPocztowy);
+			preparedStmt.setString (11, poczta);
 			
 			// execute the preparedstatement
 			preparedStmt.execute();
@@ -250,7 +239,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	String telefon3 = jtfTelefon3.getText().toString();
     	String nazwaDzialu = jtfNazwaDzialu.getText().toString();
     	String nrKonta = jtfNrKonta.getText().toString();
-    	String miejsc = jtfMiejsc.getText().toString();
     	String adres = jtfAdres.getText().toString();
     	String kodPocztowy = jtfKodPocztowy.getText().toString();
     	String poczta  = jtfPoczta.getText().toString();
@@ -259,7 +247,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     	try {
 			Polaczenie polacz = new Polaczenie();
 	    	String sql = "SELECT * FROM dostawca WHERE NazwaSkrocona='"+nazwaSkrocona+"' AND NazwaPelna='"+nazwaPelna+"'";
-//	    	System.out.println(sql);
 			ResultSet rs = polacz.sqlSelect(sql);
 			rs.last();
 			int rozmiar = rs.getRow();
@@ -331,14 +318,6 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     		error+="Nr Konta zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)\n";
     		jtfNrKonta.setBackground(Color.RED);
     	}
-    	if(miejsc.length()>50){
-    		error+="Miejscowosc zosta³a podana zbyt d³uga(50max)\n";
-    		jtfAdres.setBackground(Color.RED);
-    	}
-    	if(miejsc.matches("^\\s*$")){
-    		error+="Miejscowosc zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
-    		jtfAdres.setBackground(Color.RED);
-    	}
     	if(adres.length()>50){
     		error+="Adres zosta³ podany zbyt d³ugi(50max)\n";
     		jtfAdres.setBackground(Color.RED);
@@ -380,11 +359,11 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     }
     private void documentListener(){
         jtfNazwaSkrocona.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
+			
 			public void removeUpdate(DocumentEvent e) { check(); }
-			@Override
+			
 			public void insertUpdate(DocumentEvent e) { check(); }
-			@Override
+			
 			public void changedUpdate(DocumentEvent e) { check(); }
 
 		    public void check() {
@@ -394,11 +373,11 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		    }
 		});
         jtfNazwaPelna.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
+			
 			public void removeUpdate(DocumentEvent e) { check(); }
-			@Override
+			
 			public void insertUpdate(DocumentEvent e) { check(); }
-			@Override
+			
 			public void changedUpdate(DocumentEvent e) { check(); }
 
 		    public void check() {
@@ -410,7 +389,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
     }
     private void focusListener(){
         jtfNazwaSkrocona.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String nazwaSkrocona = jtfNazwaSkrocona.getText().toString();
 		    	if(nazwaSkrocona.length()>100){ 
@@ -422,14 +401,14 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 //		    		JOptionPane.showMessageDialog(null, "Nazwa Skrócona zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	}  
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfNazwaSkrocona.selectAll();
 				jtfNazwaSkrocona.setBackground(Color.WHITE);
 			}
 		});
         jtfNazwaPelna.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) { 
 		    	String nazwaPelna = jtfNazwaPelna.getText().toString();
 		    	if(nazwaPelna.length()>100){
@@ -441,14 +420,14 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 //		    		JOptionPane.showMessageDialog(null, "Nazwa Pe³na zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	} 
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfNazwaPelna.selectAll();
 				jtfNazwaPelna.setBackground(Color.WHITE);
 			}
 		});
         jtfNip.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String nip = jtfNip.getText().toString();
 		    	if(nip.length()!=10){
@@ -461,14 +440,14 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		    		JOptionPane.showMessageDialog(null, "Nip mo¿e zawieraæ tylko cyfry(10)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfNip.selectAll();
 				jtfNip.setBackground(Color.WHITE);
 			}
 		});
         jtfTelefon1.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String telefon1 = jtfTelefon1.getText().toString();
 		    	if(!telefon1.isEmpty() && !telefon1.matches("[0-9]{9,20}")){
@@ -476,14 +455,14 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		    		JOptionPane.showMessageDialog(null, "Numer Telefon1 mo¿e sk³adaæ siê tylko z cyfr(o d³ugoœci od 9 do 20)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfTelefon1.selectAll();
 				jtfTelefon1.setBackground(Color.WHITE);
 			}
 		});
 		jtfTelefon2.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String telefon2 = jtfTelefon2.getText().toString();
 		    	if(!telefon2.isEmpty() && !telefon2.matches("[0-9]{9,20}")){
@@ -491,14 +470,14 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		    		JOptionPane.showMessageDialog(null, "Numer Telefon2 mo¿e sk³adaæ siê tylko z cyfr(o d³ugoœci od 9 do 20)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfTelefon2.selectAll();
 				jtfTelefon2.setBackground(Color.WHITE);
 			}
 		});
 		jtfTelefon3.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String telefon3 = jtfTelefon3.getText().toString();
 		    	if(!telefon3.isEmpty() && !telefon3.matches("[0-9]{9,20}")){
@@ -506,14 +485,14 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		    		JOptionPane.showMessageDialog(null, "Numer Telefon3 mo¿e sk³adaæ siê tylko z cyfr(o d³ugoœci od 9 do 20)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfTelefon3.selectAll();
 				jtfTelefon3.setBackground(Color.WHITE);
 			}
 		});
 		jtfNazwaDzialu.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String nazwaDzialu = jtfNazwaDzialu.getText().toString();
 		    	if(nazwaDzialu.length()>50){
@@ -525,14 +504,14 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 //		    		JOptionPane.showMessageDialog(null, "Nazwa Dzialu zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	} 
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfNazwaDzialu.selectAll();
 				jtfNazwaDzialu.setBackground(Color.WHITE);
 			}
 		});
 		jtfNrKonta.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String nrKonta = jtfNrKonta.getText().toString();
 		    	if(nrKonta.length()>30){
@@ -544,34 +523,15 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 //		    		JOptionPane.showMessageDialog(null, "Nr Konta zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfNrKonta.selectAll();
 				jtfNrKonta.setBackground(Color.WHITE);
 			}
 		});
-		jtfMiejsc.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-		    	String adres = jtfMiejsc.getText().toString();
-		    	if(adres.length()>50){
-		    		jtfMiejsc.setBackground(Color.RED);
-		    		JOptionPane.showMessageDialog(null, "Miescowosc zosta³a podana zbyt d³uga(50max)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-		    	}
-		    	jtfPoczta.setText(jtfMiejsc.getText());
-//		    	if(adres.matches("^\\s*$")){
-//		    		jtfAdres.setBackground(Color.RED);
-//		    		JOptionPane.showMessageDialog(null, "Adres zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-//		    	}
-			}
-			@Override
-			public void focusGained(FocusEvent e) {
-				jtfAdres.selectAll();
-				jtfAdres.setBackground(Color.WHITE);
-			}
-		});
+		
 		jtfAdres.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String adres = jtfAdres.getText().toString();
 		    	if(adres.length()>50){
@@ -583,14 +543,14 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 //		    		JOptionPane.showMessageDialog(null, "Adres zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfAdres.selectAll();
 				jtfAdres.setBackground(Color.WHITE);
 			}
 		});
 		jtfKodPocztowy.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String kodPocztowy = jtfKodPocztowy.getText().toString();
 		    	if(kodPocztowy.length()>6){
@@ -602,14 +562,14 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 		    		JOptionPane.showMessageDialog(null, "Kod Pocztowy zosta³ podany nieprawid³owy(00-000)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfKodPocztowy.selectAll();
 				jtfKodPocztowy.setBackground(Color.WHITE);
 			}
 		});
 		jtfPoczta.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 				String poczta = jtfPoczta.getText().toString();
 		    	if(poczta.length()>30){
@@ -621,7 +581,7 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 //		    		JOptionPane.showMessageDialog(null, "Poczta zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfPoczta.selectAll();
 				jtfPoczta.setBackground(Color.WHITE);
@@ -630,11 +590,11 @@ public class KartaDostawcy extends JPanel implements ActionListener{
 	}
     private void keyListener(){
     	jtfNazwaPelna.addKeyListener(new KeyListener() {
-			@Override
+			
 			public void keyTyped(KeyEvent e) {}
-			@Override
+			
 			public void keyReleased(KeyEvent e) {}
-			@Override
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_TAB)  {
 					jtfNazwaPelna.transferFocus();

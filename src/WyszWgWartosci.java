@@ -167,28 +167,28 @@ public class WyszWgWartosci extends JPanel implements ListSelectionListener, Key
 	}
 		
 
-	@Override
+	
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	@Override
+	
 	public void keyReleased(KeyEvent arg0) {
 		szukaj(search.getText());
 		
 	}
 
 
-	@Override
+	
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	@Override
+	
 	public void valueChanged(ListSelectionEvent arg0) {
 		if(arg0.getValueIsAdjusting())
 		{

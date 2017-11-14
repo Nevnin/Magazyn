@@ -140,7 +140,7 @@ public class StanMagazynowy extends JPanel  implements ListSelectionListener, Ke
 		list.addListSelectionListener(this);
 		search.addKeyListener(this);
 	}
-	@Override
+	
 	public void valueChanged(ListSelectionEvent arg0) {
 		if (arg0.getValueIsAdjusting()) {
 			String[] tabPom;
@@ -211,13 +211,13 @@ public class StanMagazynowy extends JPanel  implements ListSelectionListener, Ke
 			e.printStackTrace();
 		}
 	}
-	@Override
+	
 	public void keyPressed(KeyEvent arg0) {	 }
-	@Override
+	
 	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
-	@Override
+	
 	public void keyTyped(KeyEvent arg0) { }
-	@Override
+	
 	public Component getListCellRendererComponent(JList<? extends Object> list, Object value, int index,
 			boolean isSelected, boolean cellHasFocus) {
 		try {

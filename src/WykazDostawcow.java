@@ -104,7 +104,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 	    JPanel panelTowaryDolny = new JPanel();
 	    panelTowaryDolny.setLayout(new BoxLayout(panelTowaryDolny, BoxLayout.Y_AXIS));
 	    tableModel = new DefaultTableModel(tabNazwyKol,0){
-	        @Override 
+	         
 	        public boolean isCellEditable(int row, int column)
 	        {
 	        	return  column==2 || column == 3 || column==4 ? true : false;
@@ -118,7 +118,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		tablicaTowarow.setModel(tableModel);
 		tablicaTowarow.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 //		tablicaTowarow.addMouseListener(new MouseAdapter() {
-//			@Override
+//			
 //	        public void mouseClicked(MouseEvent e) {
 //				
 ////	            DefaultTableModel tableModel = new DefaultTableModel(tabNazwyKol, 0);
@@ -199,9 +199,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		jlbNrKonta = new JLabel("Numer konta:");
 		jtfNrKonta = new JTextField();
 		jtfNrKonta.setEditable(false);
-		jlbMiejsc = new JLabel("Miejscowoœæ:");
-		jtfMiejsc = new JTextField();
-		jtfMiejsc.setEditable(false);
 		jlbAdres = new JLabel("Adres:");
 		jtfAdres = new JTextField();
 		jtfAdres.setEditable(false);
@@ -279,10 +276,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
         p.add(jlbNrKonta,c);
         c.gridx++;
         p.add(jtfNrKonta,c);
-        c.gridx = 0; c.gridy++;
-        p.add(jlbMiejsc,c);
-        c.gridx++;
-        p.add(jtfMiejsc,c);
         c.gridx = 0; c.gridy++;
         p.add(jlbAdres,c);
         c.gridx++;
@@ -366,7 +359,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		jbtAnuluj.addActionListener(this);
 		jbtEdycjaDos.addActionListener(this);
 	}
-	@Override
+	
 	public void actionPerformed(ActionEvent arg0) {
 		Object e = arg0.getSource();
 		if(e==jbtDodajTow){
@@ -492,7 +485,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		}
 		return tabPom;
 	}
-	@Override
+	
 	public void valueChanged(ListSelectionEvent arg0) {
 		if(edycjaListy){
 			if(arg0.getValueIsAdjusting()) {
@@ -629,11 +622,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //	    }
 		return tabPom;
 	}
-	@Override
+	
 	public void keyPressed(KeyEvent arg0) { }
-	@Override
+	
 	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
-	@Override
+	
 	public void keyTyped(KeyEvent arg0) { }
 
     private void wyczyscDaneKontaktowe(){
@@ -645,7 +638,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		jtfTelefon3.setText("");
 		jtfNazwaDzialu.setText("");
 		jtfNrKonta.setText("");
-		jtfMiejsc.setText("");
 		jtfAdres.setText("");
 		jtfKodPocztowy.setText("");
 		jtfPoczta.setText("");
@@ -663,7 +655,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		jtfTelefon3.setEditable(flag);
 		jtfNazwaDzialu.setEditable(flag);
 		jtfNrKonta.setEditable(flag);
-		jtfMiejsc.setEditable(flag);
 		jtfAdres.setEditable(flag);
 		jtfKodPocztowy.setEditable(flag);
 		jtfPoczta.setEditable(flag);
@@ -677,7 +668,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		jtfTelefon3.setBackground(null);
 		jtfNazwaDzialu.setBackground(null);
 		jtfNrKonta.setBackground(null);
-		jtfMiejsc.setBackground(null);
 		jtfAdres.setBackground(null);
 		jtfKodPocztowy.setBackground(null);
 		jtfPoczta.setBackground(null);
@@ -691,12 +681,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		jtfTelefon3.setFocusable(flag);
 		jtfNazwaDzialu.setFocusable(flag);
 		jtfNrKonta.setFocusable(flag);
-		jtfMiejsc.setFocusable(flag);
 		jtfAdres.setFocusable(flag);
 		jtfKodPocztowy.setFocusable(flag);
 		jtfPoczta.setFocusable(flag);
 	}
-//	@Override
+//	
 //	public void actionPerformed(ActionEvent arg0) {
 //        Object z= arg0.getSource();
 //		if(z==jbtNowyTowar){
@@ -737,7 +726,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		String telefon3 = jtfTelefon3.getText().toString();
 		String nazwaDzialu = jtfNazwaDzialu.getText().toString();
 		String nrKonta = jtfNrKonta.getText().toString();
-		String miejsc = jtfMiejsc.getText().toString();
 		String adres = jtfAdres.getText().toString();
 		String kodPocztowy = jtfKodPocztowy.getText().toString();
 		String poczta  = jtfPoczta.getText().toString();
@@ -745,8 +733,8 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			Connection connection = DriverManager.getConnection(url, username, password);
 			connection.createStatement();
 			String query = "INSERT INTO dostawca "
-				+ "(NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Miejscowosc, Adres, KodPocztowy, Poczta)"
-			    + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "(NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta)"
+			    + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
 			// create the mysql insert preparedstatement
 			PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
@@ -758,10 +746,9 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			preparedStmt.setString (6, telefon3);
 			preparedStmt.setString (7, nazwaDzialu);
 			preparedStmt.setString (8, nrKonta);
-			preparedStmt.setString (9, miejsc);
-			preparedStmt.setString (10, adres);
-			preparedStmt.setString (11, kodPocztowy);
-			preparedStmt.setString (12, poczta);
+			preparedStmt.setString (9, adres);
+			preparedStmt.setString (10, kodPocztowy);
+			preparedStmt.setString (11, poczta);
 			
 			// execute the preparedstatement
 			preparedStmt.execute();
@@ -782,7 +769,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
     	String telefon3 = jtfTelefon3.getText().toString();
     	String nazwaDzialu = jtfNazwaDzialu.getText().toString();
     	String nrKonta = jtfNrKonta.getText().toString();
-    	String miejsc = jtfMiejsc.getText().toString();
     	String adres = jtfAdres.getText().toString();
     	String kodPocztowy = jtfKodPocztowy.getText().toString();
     	String poczta  = jtfPoczta.getText().toString();
@@ -865,14 +851,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
     	if(nrKonta.matches("^\\s*$")){
     		error+="Nr Konta zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)\n";
     		jtfNrKonta.setBackground(Color.RED);
-    	}
-    	if(miejsc.length()>50){
-    		error+="Miejscowosc zosta³a podana zbyt d³uga(50max)\n";
-    		jtfAdres.setBackground(Color.RED);
-    	}
-    	if(miejsc.matches("^\\s*$")){
-    		error+="Miejscowosc zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)\n";
-    		jtfAdres.setBackground(Color.RED);
     	}
     	if(adres.length()>50){
     		error+="Adres zosta³ podany zbyt d³ugi(50max)\n";
@@ -1094,7 +1072,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
     }
     private void focusListener(){
         jtfNazwaSkrocona.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String nazwaSkrocona = jtfNazwaSkrocona.getText().toString();
 		    	if(nazwaSkrocona.length()>100){ 
@@ -1106,7 +1084,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //		    		JOptionPane.showMessageDialog(null, "Nazwa Skrócona zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	}  
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfNazwaSkrocona.selectAll();
 				if(jtfNazwaSkrocona.isEditable())
@@ -1114,7 +1092,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
         jtfNIP.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String nip = jtfNIP.getText().toString();
 		    	if(nip.length()!=10){
@@ -1126,7 +1104,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		    		JOptionPane.showMessageDialog(null, "Nip mo¿e zawieraæ tylko cyfry(10)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfNIP.selectAll();
 				if(jtfNIP.isEditable())
@@ -1134,7 +1112,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
         jtfTelefon1.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String telefon1 = jtfTelefon1.getText().toString();
 		    	if(!telefon1.isEmpty() && !telefon1.matches("[0-9]{9,20}")){
@@ -1142,7 +1120,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		    		JOptionPane.showMessageDialog(null, "Numer Telefon1 mo¿e sk³adaæ siê tylko z cyfr(o d³ugoœci od 9 do 20)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfTelefon1.selectAll();
 				if(jtfTelefon1.isEditable())
@@ -1150,7 +1128,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
 		jtfTelefon2.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String telefon2 = jtfTelefon2.getText().toString();
 		    	if(!telefon2.isEmpty() && !telefon2.matches("[0-9]{9,20}")){
@@ -1158,7 +1136,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		    		JOptionPane.showMessageDialog(null, "Numer Telefon2 mo¿e sk³adaæ siê tylko z cyfr(o d³ugoœci od 9 do 20)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfTelefon2.selectAll();
 				if(jtfTelefon2.isEditable())
@@ -1166,7 +1144,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
 		jtfTelefon3.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String telefon3 = jtfTelefon3.getText().toString();
 		    	if(!telefon3.isEmpty() && !telefon3.matches("[0-9]{9,20}")){
@@ -1174,7 +1152,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		    		JOptionPane.showMessageDialog(null, "Numer Telefon3 mo¿e sk³adaæ siê tylko z cyfr(o d³ugoœci od 9 do 20)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfTelefon3.selectAll();
 				if(jtfTelefon3.isEditable())
@@ -1182,7 +1160,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
 		jtfNazwaDzialu.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String nazwaDzialu = jtfNazwaDzialu.getText().toString();
 		    	if(nazwaDzialu.length()>50){
@@ -1194,7 +1172,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //		    		JOptionPane.showMessageDialog(null, "Nazwa Dzialu zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	} 
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfNazwaDzialu.selectAll();
 				if(jtfNazwaDzialu.isEditable())
@@ -1202,7 +1180,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
 		jtfNrKonta.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String nrKonta = jtfNrKonta.getText().toString();
 		    	if(nrKonta.length()>30){
@@ -1214,7 +1192,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //		    		JOptionPane.showMessageDialog(null, "Nr Konta zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfNrKonta.selectAll();
 				if(jtfNrKonta.isEditable())
@@ -1222,7 +1200,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
 		jtfMiejsc.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String adres = jtfMiejsc.getText().toString();
 		    	if(adres.length()>50){
@@ -1236,7 +1214,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //		    		JOptionPane.showMessageDialog(null, "Adres zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfMiejsc.selectAll();
 				if(jtfMiejsc.isEditable())
@@ -1244,7 +1222,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
 		jtfAdres.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String adres = jtfAdres.getText().toString();
 		    	if(adres.length()>50){
@@ -1256,7 +1234,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //		    		JOptionPane.showMessageDialog(null, "Adres zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfAdres.selectAll();
 				if(jtfAdres.isEditable())
@@ -1264,7 +1242,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
 		jtfKodPocztowy.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	String kodPocztowy = jtfKodPocztowy.getText().toString();
 		    	if(kodPocztowy.length()>6){
@@ -1276,7 +1254,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		    		JOptionPane.showMessageDialog(null, "Kod Pocztowy zosta³ podany nieprawid³owy(00-000)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfKodPocztowy.selectAll();
 				if(jtfKodPocztowy.isEditable())
@@ -1284,7 +1262,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
 		jtfPoczta.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 				String poczta = jtfPoczta.getText().toString();
 		    	if(poczta.length()>30){
@@ -1296,7 +1274,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 //		    		JOptionPane.showMessageDialog(null, "Poczta zosta³a podana nieprawid³owa(nie mo¿e pozostaæ pusta)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 //		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfPoczta.selectAll();
 				if(jtfPoczta.isEditable())
@@ -1304,7 +1282,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
 		jtfCena.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 		    	try{
 		        	double cenaD = Double.parseDouble(jtfCena.getText().toString());
@@ -1314,14 +1292,14 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		    		JOptionPane.showMessageDialog(null, "Cena zosta³a podana nieprawid³owa(tylko liczby ,np. 20.99)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 				}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfCena.selectAll();
 				jtfCena.setBackground(Color.WHITE);
 			}
 		});
 		jtfDataOd.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 				String dataOd = jtfDataOd.getText().toString();
 		    	try{
@@ -1340,14 +1318,14 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 	//		        	}
 				}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfDataOd.selectAll();
 				jtfDataOd.setBackground(Color.WHITE);
 			}
 		});
 		jtfKodWgDos.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 				String kodWgDos = jtfKodWgDos.getText().toString();
 //		    	if(kodWgDos.isEmpty() || kodWgDos.matches("^\\s*$")){
@@ -1359,14 +1337,14 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		    		JOptionPane.showMessageDialog(null, "Kod weg³ug Dostawcy zosta³a podany nieprawid³owy(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfKodWgDos.selectAll();
 				jtfKodWgDos.setBackground(Color.WHITE);
 			}
 		});
 		jtfNazwaWgDos.addFocusListener(new FocusListener() {
-			@Override
+			
 			public void focusLost(FocusEvent e) {
 				String nazwaWgDos = jtfNazwaWgDos.getText().toString();
 //		    	if(nazwaWgDos.isEmpty() || nazwaWgDos.matches("^\\s*$")){
@@ -1378,7 +1356,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		    		JOptionPane.showMessageDialog(null, "Nazwa weg³ug Dostawcy zosta³a podana nieprawid³owa(d³ugoœæ nie mo¿e przekraczaæ 50 znaków)","Uwaga!", JOptionPane.ERROR_MESSAGE);
 		    	}
 			}
-			@Override
+			
 			public void focusGained(FocusEvent e) {
 				jtfNazwaWgDos.selectAll();
 				jtfNazwaWgDos.setBackground(Color.WHITE);
@@ -1388,11 +1366,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 
     private void documentListener(){
         jtfNazwaSkrocona.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
+			
 			public void removeUpdate(DocumentEvent e) { check(); }
-			@Override
+			
 			public void insertUpdate(DocumentEvent e) { check(); }
-			@Override
+			
 			public void changedUpdate(DocumentEvent e) { check(); }
 
 		    public void check() {
@@ -1402,11 +1380,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		    }
 		});
         jtaNazwaPelna.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
+			
 			public void removeUpdate(DocumentEvent e) { check(); }
-			@Override
+			
 			public void insertUpdate(DocumentEvent e) { check(); }
-			@Override
+			
 			public void changedUpdate(DocumentEvent e) { check(); }
 
 		    public void check() {
@@ -1418,11 +1396,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
     }
     private void keyListener(){
     	jtaNazwaPelna.addKeyListener(new KeyListener() {
-			@Override
+			
 			public void keyTyped(KeyEvent e) {}
-			@Override
+			
 			public void keyReleased(KeyEvent e) {}
-			@Override
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_TAB)  {
 					jtaNazwaPelna.transferFocus();
@@ -1430,7 +1408,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			}
 		});
     }
-	@Override
+	
 	public void tableChanged(TableModelEvent e) {
         if (e.getType() == TableModelEvent.UPDATE){
 			int row = e.getFirstRow();

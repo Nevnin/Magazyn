@@ -105,7 +105,7 @@ public class WyszWgKategorii extends JPanel implements ListSelectionListener, Ke
 		tabela.getTableHeader().setReorderingAllowed(false);
 		
 		scrollPane1 = new JScrollPane(tabela);
-		JPanel p = new JPanel();
+		final JPanel p = new JPanel();
 		p.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		p.setPreferredSize(new Dimension(600, 200));
@@ -158,7 +158,6 @@ public class WyszWgKategorii extends JPanel implements ListSelectionListener, Ke
 		list.addListSelectionListener(this);
 		search.addKeyListener(this);
 	}
-	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
 		
 		if(arg0.getValueIsAdjusting())
@@ -244,10 +243,7 @@ public class WyszWgKategorii extends JPanel implements ListSelectionListener, Ke
 			e.printStackTrace();
 		}
 	}
-	@Override
 	public void keyPressed(KeyEvent arg0) { }
-	@Override
 	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
-	@Override
 	public void keyTyped(KeyEvent arg0) { }
 }

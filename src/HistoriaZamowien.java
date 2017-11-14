@@ -86,7 +86,6 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 		list.addListSelectionListener(this);
 		search.addKeyListener(this);
 	}
-	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
 		
 		if(arg0.getValueIsAdjusting())
@@ -118,11 +117,8 @@ public class HistoriaZamowien extends JPanel implements ListSelectionListener, K
 			e.printStackTrace();
 		}
 	}
-	@Override
 	public void keyPressed(KeyEvent arg0) { }
-	@Override
 	public void keyReleased(KeyEvent arg0) { szukaj(search.getText()); }
-	@Override
 	public void keyTyped(KeyEvent arg0) { }
 }
 

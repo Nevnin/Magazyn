@@ -68,7 +68,7 @@ public class Magazyn extends JFrame implements ActionListener {
 		menu.kartoteka.addActionListener(this);
 		if(oz !=null){oz.jbZatwierdz.addActionListener(this);}
 	}
-	@Override
+	
 	public void actionPerformed(ActionEvent e) {
 		Object z= e.getSource();
         if(z==menu.szukanietowarow) {
