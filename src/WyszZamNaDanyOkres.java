@@ -181,7 +181,7 @@ public class WyszZamNaDanyOkres extends JPanel implements ActionListener, KeyLis
 			try {
 				polaczenie = new Polaczenie();
 				
-				String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, CalkowitaWartoscZamowienia from zamowienie where (TerminRealizacji BETWEEN '"+pocz+"' AND '"+konc+"') AND (DataRealizacji IS NULL)";
+				String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, KosztZamowienia from zamowienie where (TerminRealizacji BETWEEN '"+pocz+"' AND '"+konc+"') AND (DataRealizacji IS NULL)";
 				
 				ResultSet rs=polaczenie.sqlSelect(sql);
 				rs.last();

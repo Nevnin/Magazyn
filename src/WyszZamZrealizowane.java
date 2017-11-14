@@ -182,7 +182,7 @@ public class WyszZamZrealizowane extends JPanel implements ActionListener, KeyLi
 			try {
 				polaczenie = new Polaczenie();
 				
-				String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, CalkowitaWartoscZamowienia from zamowienie where DataRealizacji BETWEEN '"+pocz+"' AND '"+konc+"'";
+				String sql = "SELECT NumerZamowienia, TerminRealizacji, DataRealizacji, DataWystawienia, KosztZamowienia from zamowienie where DataRealizacji BETWEEN '"+pocz+"' AND '"+konc+"'";
 				
 				ResultSet rs=polaczenie.sqlSelect(sql);
 				rs.last();

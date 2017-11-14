@@ -664,7 +664,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 		{
 			Connection connection = DriverManager.getConnection(url, username, password);
 			String query = "INSERT INTO zamowienie "
-					+ "(TerminRealizacji,DataRealizacji,CalkowitaWartoscZamowienia,IdDostawcy,DataWystawienia,NumerZamowienia,IdSposobDostawy,KosztDostawy,WartoscTowarow)"
+					+ "(TerminRealizacji,DataRealizacji,KosztZamowienia,IdDostawcy,DataWystawienia,NumerZamowienia,IdSposobDostawy,KosztDostawy,WartoscTowarow)"
 				    + " values (?, ?, ?, ?, ?, ?,?,?,?)";
 			PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setString (1,jtfTerminRealizacji.getText());

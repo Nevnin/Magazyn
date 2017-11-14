@@ -178,7 +178,7 @@ public class WyszZamNaDanyTowar extends JPanel implements ListSelectionListener,
 		
 				int id = Integer.parseInt(idT[0]);
 	
-				String query1 = "SELECT DISTINCT zamowienie.NumerZamowienia, zamowienie.TerminRealizacji, zamowienie.DataRealizacji, zamowienie.DataWystawienia, zamowienie.CalkowitaWartoscZamowienia FROM `zamowienietowar` INNER JOIN zamowienie ON zamowienie.IdZamowienie = zamowienietowar.IdZamowienie WHERE IdTowar = '"+id+"'";
+				String query1 = "SELECT DISTINCT zamowienie.NumerZamowienia, zamowienie.TerminRealizacji, zamowienie.DataRealizacji, zamowienie.DataWystawienia, zamowienie.KosztZamowienia FROM `zamowienietowar` INNER JOIN zamowienie ON zamowienie.IdZamowienie = zamowienietowar.IdZamowienie WHERE IdTowar = '"+id+"'";
 				ResultSet result = polaczenie.sqlSelect(query1);
 				result.last();
 				int rozmiar = result.getRow();

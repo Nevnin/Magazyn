@@ -55,7 +55,7 @@ public class WyszWgKategorii extends JPanel implements ListSelectionListener, Ke
 			tab = new String [rozmiar];
 			while(rs.next())
 			{
-				tab[i] = rs.getString("Nazwa");
+				tab[i] = rs.getString("NazwaKategorii");
 				i++;
 			}
 		} catch (SQLException e) {
@@ -179,7 +179,7 @@ public class WyszWgKategorii extends JPanel implements ListSelectionListener, Ke
 		
 				int id = Integer.parseInt(idT[0]);
 	
-				String query1 = "SELECT DISTINCT zamowienie.NumerZamowienia, zamowienie.TerminRealizacji, zamowienie.DataRealizacji, zamowienie.DataWystawienia, zamowienie.CalkowitaWartoscZamowienia FROM `zamowienietowar` INNER JOIN zamowienie ON zamowienie.IdZamowienie = zamowienietowar.IdZamowienie INNER JOIN towar ON zamowienietowar.IdTowar = towar.IdTowar WHERE towar.IdKategoria = '"+id+"'";
+				String query1 = "SELECT DISTINCT zamowienie.NumerZamowienia, zamowienie.TerminRealizacji, zamowienie.DataRealizacji, zamowienie.DataWystawienia, zamowienie.KosztZamowienia FROM `zamowienietowar` INNER JOIN zamowienie ON zamowienie.IdZamowienie = zamowienietowar.IdZamowienie INNER JOIN towar ON zamowienietowar.IdTowar = towar.IdTowar WHERE towar.IdKategoria = '"+id+"'";
 				ResultSet result = polaczenie.sqlSelect(query1);
 				result.last();
 				int rozmiar = result.getRow();
