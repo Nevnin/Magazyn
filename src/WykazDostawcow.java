@@ -1199,28 +1199,6 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 					jtfNrKonta.setBackground(Color.WHITE);
 			}
 		});
-		jtfMiejsc.addFocusListener(new FocusListener() {
-			
-			public void focusLost(FocusEvent e) {
-		    	String adres = jtfMiejsc.getText().toString();
-		    	if(adres.length()>50){
-		    		jtfMiejsc.setBackground(Color.RED);
-		    		JOptionPane.showMessageDialog(null, "Miescowosc zosta³a podana zbyt d³uga(50max)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-		    	}
-				if(jtfMiejsc.isEditable())
-					jtfPoczta.setText(jtfMiejsc.getText());
-//		    	if(adres.matches("^\\s*$")){
-//		    		jtfAdres.setBackground(Color.RED);
-//		    		JOptionPane.showMessageDialog(null, "Adres zosta³ podany nieprawid³owy(nie mo¿e pozostaæ pusty)","Uwaga!", JOptionPane.ERROR_MESSAGE);
-//		    	}
-			}
-			
-			public void focusGained(FocusEvent e) {
-				jtfMiejsc.selectAll();
-				if(jtfMiejsc.isEditable())
-					jtfMiejsc.setBackground(Color.WHITE);
-			}
-		});
 		jtfAdres.addFocusListener(new FocusListener() {
 			
 			public void focusLost(FocusEvent e) {
