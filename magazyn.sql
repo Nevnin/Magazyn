@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
+-- version 4.7.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 06 Cze 2017, 14:36
--- Wersja serwera: 10.1.21-MariaDB
--- Wersja PHP: 7.1.1
+-- Czas generowania: 15 Lis 2017, 10:24
+-- Wersja serwera: 10.1.28-MariaDB
+-- Wersja PHP: 7.1.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -28,7 +30,34 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `bilans` (
   `IdBilans` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `cennik`
+--
+
+CREATE TABLE `cennik` (
+  `idCennik` int(11) NOT NULL,
+  `idTowar` int(11) DEFAULT NULL,
+  `cena` float NOT NULL,
+  `dataOd` date NOT NULL,
+  `dataDo` date DEFAULT NULL,
+  `aktualny` varchar(1) DEFAULT 'T',
+  `opis` varchar(150) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Zrzut danych tabeli `cennik`
+--
+
+INSERT INTO `cennik` (`idCennik`, `idTowar`, `cena`, `dataOd`, `dataDo`, `aktualny`, `opis`) VALUES
+(1, 1, 80, '2017-06-01', '2017-06-20', 'T', NULL),
+(2, 2, 100, '2017-06-01', '2017-06-20', 'T', NULL),
+(3, 3, 50, '2017-06-01', '2017-06-20', 'T', NULL),
+(4, 4, 120, '2017-06-01', '2017-06-03', 'T', NULL),
+(5, 4, 124, '2017-06-04', '2017-06-23', 'T', NULL);
 
 -- --------------------------------------------------------
 
@@ -38,30 +67,29 @@ CREATE TABLE `bilans` (
 
 CREATE TABLE `dostawca` (
   `IdDostawca` int(11) NOT NULL,
-  `NazwaSkrocona` varchar(100) CHARACTER SET latin1 NOT NULL,
-  `NazwaPelna` varchar(100) CHARACTER SET latin1 NOT NULL,
-  `NIP` varchar(10) CHARACTER SET latin1 NOT NULL,
-  `Telefon1` varchar(20) CHARACTER SET latin1 DEFAULT NULL,
-  `Telefon2` varchar(20) CHARACTER SET latin1 DEFAULT NULL,
-  `Telefon3` varchar(20) CHARACTER SET latin1 DEFAULT NULL,
-  `NazwaDzialu` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `NrKonta` varchar(30) CHARACTER SET latin1 NOT NULL,
-  `Miejscowosc` varchar(100) COLLATE utf8_polish_ci NOT NULL,
-  `Adres` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `KodPocztowy` varchar(6) CHARACTER SET latin1 NOT NULL,
-  `Poczta` varchar(30) CHARACTER SET latin1 NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `NazwaSkrocona` varchar(100) NOT NULL,
+  `NazwaPelna` varchar(100) NOT NULL,
+  `NIP` varchar(10) NOT NULL,
+  `Telefon1` varchar(20) DEFAULT NULL,
+  `Telefon2` varchar(20) DEFAULT NULL,
+  `Telefon3` varchar(20) DEFAULT NULL,
+  `NazwaDzialu` varchar(50) NOT NULL,
+  `NrKonta` varchar(30) NOT NULL,
+  `Adres` varchar(50) NOT NULL,
+  `KodPocztowy` varchar(6) NOT NULL,
+  `Poczta` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `dostawca`
 --
 
-INSERT INTO `dostawca` (`IdDostawca`, `NazwaSkrocona`, `NazwaPelna`, `NIP`, `Telefon1`, `Telefon2`, `Telefon3`, `NazwaDzialu`, `NrKonta`, `Miejscowosc`, `Adres`, `KodPocztowy`, `Poczta`) VALUES
-(1, 'Hurtownia \"BHEU\"', 'Hurtownia \"BHEU\"SP. z o.o.', '5645824795', '785315745', NULL, NULL, 'Sprzeda?', '43897654135416984', '', 'Majkowska 14', '99-999', 'Kalisz'),
-(2, 'Pharma Store', 'Pharma Store Spó?ka z ograniczon? odpowiedzialno?ci? Spó?ka Komandytowa', '7401693405', '435096845', '549038504', NULL, 'Sprzedaz', '121234124594039405443', '', 'ul. Mazowiecka', '89-999', 'Torun'),
-(3, 'Gadget-Master', 'GADGET-MASTER Hurtownia Dystrybutor Importer Gad?etów Upominków Prezentów Smolec hurtownia', '7830284593', '403854923', NULL, NULL, 'Sprzedaz', '21124125613591285', '', 'ul.Parczewskiego', '34-999', 'Smolec '),
-(4, 'Best Buy', 'BEST BUTY Hurtownia obuwia sportowego Kostrzyn nad Odr? hurtownia', '1243234353', '122123512', NULL, NULL, 'Sprzedaz', '2152515412351561553', '', 'ul. Aleja Pokoju 12', '33-223', 'Kostrzyn nad Odr?'),
-(5, 'SABO', 'SABO Sp.z o.o. Producent Hurtownia Opakowan\r\n\r\n', '9088766784', '450694039', NULL, NULL, 'Sprzedaz', '1205712501751430573', '', 'ul.Kolejarzy', '30-434', 'Krakow');
+INSERT INTO `dostawca` (`IdDostawca`, `NazwaSkrocona`, `NazwaPelna`, `NIP`, `Telefon1`, `Telefon2`, `Telefon3`, `NazwaDzialu`, `NrKonta`, `Adres`, `KodPocztowy`, `Poczta`) VALUES
+(1, 'DPD', 'DPD', '0987654321', '123456789', '123656789', '123856789', 'elektronika', '4487547836587346', 'Kalisz, Jasna 21', '11-666', 'Kalisz'),
+(2, 'KrMark', 'Sprzet elektoniczny Krzysztof Markowski', '132154252', '605232322', '60523233', '432523512', 'Sprzedaz', '12124321231241244', '?ódzka 9', '82-800', 'Kalis'),
+(3, 'MarPol', 'MarPol', '3532345231', '523543123', '432542542', '4321543123', 'Sprzedaz', '3214315312', 'Podmiejska 15', '80-600', 'Kalisz'),
+(4, 'HP', 'Hewlett-Packard', '3532434534', '523325432', '4325421234', '432151234324', 'Sprzedaz', '3456622146', 'Poznanska 60', '80-600', 'Kalisz'),
+(5, 'MPM', 'MPM	', '2475382934', '573926023', '573926024', '573926025', 'Sprzedaz', '584396032934', 'Poznanska 4', '80-600', 'Kalisz');
 
 -- --------------------------------------------------------
 
@@ -73,54 +101,43 @@ CREATE TABLE `dostawcatowar` (
   `IdDostawcaTowar` int(11) NOT NULL,
   `IdDostawca` int(11) NOT NULL,
   `IdTowar` int(11) NOT NULL,
-  `Cena` decimal(10,2) NOT NULL,
+  `Cena` float NOT NULL,
   `DataOd` date NOT NULL,
   `DataDo` date DEFAULT NULL,
-  `KodTowaruWgDostawcy` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `NazwaTowaruWgDostawcy` varchar(50) CHARACTER SET latin1 NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `KodTowaruWgDostawcy` varchar(50) NOT NULL,
+  `NazwaTowaruWgDostawcy` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `dostawcatowar`
 --
 
 INSERT INTO `dostawcatowar` (`IdDostawcaTowar`, `IdDostawca`, `IdTowar`, `Cena`, `DataOd`, `DataDo`, `KodTowaruWgDostawcy`, `NazwaTowaruWgDostawcy`) VALUES
-(1, 1, 1, '600.00', '2017-03-13', '2017-03-23', '648464168464', 'DELL 24\"'),
-(2, 2, 3, '250.00', '2017-03-07', '2017-03-30', '2655355253', 'Mysz Zowie EC1-A '),
-(3, 2, 3, '249.00', '2017-03-31', '2017-04-04', '1551555131353', 'Mysz Zowie EC1-A '),
-(4, 2, 3, '259.00', '2017-02-01', '2017-03-01', '3532673774775', 'Mysz Zowie EC1-A '),
-(5, 3, 4, '1700.00', '2017-03-01', '2017-03-15', '235637643762636', 'AMD RADEON Fury X'),
-(6, 3, 4, '1689.00', '2017-03-16', '2017-03-31', '25563674564646', 'AMD RADEON Fury X'),
-(7, 4, 5, '289.00', '2017-03-01', '2017-03-14', '4364562466', 'Razer DeathAdder Black'),
-(8, 4, 5, '279.00', '2017-03-15', '2017-03-24', '25225252523', 'Razer DeathAdder Black'),
-(9, 4, 5, '250.00', '2017-03-24', '2017-03-31', '534646263', 'Razer DeathAdder Black'),
-(10, 5, 6, '190.00', '2017-03-01', '2017-03-30', '1525253535', 'Zalman Z1 Black'),
-(11, 5, 6, '178.00', '2017-03-31', '2017-04-12', '125245634747', 'Zalman Z1 Black'),
-(12, 3, 7, '988.00', '2017-03-08', '2017-03-30', '1353736443', 'Intel i5-4460'),
-(13, 3, 8, '1900.00', '2017-03-01', '2017-03-30', '3156463464', 'NVIDIA GeForce 1080'),
-(14, 2, 9, '1200.00', '2017-03-01', '2017-03-31', '13543645673', 'Sony Bravia 23\"'),
-(15, 2, 10, '2100.00', '2017-03-01', '2017-03-31', '25624626262', 'Sony Bravia 37\"');
+(1, 1, 4, 600, '2017-03-13', '2017-03-23', '648464168464', 'DELL 24\"'),
+(2, 1, 3, 250, '2017-03-07', '2017-03-12', '1551555131353', 'Mysz Zowie EC1-A'),
+(3, 4, 5, 99, '2017-11-14', NULL, '53227682', 'Iiyama Black Hawk 27'),
+(4, 4, 2, 160, '2017-11-14', NULL, '32132132', 'HP Gaming 5'),
+(5, 5, 1, 342, '2017-11-15', NULL, '452342643', 'Logitech G15');
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `jednostkimiary`
+-- Struktura tabeli dla tabeli `jednostkamiary`
 --
 
-CREATE TABLE `jednostkimiary` (
+CREATE TABLE `jednostkamiary` (
   `IdJednostkaMiary` int(11) NOT NULL,
-  `Nazwa` varchar(30) CHARACTER SET latin1 NOT NULL,
-  `NazwaSkrocona` varchar(15) CHARACTER SET latin1 NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `Nazwa` varchar(100) NOT NULL,
+  `NazwaSkrocona` varchar(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Zrzut danych tabeli `jednostkimiary`
+-- Zrzut danych tabeli `jednostkamiary`
 --
 
-INSERT INTO `jednostkimiary` (`IdJednostkaMiary`, `Nazwa`, `NazwaSkrocona`) VALUES
-(3, 'Sztuka', 'szt.'),
-(4, 'Paleta', 'pal.'),
-(5, 'Opakowanie', 'opak.');
+INSERT INTO `jednostkamiary` (`IdJednostkaMiary`, `Nazwa`, `NazwaSkrocona`) VALUES
+(1, 'sztuka', 'szt'),
+(2, 'litr', 'l');
 
 -- --------------------------------------------------------
 
@@ -130,21 +147,63 @@ INSERT INTO `jednostkimiary` (`IdJednostkaMiary`, `Nazwa`, `NazwaSkrocona`) VALU
 
 CREATE TABLE `kategoria` (
   `IdKategoria` int(11) NOT NULL,
-  `Nazwa` varchar(50) CHARACTER SET latin1 NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `NazwaKategorii` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `kategoria`
 --
 
-INSERT INTO `kategoria` (`IdKategoria`, `Nazwa`) VALUES
-(6, 'Karta Graficzna'),
-(3, 'Klawiatura'),
-(1, 'Monitor'),
-(4, 'Mysz'),
-(5, 'Obudowa'),
-(7, 'Procesor'),
-(2, 'Przykladowa');
+INSERT INTO `kategoria` (`IdKategoria`, `NazwaKategorii`) VALUES
+(1, 'elektronika'),
+(2, 'Inne');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `klient`
+--
+
+CREATE TABLE `klient` (
+  `IdKlient` int(11) NOT NULL,
+  `Imie` varchar(50) NOT NULL,
+  `Nazwisko` varchar(50) NOT NULL,
+  `NIP` varchar(10) NOT NULL,
+  `Miasto` varchar(50) NOT NULL,
+  `Ulica` varchar(50) NOT NULL,
+  `Dom` varchar(50) NOT NULL,
+  `Lokal` varchar(50) DEFAULT NULL,
+  `KodPocztowy` varchar(6) NOT NULL,
+  `Poczta` varchar(30) NOT NULL,
+  `Telefon` int(11) NOT NULL,
+  `NrKonta` varchar(32) NOT NULL,
+  `Bank` varchar(30) NOT NULL,
+  `EMail` varchar(30) NOT NULL,
+  `NazwaFirmy` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Zrzut danych tabeli `klient`
+--
+
+INSERT INTO `klient` (`IdKlient`, `Imie`, `Nazwisko`, `NIP`, `Miasto`, `Ulica`, `Dom`, `Lokal`, `KodPocztowy`, `Poczta`, `Telefon`, `NrKonta`, `Bank`, `EMail`, `NazwaFirmy`) VALUES
+(1, 'Michal', 'Kowalski', '0123456789', 'OstrÃ³w Wlkp', 'Matejki', '21', '', '63-400', 'OstrÃ³w Wlkp', 132456789, '23 1500 1663 1234 9661 8188 7238', 'PKO', 'michal123@wp.pl', 'Drutex'),
+(2, 'Dawid', 'Kowalski', '654789713', 'OstrÃ³w Wlkp', 'Parczewskiego', '31', '22', '63-400', 'OstrÃ³w Wlkp', 636547732, '23 1500 4567 1234 9661 8188 7238', 'Skok Stefczyka', 'DKowal123@wp.pl', 'Marmoladex'),
+(3, 'Maciej', 'Marciniak', '0122456789', 'OstrÃ³w Wlkp', 'Strzelecka', '5B', '7', '63-400', 'OstrÃ³w Wlkp', 763577335, '23 1500 1663 1234 9876 8188 7238', 'Milenium', 'maciux@wp.pl', 'Maciux i spÃ³Å‚ka'),
+(4, 'Kamil', 'Kowalski', '0123875789', 'Kalisz', 'Radosna', '69', '', '63-401', 'Kalisz', 675463347, '23 1500 1663 1234 9661 8188 5632', 'Amber Gold', 'dojlido123@wp.pl', 'Kamilonex');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `koszyk`
+--
+
+CREATE TABLE `koszyk` (
+  `id` int(11) NOT NULL,
+  `IdTowar` int(11) NOT NULL,
+  `ilosc` int(11) NOT NULL,
+  `cena` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -157,43 +216,32 @@ CREATE TABLE `magazyn` (
   `NazwaMagazyn` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Zrzut danych tabeli `magazyn`
---
-
-INSERT INTO `magazyn` (`IdMagazyn`, `NazwaMagazyn`) VALUES
-(1, 'Magazyn 1'),
-(2, 'Magazyn 2');
-
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `pracownik`
+-- Struktura tabeli dla tabeli `pracownicy`
 --
 
-CREATE TABLE `pracownik` (
-  `IdPracownik` int(11) NOT NULL,
-  `Imie` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `Nazwisko` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `PESEL` varchar(11) CHARACTER SET latin1 NOT NULL,
-  `Telefon` varchar(20) CHARACTER SET latin1 NOT NULL,
-  `Adres` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `KodPocztowy` varchar(6) CHARACTER SET latin1 NOT NULL,
-  `Poczta` varchar(30) CHARACTER SET latin1 NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+CREATE TABLE `pracownicy` (
+  `id` int(11) NOT NULL,
+  `imie` varchar(100) NOT NULL,
+  `nazwisko` varchar(100) NOT NULL,
+  `dzial` varchar(150) NOT NULL,
+  `stanowisko` varchar(150) NOT NULL,
+  `telefon` varchar(20) DEFAULT NULL,
+  `login` varchar(100) NOT NULL,
+  `haslo` varchar(150) NOT NULL,
+  `uprawnienia` int(11) NOT NULL,
+  `aktywny` int(11) DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Zrzut danych tabeli `pracownik`
+-- Zrzut danych tabeli `pracownicy`
 --
 
-INSERT INTO `pracownik` (`IdPracownik`, `Imie`, `Nazwisko`, `PESEL`, `Telefon`, `Adres`, `KodPocztowy`, `Poczta`) VALUES
-(1, 'Jan', 'Kowalski', '85010201252', '785654246', 'Krótka 1', '99-999', 'Kalisz'),
-(3, 'Adrian', 'Wisniewski', '91051101249', '754248767', 'Polna 24', '99-999', 'Kalisz'),
-(4, 'Joanna', 'Pokrzywa', '92100903634', '604487521', 'Wojska Polskiego 14', '99-999', 'Kalisz'),
-(5, 'Damian', 'Brzecki', '94020214434', '546664334', 'Tuliszkow 666', '66-666', 'Tuliszkow'),
-(7, 'Dawid', 'Olkowicz', '94121101575', '609849755', 'Opatowek 0', '00-000', 'Opatowek'),
-(8, 'Maciej', 'Furmaniak', '99121202322', '700880774', 'Brudzew 1', '98-235', 'Blaszki'),
-(11, 'Bartek', 'Luczak', '93123301323', '786402945', 'Boryslawice 9 ', '98-235', 'Blaszki');
+INSERT INTO `pracownicy` (`id`, `imie`, `nazwisko`, `dzial`, `stanowisko`, `telefon`, `login`, `haslo`, `uprawnienia`, `aktywny`) VALUES
+(1, 'Dawid', 'Dominiak', 'IT', 'Administrator', '666666666', 'root', '5f4dcc3b5aa765d61d8327deb882cf99', 0, 1),
+(2, 'Marcin', 'Kornalski', 'ObsÅ‚uga klienta', 'Pracownik', '777666555', 'pracownik', '5f4dcc3b5aa765d61d8327deb882cf99', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -206,7 +254,7 @@ CREATE TABLE `pz` (
   `NumerPZ` varchar(100) NOT NULL,
   `DataWystawienia` date NOT NULL,
   `Magazyn` int(11) NOT NULL,
-  `Zamowienie` int(11) NOT NULL,
+  `Zamówienie` int(11) NOT NULL,
   `PodsumowanieNetto` decimal(10,2) NOT NULL,
   `Uwagi` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -219,16 +267,55 @@ CREATE TABLE `pz` (
 
 CREATE TABLE `sposobdostawy` (
   `IdSposobDostawy` int(11) NOT NULL,
-  `SposobDostawy` varchar(50) COLLATE utf8_polish_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `SposobDostawy` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `sposobdostawy`
 --
 
 INSERT INTO `sposobdostawy` (`IdSposobDostawy`, `SposobDostawy`) VALUES
-(2, 'Kurier'),
-(1, 'Odbior Osobisty');
+(1, 'Kurier'),
+(2, 'OdbiÃ³r Osobisty');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `sposobzaplaty`
+--
+
+CREATE TABLE `sposobzaplaty` (
+  `Idsposobzaplaty` int(11) NOT NULL,
+  `sposobzaplaty` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Zrzut danych tabeli `sposobzaplaty`
+--
+
+INSERT INTO `sposobzaplaty` (`Idsposobzaplaty`, `sposobzaplaty`) VALUES
+(1, 'gotÃ³wka'),
+(2, 'przelew');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `statuszamowienia`
+--
+
+CREATE TABLE `statuszamowienia` (
+  `IdStanZamowienia` int(11) NOT NULL,
+  `Stan` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Zrzut danych tabeli `statuszamowienia`
+--
+
+INSERT INTO `statuszamowienia` (`IdStanZamowienia`, `Stan`) VALUES
+(1, 'Anulowany'),
+(3, 'W trakcie realizacji'),
+(2, 'Zrealizowany');
 
 -- --------------------------------------------------------
 
@@ -238,57 +325,44 @@ INSERT INTO `sposobdostawy` (`IdSposobDostawy`, `SposobDostawy`) VALUES
 
 CREATE TABLE `towar` (
   `IdTowar` int(11) NOT NULL,
-  `NazwaTowaru` varchar(100) CHARACTER SET latin1 NOT NULL,
+  `NazwaTowaru` varchar(100) NOT NULL,
   `MinStanMagazynowy` int(11) NOT NULL,
   `MaxStanMagazynowy` int(11) NOT NULL,
   `StanMagazynowyRzeczywisty` int(11) NOT NULL,
   `StanMagazynowyDysponowany` int(11) NOT NULL,
   `StawkaVat` int(11) NOT NULL,
-  `KodTowaru` varchar(50) CHARACTER SET latin1 NOT NULL,
+  `KodTowaru` varchar(100) NOT NULL,
   `IdKategoria` int(11) NOT NULL,
-  `IdJednostkaMiary` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `IdJednostkaMiary` int(11) NOT NULL,
+  `Freeze` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `towar`
 --
 
-INSERT INTO `towar` (`IdTowar`, `NazwaTowaru`, `MinStanMagazynowy`, `MaxStanMagazynowy`, `StanMagazynowyRzeczywisty`, `StanMagazynowyDysponowany`, `StawkaVat`, `KodTowaru`, `IdKategoria`, `IdJednostkaMiary`) VALUES
-(1, 'Monitor DELL 24\"', 5, 10, 8, 31, 23, '98764164135186497', 1, 3),
-(2, 'Klawiatura Razer Chroma', 10, 25, 22, 18, 23, '5416168461536847', 1, 3),
-(3, 'Zowie EC1-A', 5, 25, 4, 26, 23, '254235252', 4, 3),
-(4, 'AMD RADEON Fury X', 5, 10, 7, 23, 23, '1425253521525', 6, 3),
-(5, 'Razer DeathAdder', 5, 15, 4, 15, 23, '531525235223', 4, 3),
-(6, 'Zalman Z1', 10, 23, 14, 43, 23, '125245235155', 5, 3),
-(7, 'Intel i5-4460', 5, 15, 5, 44, 23, '154858546457455', 7, 3),
-(8, 'NVIDIA GeForce 1080', 5, 15, 14, 34, 23, '136435476858', 6, 3),
-(9, 'Sony Bravia 23\"', 3, 9, 2, 16, 23, '2647434646346', 1, 3),
-(10, 'Sony Bravia 37\"', 3, 16, 5, 18, 23, '7568347444574', 1, 3);
+INSERT INTO `towar` (`IdTowar`, `NazwaTowaru`, `MinStanMagazynowy`, `MaxStanMagazynowy`, `StanMagazynowyRzeczywisty`, `StanMagazynowyDysponowany`, `StawkaVat`, `KodTowaru`, `IdKategoria`, `IdJednostkaMiary`, `Freeze`) VALUES
+(1, 'Logitech G15', 1, 1, 1, 10, 23, 'a43dv42', 1, 1, 1),
+(2, 'HP Gaming 5', 1, 1, 1, 10, 23, 'a43dv42', 1, 1, 0),
+(3, 'Mysz Zowie EC1-A', 1, 1, 1, 10, 8, 'b43dv43', 1, 1, 0),
+(4, 'Dell 24\"', 2, 2, 2, 20, 8, 'h3h4j1', 1, 1, 0),
+(5, 'Iiyama Black Hawk 27', 1, 10, 3, 3, 23, 'a42fd42', 1, 1, 0);
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `uzytkownik`
+-- Struktura tabeli dla tabeli `towarysprzedaz`
 --
 
-CREATE TABLE `uzytkownik` (
-  `IdUzytkownik` int(11) NOT NULL,
-  `Login` varchar(30) CHARACTER SET latin1 NOT NULL,
-  `Haslo` varchar(50) CHARACTER SET latin1 NOT NULL,
-  `IdPracownik` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
-
---
--- Zrzut danych tabeli `uzytkownik`
---
-
-INSERT INTO `uzytkownik` (`IdUzytkownik`, `Login`, `Haslo`, `IdPracownik`) VALUES
-(3, 'jkowalski', 'haslo', 1),
-(4, 'awisnia', 'haslo', 3),
-(5, 'dbrzecki', 'haslo', 5),
-(6, 'dolkowicz', 'haslo', 7),
-(7, 'mfurmaniak', 'haslo', 8),
-(8, 'bluczak', 'haslo', 11);
+CREATE TABLE `towarysprzedaz` (
+  `id` int(11) NOT NULL,
+  `IdTowar` int(11) NOT NULL,
+  `ilosc` int(11) NOT NULL,
+  `klient` int(11) NOT NULL,
+  `cena` float NOT NULL,
+  `vat` float NOT NULL,
+  `IdZamowienieSprzedaz` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -300,26 +374,42 @@ CREATE TABLE `zamowienie` (
   `IdZamowienie` int(11) NOT NULL,
   `TerminRealizacji` date NOT NULL,
   `DataRealizacji` date DEFAULT NULL,
-  `CalkowitaWartoscZamowienia` decimal(10,2) NOT NULL,
+  `KosztZamowienia` float NOT NULL,
   `IdDostawcy` int(11) NOT NULL,
   `DataWystawienia` date NOT NULL,
-  `NumerZamowienia` varchar(50) CHARACTER SET latin1 NOT NULL,
+  `NumerZamowienia` varchar(50) NOT NULL,
   `IdSposobDostawy` int(11) NOT NULL,
-  `KosztDostawy` decimal(10,2) NOT NULL,
-  `WartoscTowarow` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+  `KosztDostawy` float NOT NULL,
+  `WartoscTowarow` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `zamowienie`
 --
 
-INSERT INTO `zamowienie` (`IdZamowienie`, `TerminRealizacji`, `DataRealizacji`, `CalkowitaWartoscZamowienia`, `IdDostawcy`, `DataWystawienia`, `NumerZamowienia`, `IdSposobDostawy`, `KosztDostawy`, `WartoscTowarow`) VALUES
-(19, '2017-05-25', NULL, '9050.00', 1, '2017-05-23', '2017/05/23/1', 2, '50.00', '9000.00'),
-(20, '2017-06-06', NULL, '15858.00', 2, '2017-05-23', '2017/05/23/2', 2, '180.00', '15678.00'),
-(21, '2017-06-15', NULL, '104704.00', 3, '2017-05-23', '2017/05/23/3', 2, '160.00', '104544.00'),
-(22, '2017-06-22', NULL, '5380.00', 5, '2017-05-23', '2017/05/23/4', 2, '40.00', '5340.00'),
-(23, '2017-05-25', NULL, '2810.00', 4, '2017-05-23', '2017/05/23/5', 2, '60.00', '2750.00'),
-(24, '2017-11-11', NULL, '359.00', 2, '2017-06-05', '2017/06/05/1', 2, '110.00', '249.00');
+INSERT INTO `zamowienie` (`IdZamowienie`, `TerminRealizacji`, `DataRealizacji`, `KosztZamowienia`, `IdDostawcy`, `DataWystawienia`, `NumerZamowienia`, `IdSposobDostawy`, `KosztDostawy`, `WartoscTowarow`) VALUES
+(1, '2017-03-21', '2017-03-20', 800, 1, '2017-03-20', '2017/03/20/1', 1, 0, 800),
+(2, '2017-03-23', '2017-03-22', 1550, 1, '2017-03-22', '2017/03/22/002', 2, 50, 1500);
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `zamowieniesprzedaz`
+--
+
+CREATE TABLE `zamowieniesprzedaz` (
+  `IdZamowienieSprzedaz` int(11) NOT NULL,
+  `DataZamowienia` datetime NOT NULL,
+  `Wartosc` float NOT NULL,
+  `IdStanZamowienia` int(11) NOT NULL,
+  `IdKlient` int(11) NOT NULL,
+  `IdSposobDostawy` int(11) NOT NULL,
+  `IdSposobZaplaty` int(11) NOT NULL,
+  `DataWystawienia` date DEFAULT NULL,
+  `DataSprzedazy` date DEFAULT NULL,
+  `TerminZaplaty` date DEFAULT NULL,
+  `NrFaktury` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -331,44 +421,60 @@ CREATE TABLE `zamowienietowar` (
   `IdZamowienieTowar` int(11) NOT NULL,
   `Lp` int(11) NOT NULL,
   `IdTowar` int(11) NOT NULL,
-  `Cena` decimal(10,2) NOT NULL,
+  `Cena` float NOT NULL,
   `Ilosc` int(11) NOT NULL,
-  `WartoscNetto` decimal(10,2) NOT NULL,
+  `WartoscNetto` float NOT NULL,
   `IdZamowienie` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `zamowienietowar`
 --
 
 INSERT INTO `zamowienietowar` (`IdZamowienieTowar`, `Lp`, `IdTowar`, `Cena`, `Ilosc`, `WartoscNetto`, `IdZamowienie`) VALUES
-(20, 1, 1, '600.00', 15, '9000.00', 19),
-(21, 1, 9, '1200.00', 5, '6000.00', 20),
-(22, 2, 10, '2100.00', 2, '4200.00', 20),
-(23, 3, 3, '249.00', 22, '5478.00', 20),
-(24, 1, 4, '1689.00', 16, '27024.00', 21),
-(25, 2, 7, '988.00', 40, '39520.00', 21),
-(26, 3, 8, '1900.00', 20, '38000.00', 21),
-(27, 1, 6, '178.00', 30, '5340.00', 22),
-(28, 1, 5, '250.00', 11, '2750.00', 23),
-(29, 1, 3, '249.00', 1, '249.00', 24);
+(1, 1, 1, 100, 6, 600, 1),
+(2, 2, 2, 200, 2, 400, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `zamowienietowarkopia`
+--
+
+CREATE TABLE `zamowienietowarkopia` (
+  `IdZamowienieTowarKopia` int(11) NOT NULL,
+  `Lp` int(11) NOT NULL,
+  `IdTowar` int(11) NOT NULL,
+  `Cena` float NOT NULL,
+  `Ilosc` int(11) NOT NULL,
+  `WartoscNetto` float NOT NULL,
+  `IdZamowienie` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Zrzut danych tabeli `zamowienietowarkopia`
+--
+
+INSERT INTO `zamowienietowarkopia` (`IdZamowienieTowarKopia`, `Lp`, `IdTowar`, `Cena`, `Ilosc`, `WartoscNetto`, `IdZamowienie`) VALUES
+(1, 1, 1, 100, 6, 600, 1),
+(2, 2, 2, 200, 2, 400, 2);
 
 --
 -- Indeksy dla zrzutów tabel
 --
 
 --
--- Indexes for table `bilans`
+-- Indexes for table `cennik`
 --
-ALTER TABLE `bilans`
-  ADD PRIMARY KEY (`IdBilans`);
+ALTER TABLE `cennik`
+  ADD PRIMARY KEY (`idCennik`),
+  ADD KEY `idTowar` (`idTowar`);
 
 --
 -- Indexes for table `dostawca`
 --
 ALTER TABLE `dostawca`
-  ADD PRIMARY KEY (`IdDostawca`),
-  ADD UNIQUE KEY `NrKonta` (`NrKonta`);
+  ADD PRIMARY KEY (`IdDostawca`);
 
 --
 -- Indexes for table `dostawcatowar`
@@ -379,18 +485,30 @@ ALTER TABLE `dostawcatowar`
   ADD KEY `IdTowar` (`IdTowar`);
 
 --
--- Indexes for table `jednostkimiary`
+-- Indexes for table `jednostkamiary`
 --
-ALTER TABLE `jednostkimiary`
-  ADD PRIMARY KEY (`IdJednostkaMiary`),
-  ADD UNIQUE KEY `Nazwa` (`Nazwa`);
+ALTER TABLE `jednostkamiary`
+  ADD PRIMARY KEY (`IdJednostkaMiary`);
 
 --
 -- Indexes for table `kategoria`
 --
 ALTER TABLE `kategoria`
   ADD PRIMARY KEY (`IdKategoria`),
-  ADD UNIQUE KEY `Nazwa` (`Nazwa`);
+  ADD UNIQUE KEY `NazwaKategorii` (`NazwaKategorii`);
+
+--
+-- Indexes for table `klient`
+--
+ALTER TABLE `klient`
+  ADD PRIMARY KEY (`IdKlient`);
+
+--
+-- Indexes for table `koszyk`
+--
+ALTER TABLE `koszyk`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `IdTowar` (`IdTowar`);
 
 --
 -- Indexes for table `magazyn`
@@ -399,53 +517,75 @@ ALTER TABLE `magazyn`
   ADD PRIMARY KEY (`IdMagazyn`);
 
 --
--- Indexes for table `pracownik`
+-- Indexes for table `pracownicy`
 --
-ALTER TABLE `pracownik`
-  ADD PRIMARY KEY (`IdPracownik`),
-  ADD UNIQUE KEY `PESEL` (`PESEL`);
+ALTER TABLE `pracownicy`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `login` (`login`);
 
 --
 -- Indexes for table `pz`
 --
 ALTER TABLE `pz`
   ADD PRIMARY KEY (`IdPZ`),
-  ADD UNIQUE KEY `NumerPZ` (`NumerPZ`),
-  ADD KEY `Magazyn` (`Magazyn`),
-  ADD KEY `Zamowienie` (`Zamowienie`);
+  ADD KEY `pz_ibfk_1` (`Magazyn`),
+  ADD KEY `pz_ibfk_2` (`Zamówienie`);
 
 --
 -- Indexes for table `sposobdostawy`
 --
 ALTER TABLE `sposobdostawy`
   ADD PRIMARY KEY (`IdSposobDostawy`),
-  ADD UNIQUE KEY `UNIQUE_SposobDostawy` (`SposobDostawy`);
+  ADD UNIQUE KEY `SposobDostawy` (`SposobDostawy`);
+
+--
+-- Indexes for table `sposobzaplaty`
+--
+ALTER TABLE `sposobzaplaty`
+  ADD PRIMARY KEY (`Idsposobzaplaty`),
+  ADD UNIQUE KEY `sposobzaplaty` (`sposobzaplaty`);
+
+--
+-- Indexes for table `statuszamowienia`
+--
+ALTER TABLE `statuszamowienia`
+  ADD PRIMARY KEY (`IdStanZamowienia`),
+  ADD UNIQUE KEY `Stan` (`Stan`);
 
 --
 -- Indexes for table `towar`
 --
 ALTER TABLE `towar`
   ADD PRIMARY KEY (`IdTowar`),
-  ADD UNIQUE KEY `KodTowaru` (`KodTowaru`),
   ADD KEY `IdKategoria` (`IdKategoria`),
   ADD KEY `IdJednostkaMiary` (`IdJednostkaMiary`);
 
 --
--- Indexes for table `uzytkownik`
+-- Indexes for table `towarysprzedaz`
 --
-ALTER TABLE `uzytkownik`
-  ADD PRIMARY KEY (`IdUzytkownik`),
-  ADD UNIQUE KEY `Login` (`Login`),
-  ADD KEY `IdPracownik` (`IdPracownik`);
+ALTER TABLE `towarysprzedaz`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IdTowar` (`IdTowar`),
+  ADD KEY `klient` (`klient`),
+  ADD KEY `IdZamowienieSprzedaz` (`IdZamowienieSprzedaz`);
 
 --
 -- Indexes for table `zamowienie`
 --
 ALTER TABLE `zamowienie`
   ADD PRIMARY KEY (`IdZamowienie`),
-  ADD UNIQUE KEY `NumerZamowienia` (`NumerZamowienia`),
   ADD KEY `IdDostawcy` (`IdDostawcy`),
   ADD KEY `IdSposobDostawy` (`IdSposobDostawy`);
+
+--
+-- Indexes for table `zamowieniesprzedaz`
+--
+ALTER TABLE `zamowieniesprzedaz`
+  ADD PRIMARY KEY (`IdZamowienieSprzedaz`),
+  ADD KEY `IdStanZamowienia` (`IdStanZamowienia`),
+  ADD KEY `IdSposobDostawy` (`IdSposobDostawy`),
+  ADD KEY `IdKlient` (`IdKlient`),
+  ADD KEY `IdSposobZaplaty` (`IdSposobZaplaty`);
 
 --
 -- Indexes for table `zamowienietowar`
@@ -456,113 +596,205 @@ ALTER TABLE `zamowienietowar`
   ADD KEY `IdZamowienie` (`IdZamowienie`);
 
 --
+-- Indexes for table `zamowienietowarkopia`
+--
+ALTER TABLE `zamowienietowarkopia`
+  ADD PRIMARY KEY (`IdZamowienieTowarKopia`),
+  ADD KEY `IdTowar` (`IdTowar`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT dla tabeli `cennik`
+--
+ALTER TABLE `cennik`
+  MODIFY `idCennik` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT dla tabeli `dostawca`
 --
 ALTER TABLE `dostawca`
   MODIFY `IdDostawca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
 -- AUTO_INCREMENT dla tabeli `dostawcatowar`
 --
 ALTER TABLE `dostawcatowar`
-  MODIFY `IdDostawcaTowar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `IdDostawcaTowar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
--- AUTO_INCREMENT dla tabeli `jednostkimiary`
+-- AUTO_INCREMENT dla tabeli `jednostkamiary`
 --
-ALTER TABLE `jednostkimiary`
-  MODIFY `IdJednostkaMiary` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+ALTER TABLE `jednostkamiary`
+  MODIFY `IdJednostkaMiary` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT dla tabeli `kategoria`
 --
 ALTER TABLE `kategoria`
-  MODIFY `IdKategoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `IdKategoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT dla tabeli `klient`
+--
+ALTER TABLE `klient`
+  MODIFY `IdKlient` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT dla tabeli `koszyk`
+--
+ALTER TABLE `koszyk`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT dla tabeli `magazyn`
 --
 ALTER TABLE `magazyn`
-  MODIFY `IdMagazyn` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `IdMagazyn` int(11) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT dla tabeli `pracownik`
+-- AUTO_INCREMENT dla tabeli `pracownicy`
 --
-ALTER TABLE `pracownik`
-  MODIFY `IdPracownik` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+ALTER TABLE `pracownicy`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT dla tabeli `pz`
 --
 ALTER TABLE `pz`
   MODIFY `IdPZ` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT dla tabeli `sposobdostawy`
 --
 ALTER TABLE `sposobdostawy`
   MODIFY `IdSposobDostawy` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT dla tabeli `sposobzaplaty`
+--
+ALTER TABLE `sposobzaplaty`
+  MODIFY `Idsposobzaplaty` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT dla tabeli `statuszamowienia`
+--
+ALTER TABLE `statuszamowienia`
+  MODIFY `IdStanZamowienia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT dla tabeli `towar`
 --
 ALTER TABLE `towar`
-  MODIFY `IdTowar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `IdTowar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
--- AUTO_INCREMENT dla tabeli `uzytkownik`
+-- AUTO_INCREMENT dla tabeli `towarysprzedaz`
 --
-ALTER TABLE `uzytkownik`
-  MODIFY `IdUzytkownik` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+ALTER TABLE `towarysprzedaz`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT dla tabeli `zamowienie`
 --
 ALTER TABLE `zamowienie`
-  MODIFY `IdZamowienie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `IdZamowienie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT dla tabeli `zamowieniesprzedaz`
+--
+ALTER TABLE `zamowieniesprzedaz`
+  MODIFY `IdZamowienieSprzedaz` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT dla tabeli `zamowienietowar`
 --
 ALTER TABLE `zamowienietowar`
-  MODIFY `IdZamowienieTowar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `IdZamowienieTowar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT dla tabeli `zamowienietowarkopia`
+--
+ALTER TABLE `zamowienietowarkopia`
+  MODIFY `IdZamowienieTowarKopia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- Ograniczenia dla zrzutów tabel
 --
 
 --
+-- Ograniczenia dla tabeli `cennik`
+--
+ALTER TABLE `cennik`
+  ADD CONSTRAINT `cennik_ibfk_1` FOREIGN KEY (`idTowar`) REFERENCES `towar` (`IdTowar`),
+  ADD CONSTRAINT `cennik_ibfk_2` FOREIGN KEY (`idTowar`) REFERENCES `towar` (`IdTowar`);
+
+--
 -- Ograniczenia dla tabeli `dostawcatowar`
 --
 ALTER TABLE `dostawcatowar`
-  ADD CONSTRAINT `dostawcatowar_ibfk_1` FOREIGN KEY (`IdTowar`) REFERENCES `towar` (`IdTowar`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `dostawcatowar_ibfk_2` FOREIGN KEY (`IdDostawca`) REFERENCES `dostawca` (`IdDostawca`) ON DELETE CASCADE;
+  ADD CONSTRAINT `dostawcatowar_ibfk_1` FOREIGN KEY (`IdDostawca`) REFERENCES `dostawca` (`IdDostawca`) ON DELETE CASCADE,
+  ADD CONSTRAINT `dostawcatowar_ibfk_2` FOREIGN KEY (`IdTowar`) REFERENCES `towar` (`IdTowar`) ON DELETE CASCADE;
+
+--
+-- Ograniczenia dla tabeli `koszyk`
+--
+ALTER TABLE `koszyk`
+  ADD CONSTRAINT `koszyk_ibfk_1` FOREIGN KEY (`IdTowar`) REFERENCES `towar` (`IdTowar`);
 
 --
 -- Ograniczenia dla tabeli `pz`
 --
 ALTER TABLE `pz`
-  ADD CONSTRAINT `pz_ibfk_1` FOREIGN KEY (`Magazyn`) REFERENCES `magazyn` (`IdMagazyn`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `pz_ibfk_2` FOREIGN KEY (`Zamowienie`) REFERENCES `zamowienie` (`IdZamowienie`);
+  ADD CONSTRAINT `pz_ibfk_1` FOREIGN KEY (`Magazyn`) REFERENCES `magazyn` (`IdMagazyn`),
+  ADD CONSTRAINT `pz_ibfk_2` FOREIGN KEY (`Zamówienie`) REFERENCES `zamowienie` (`IdZamowienie`);
 
 --
 -- Ograniczenia dla tabeli `towar`
 --
 ALTER TABLE `towar`
-  ADD CONSTRAINT `towar_ibfk_1` FOREIGN KEY (`IdKategoria`) REFERENCES `kategoria` (`IdKategoria`) ON DELETE CASCADE,
-  ADD CONSTRAINT `towar_ibfk_2` FOREIGN KEY (`IdJednostkaMiary`) REFERENCES `jednostkimiary` (`IdJednostkaMiary`) ON DELETE CASCADE;
+  ADD CONSTRAINT `towar_ibfk_1` FOREIGN KEY (`IdKategoria`) REFERENCES `kategoria` (`IdKategoria`),
+  ADD CONSTRAINT `towar_ibfk_2` FOREIGN KEY (`IdJednostkaMiary`) REFERENCES `jednostkamiary` (`IdJednostkaMiary`);
 
 --
--- Ograniczenia dla tabeli `uzytkownik`
+-- Ograniczenia dla tabeli `towarysprzedaz`
 --
-ALTER TABLE `uzytkownik`
-  ADD CONSTRAINT `uzytkownik_ibfk_1` FOREIGN KEY (`IdPracownik`) REFERENCES `pracownik` (`IdPracownik`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `towarysprzedaz`
+  ADD CONSTRAINT `towarysprzedaz_ibfk_1` FOREIGN KEY (`IdTowar`) REFERENCES `towar` (`IdTowar`),
+  ADD CONSTRAINT `towarysprzedaz_ibfk_2` FOREIGN KEY (`klient`) REFERENCES `klient` (`IdKlient`),
+  ADD CONSTRAINT `towarysprzedaz_ibfk_3` FOREIGN KEY (`IdZamowienieSprzedaz`) REFERENCES `zamowieniesprzedaz` (`IdZamowienieSprzedaz`);
 
 --
 -- Ograniczenia dla tabeli `zamowienie`
 --
 ALTER TABLE `zamowienie`
-  ADD CONSTRAINT `zamowienie_ibfk_1` FOREIGN KEY (`IdDostawcy`) REFERENCES `dostawca` (`IdDostawca`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `zamowienie_ibfk_2` FOREIGN KEY (`IdSposobDostawy`) REFERENCES `sposobdostawy` (`IdSposobDostawy`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `zamowienie_ibfk_1` FOREIGN KEY (`IdDostawcy`) REFERENCES `dostawca` (`IdDostawca`) ON DELETE CASCADE,
+  ADD CONSTRAINT `zamowienie_ibfk_2` FOREIGN KEY (`IdSposobDostawy`) REFERENCES `sposobdostawy` (`IdSposobDostawy`) ON DELETE CASCADE;
+
+--
+-- Ograniczenia dla tabeli `zamowieniesprzedaz`
+--
+ALTER TABLE `zamowieniesprzedaz`
+  ADD CONSTRAINT `zamowieniesprzedaz_ibfk_1` FOREIGN KEY (`IdStanZamowienia`) REFERENCES `statuszamowienia` (`IdStanZamowienia`),
+  ADD CONSTRAINT `zamowieniesprzedaz_ibfk_2` FOREIGN KEY (`IdSposobDostawy`) REFERENCES `sposobdostawy` (`IdSposobDostawy`),
+  ADD CONSTRAINT `zamowieniesprzedaz_ibfk_3` FOREIGN KEY (`IdKlient`) REFERENCES `klient` (`IdKlient`),
+  ADD CONSTRAINT `zamowieniesprzedaz_ibfk_4` FOREIGN KEY (`IdSposobZaplaty`) REFERENCES `sposobzaplaty` (`Idsposobzaplaty`);
 
 --
 -- Ograniczenia dla tabeli `zamowienietowar`
 --
 ALTER TABLE `zamowienietowar`
-  ADD CONSTRAINT `zamowienietowar_ibfk_2` FOREIGN KEY (`IdTowar`) REFERENCES `towar` (`IdTowar`) ON DELETE CASCADE,
-  ADD CONSTRAINT `zamowienietowar_ibfk_3` FOREIGN KEY (`IdZamowienie`) REFERENCES `zamowienie` (`IdZamowienie`) ON DELETE CASCADE;
+  ADD CONSTRAINT `zamowienietowar_ibfk_1` FOREIGN KEY (`IdTowar`) REFERENCES `towar` (`IdTowar`) ON DELETE CASCADE,
+  ADD CONSTRAINT `zamowienietowar_ibfk_2` FOREIGN KEY (`IdZamowienie`) REFERENCES `zamowienie` (`IdZamowienie`) ON DELETE CASCADE;
+
+--
+-- Ograniczenia dla tabeli `zamowienietowarkopia`
+--
+ALTER TABLE `zamowienietowarkopia`
+  ADD CONSTRAINT `zamowienietowarkopia_ibfk_1` FOREIGN KEY (`IdTowar`) REFERENCES `towar` (`IdTowar`) ON DELETE CASCADE;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
