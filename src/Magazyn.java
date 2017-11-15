@@ -21,6 +21,7 @@ public class Magazyn extends JFrame implements ActionListener {
 	WyszWgWartosci wgWartosci;
 	WyszWgKategorii wgKategorii;
 	Kartoteka kartoteka;
+	ListaTowarow listaTowarow;
 	Menu menu;
 	Polaczenie polaczenie;
 	StanMagazynowy stanMag;
@@ -66,6 +67,7 @@ public class Magazyn extends JFrame implements ActionListener {
 		menu.wgWartosci.addActionListener(this);
 		menu.wgKategorii.addActionListener(this);
 		menu.kartoteka.addActionListener(this);
+		menu.listaTowarow.addActionListener(this);
 		if(oz !=null){oz.jbZatwierdz.addActionListener(this);}
 	}
 	
@@ -97,6 +99,13 @@ public class Magazyn extends JFrame implements ActionListener {
         	zamowienie = new Zamowieniev2();
         	add(zamowienie);
         	zamowienie.jbZamow.addActionListener(this);
+        	validate();
+        	dopasujSieDoZawartosci();
+        	repaint();
+        } else if(z==menu.listaTowarow) {
+        	removeP();
+        	listaTowarow = new ListaTowarow();
+        	add(listaTowarow);
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
@@ -257,5 +266,6 @@ public class Magazyn extends JFrame implements ActionListener {
 		if(okres != null){ remove(okres); }
 		if(zreal != null){ remove(zreal); }
 		if(kartoteka != null){ remove(kartoteka); }
+		if(listaTowarow != null){ remove(listaTowarow); }
 	}
 }
