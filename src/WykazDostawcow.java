@@ -66,11 +66,11 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 	private DefaultTableModel tableModel;
 	private JTable tablicaTowarow;
 	private JDialog dialog;
-    String serverName = "localhost";
-    String mydatabase = "magazyn";
+    String serverName = "192.168.137.1";
+    String mydatabase = "pz";
     String url = "jdbc:mysql://" + serverName + "/" + mydatabase; 
-    String username = "root";
-    String password = "";
+    String username = "user2";
+    String password = "123456";
     DecimalFormat df;
     
     private boolean DEBUG = true;
@@ -468,6 +468,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		String[] tabPom;
 		try {
 			polaczenie = new Polaczenie();
+			polaczenie.Connect();
 			String sql = "SELECT * FROM dostawca ORDER BY NazwaSkrocona";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
@@ -582,6 +583,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		String[] tabPom = null;
 		try {
 			polaczenie = new Polaczenie();
+			polaczenie.Connect();
 			String sql = "SELECT * FROM towar";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
@@ -730,7 +732,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		String kodPocztowy = jtfKodPocztowy.getText().toString();
 		String poczta  = jtfPoczta.getText().toString();
 		try{
-			Connection connection = DriverManager.getConnection(url, username, password);
+			Connection connection = polaczenie.Connect();
 			connection.createStatement();
 			String query = "INSERT INTO dostawca "
 				+ "(NazwaSkrocona, NazwaPelna, NIP, Telefon1, Telefon2, Telefon3, NazwaDzialu, NrKonta, Adres, KodPocztowy, Poczta)"
@@ -776,6 +778,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
     	boolean czyDosJest = false;
     	try {
 			Polaczenie polacz = new Polaczenie();
+			polacz.Connect();
 	    	String sql = "SELECT * FROM dostawca WHERE NazwaSkrocona='"+nazwaSkrocona+"' AND NazwaPelna='"+nazwaPelna+"' AND NazwaDzialu='"+nazwaDzialu+"'";
 //	    	System.out.println(sql);
 			ResultSet rs = polacz.sqlSelect(sql);
@@ -881,6 +884,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 	private boolean insertTowaryDostawcy(){
 		try {
 			polaczenie = new Polaczenie();
+			polaczenie.Connect();
 			String sql;
 			String idDostawca;
     		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -903,7 +907,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			System.out.println(sql);
 			rs = polaczenie.sqlSelect(sql);
 			if(!rs.last()){
-				Connection connection = DriverManager.getConnection(url, username, password);
+				Connection connection = polaczenie.Connect();
 				connection.createStatement();
 				String query = "INSERT INTO dostawcatowar "
 					+ "(IdDostawca, IdTowar, Cena, DataOd, DataDo, KodTowaruWgDostawcy, NazwaTowaruWgDostawcy)"
@@ -1423,6 +1427,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 		        try{
 			        String sql = "SELECT idDostawca FROM dostawca WHERE NazwaSkrocona='"+nazwaSkr+"' AND NazwaPelna='"+nazwaPel+"' AND NIP='"+nip+"'";
 					Polaczenie polacz = new Polaczenie();
+					polacz.Connect();
 			        ResultSet rs = polacz.sqlSelect(sql);
 					rs.next();
 			        idDostawca = rs.getString("idDostawca");
@@ -1438,7 +1443,7 @@ public class WykazDostawcow extends JPanel implements ListSelectionListener, Key
 			        		+ "SET `DataOd`=?,`DataDo`=?,`KodTowaruWgDostawcy`=?,`NazwaTowaruWgDostawcy`=?, `Cena`=? "
 			        		+ "WHERE idDostawca=? AND idTowar=?";
 	
-					Connection con = DriverManager.getConnection(url, username, password);
+					Connection con = polaczenie.Connect();
 					con.createStatement();
 					PreparedStatement preparedStmt = con.prepareStatement(sql);
 					preparedStmt.setString (1, dateFormat.format(date));

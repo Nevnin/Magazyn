@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -19,6 +20,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 public class ListaTowarow extends JPanel implements KeyListener{
 	JScrollPane scrollPane;
@@ -42,7 +44,22 @@ public class ListaTowarow extends JPanel implements KeyListener{
         for (int i = 0; i < columnNames.length; i++) {
 			System.out.println(columnNames[i]);
 		}
-        table = new JTable(data,columnNames);
+        table = new JTable(data,columnNames) {
+        	public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        		Component c = super.prepareRenderer(renderer, row, column);
+        		int r = table.convertRowIndexToModel(row);
+        		int c1 = table.convertColumnIndexToModel(column);
+        		String min = (String) getModel().getValueAt(row, 1);
+        		String rzecz = (String) getModel().getValueAt(row, 2);
+        		if(Integer.parseInt(min)>Integer.parseInt(rzecz)) {
+        			c.setBackground(Color.red);
+        		}
+        		else {
+        			c.setBackground(Color.white);
+        		}
+				return c;
+        	}
+        };
 
         scrollPane = new JScrollPane(table);
         table.getFillsViewportHeight();
@@ -71,6 +88,7 @@ public class ListaTowarow extends JPanel implements KeyListener{
 		String[][] tab = null;
 		try {
 			polaczenie = new Polaczenie();
+			polaczenie.Connect();
 			String sql = "SELECT * FROM towar";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
@@ -100,6 +118,7 @@ public class ListaTowarow extends JPanel implements KeyListener{
 		String[][] tab = null;
 		try {
 			polaczenie = new Polaczenie();
+			polaczenie.Connect();
 			String sql = "SELECT * FROM towar WHERE NazwaTowaru LIKE '%"+text+"%'";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();

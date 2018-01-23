@@ -48,11 +48,11 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 public class Zamowieniev2 extends JPanel implements ActionListener, TableModelListener {
-	String serverName = "localhost";
-    String mydatabase = "magazyn";
+	String serverName = "192.168.137.1";
+    String mydatabase = "pz";
     String url = "jdbc:mysql://" + serverName + "/" + mydatabase; 
-    String username = "root";
-    String password = "";
+    String username = "user2";
+    String password = "123456";
     DecimalFormat df;
     List<String> lista = new ArrayList<String>();
 		JTabbedPane tabbedPane;
@@ -129,6 +129,7 @@ public class Zamowieniev2 extends JPanel implements ActionListener, TableModelLi
 			
 			try {
 				poloczenie = new Polaczenie();
+				poloczenie.Connect();
 				ResultSet rs = poloczenie.sqlSelect(sqlDostawca);
 				rs.last();
 				int rozmiar = rs.getRow();
@@ -357,6 +358,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 			 
 			 try{
 					poloczenie = new Polaczenie();
+					poloczenie.Connect();
 					String sql = "SELECT * FROM zamowienietowar";
 					ResultSet rs = poloczenie.sqlSelect(sql);
 		        	int rozmiarKol = rs.getMetaData().getColumnCount();
@@ -561,7 +563,8 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 		public int sprawdzenieIlosciZam() throws SQLException 
 		{
 			int k=0;
-			Connection connection = DriverManager.getConnection(url, username, password);
+			poloczenie = new Polaczenie();
+			Connection connection = poloczenie.Connect();
 			String count = "SELECT count(*) from zamowienie WHERE DataWystawienia='"+teraz+"'";
 			PreparedStatement ps= connection.prepareStatement(count);
 			ResultSet rsc= ps.executeQuery();
@@ -639,11 +642,11 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 			String error="";
 			
 			if(TerminRealizacji.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
-				String walidacjaDaty = sprawdzenieDaty(TerminRealizacji);
-				if(walidacjaDaty.length()>0)
-					{
-						error+=walidacjaDaty;	
-					}
+//				String walidacjaDaty = sprawdzenieDaty(TerminRealizacji);
+//				if(walidacjaDaty.length()>0)
+//					{
+//						error+=walidacjaDaty;	
+//					}
 			}else
 				{
 					error+="Niepoprawny format daty przy Termin Realizacji \n";}
@@ -662,7 +665,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 		}
 		public void Zamowienie() throws SQLException, ParseException
 		{
-			Connection connection = DriverManager.getConnection(url, username, password);
+			Connection connection = poloczenie.Connect();
 			String query = "INSERT INTO zamowienie "
 					+ "(TerminRealizacji,DataRealizacji,KosztZamowienia,IdDostawcy,DataWystawienia,NumerZamowienia,IdSposobDostawy,KosztDostawy,WartoscTowarow)"
 				    + " values (?, ?, ?, ?, ?, ?,?,?,?)";
@@ -695,7 +698,7 @@ String zapytanie ="SELECT * FROM `dostawcatowar` INNER JOIN towar on towar.IdTow
 		}
 		public void dodanieTowarowDoZamowienia() throws SQLException
 		{
-			Connection connection = DriverManager.getConnection(url, username, password);
+			Connection connection = poloczenie.Connect();
 			String zapZam= "Select * from zamowienie WHERE NumerZamowienia='"+nazwaZam+"'";
 			ResultSet rsZam=poloczenie.sqlSelect(zapZam);
 			rsZam.next();

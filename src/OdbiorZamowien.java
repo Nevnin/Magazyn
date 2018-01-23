@@ -38,11 +38,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class OdbiorZamowien extends JPanel implements ListSelectionListener, KeyListener, ActionListener{
-	String serverName = "localhost";
-    String mydatabase = "magazyn";
+	String serverName = "192.168.137.1";
+    String mydatabase = "pz";
     String url = "jdbc:mysql://" + serverName + "/" + mydatabase; 
-    String username = "root";
-    String password = "";
+    String username = "user2";
+    String password = "123456";
 	private Polaczenie polaczenie;
 	private JList<String> list;
 	private JTable tabela;
@@ -79,7 +79,8 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 		 nazwaPZ=tworzenieNazwyPZ();
 		try {
 			polaczenie = new Polaczenie();
-			String sql = "SELECT * FROM zamowienie";
+			polaczenie.Connect();
+			String sql = "SELECT * FROM zamowienie WHERE IdZamowienie not in (SELECT Zamówienie from pz)";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
 			int rozmiar = rs.getRow();
@@ -143,6 +144,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 		
 		try {
 			polaczenie = new Polaczenie();
+			polaczenie.Connect();
 			ResultSet rs = polaczenie.sqlSelect(sqlMagazyn);
 			rs.last();
 			int rozmiar = rs.getRow();
@@ -294,6 +296,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 	public void szukaj(String text){
 		try {
 			polaczenie = new Polaczenie();
+			polaczenie.Connect();
 			String sql = "SELECT NumerZamowienia FROM zamowienie WHERE NumerZamowienia LIKE '%"+text+"%'";
 			ResultSet rs = polaczenie.sqlSelect(sql);
 			rs.last();
@@ -315,15 +318,16 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 	{
 		
 		Connection connection;
-			connection = DriverManager.getConnection(url, username, password);
+			connection = polaczenie.Connect();
 			String query = "INSERT INTO pz "
-					+ "(NumerPZ,DataWystawienia, Magazyn, Zamowienie, PodsumowanieNetto, Uwagi)"
+					+ "(NumerPZ,DataWystawienia, Magazyn, Zamówienie, PodsumowanieNetto, Uwagi)"
 					+ " VALUES (?,?, ?, ?, ?,?)";
 			PreparedStatement preparedStmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 			preparedStmt.setString (1,nazwaPZ);
 				preparedStmt.setString(2,(jtfDataWystawienia.getText()));
 			String zapMagazyn = "Select * from magazyn WHERE NazwaMagazyn='"+jcbNumerMagazynu.getSelectedItem()+"'";
 			Polaczenie poloczenie = new Polaczenie();
+			poloczenie.Connect();
 			ResultSet rsMagazyn = poloczenie.sqlSelect(zapMagazyn);
 			rsMagazyn.next();
 			int idMagazyn = rsMagazyn.getInt("IdMagazyn");
@@ -339,6 +343,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 				preparedStmt.setFloat (5,wartNetto);
 			preparedStmt.setString (6,jtfUwagi.getText());
 			preparedStmt.execute();
+			
 			
 			String query2= "UPDATE zamowienie set DataRealizacji = ? WHERE IdZamowienie=?";
 			PreparedStatement preparedStmt2 = connection.prepareStatement(query2);
@@ -364,7 +369,8 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 		
 		PreparedStatement ps;
 		try {
-			Connection connection = DriverManager.getConnection(url, username, password);
+			polaczenie = new Polaczenie();
+			Connection connection = polaczenie.Connect();
 			String count = "SELECT count(*) from pz WHERE DataWystawienia LIKE '"+data+"%'";
 			ps = connection.prepareStatement(count);
 			ResultSet rsc= ps.executeQuery();
@@ -460,6 +466,15 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 	}
 	
 	public void actionPerformed(ActionEvent e) {
+		Object z = e.getSource();
+		if(z==jbZatwierdz) {
+			try {
+				dodajPZ();
+			} catch (ParseException | SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 }
 }
 

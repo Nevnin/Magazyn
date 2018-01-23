@@ -28,11 +28,11 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 public class KartaDostawcy extends JPanel implements ActionListener{
-    String serverName = "localhost";
-    String mydatabase = "magazyn";
+    String serverName = "192.168.137.1";
+    String mydatabase = "pz";
     String url = "jdbc:mysql://" + serverName + "/" + mydatabase; 
-    String username = "root";
-    String password = "";
+    String username = "user2";
+    String password = "123456";
     
     private JButton jbtPrzycisk;
     private JLabel jlbTytul, jlbNazwaSkrocona, jlbNazwaPelna, jlbNip, jlbTelefon1, jlbTelefon2, jlbTelefon3, jlbNazwaDzialu, jlbNrKonta, jlbMiejsc, jlbAdres, jlbKodPocztowy, jlbPoczta;
