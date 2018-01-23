@@ -68,7 +68,7 @@ public class Magazyn extends JFrame implements ActionListener {
 		menu.wgKategorii.addActionListener(this);
 		menu.kartoteka.addActionListener(this);
 		menu.listaTowarow.addActionListener(this);
-		if(oz !=null){oz.jbZatwierdz.addActionListener(this);}
+//		if(oz !=null){oz.jbPZ.addActionListener(this);}
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -125,9 +125,9 @@ public class Magazyn extends JFrame implements ActionListener {
         	repaint();
         }else if(z==menu.odbiorzamowien){
         	removeP();
-        	oz = new OdbiorZamowien();
-        	oz.jbZatwierdz.addActionListener(this);
+        	oz = new OdbiorZamowien();        	
         	add(oz);
+        	oz.jbPZ.addActionListener(this);
         	validate();
         	dopasujSieDoZawartosci();
         	repaint();
@@ -219,7 +219,7 @@ public class Magazyn extends JFrame implements ActionListener {
         }
         if(oz!=null)
         {
-        	 if(z==oz.jbZatwierdz)
+        	 if(z==oz.jbPZ)
      		{
      			String TerminRealizacji = oz.jtfDataWystawienia.getText().toString();
      			try {
@@ -234,7 +234,7 @@ public class Magazyn extends JFrame implements ActionListener {
      					 removeP();
      			        	oz = new OdbiorZamowien();
      			        	add(oz);
-     			        	oz.jbZatwierdz.addActionListener(this);
+     			        	oz.jbPZ.addActionListener(this);
      			        	validate();
      			        	dopasujSieDoZawartosci();
      			        	repaint();

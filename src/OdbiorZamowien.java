@@ -62,7 +62,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 	private JTextField jtfWartoscNetto;
 	private JTextField jtfUwagi;
 	private JTextField jtfDostawca;
-	public JButton jbZatwierdz;
+	public JButton jbPZ;
 	private String teraz,nazwaPZ;
 	 DecimalFormat df;
 	public OdbiorZamowien()
@@ -171,7 +171,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 		jtfWartoscNetto = new JTextField();
 		jlbUwagi = new JLabel("Uwagi");
 		jtfUwagi = new JTextField();
-		jbZatwierdz= new JButton("Zatwierdz");
+		jbPZ= new JButton("Zatwierdz");
 		
 		c.gridx = 2; c.gridy = 0;
         p.add(jlbNumerPZ,c);
@@ -202,7 +202,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
         p.add(jtfUwagi,c);
         c.gridx = 0; c.gridy++;
         c.gridx += 2;
-        p.add(jbZatwierdz,c);
+        p.add(jbPZ,c);
 
         splitPane1.setTopComponent(p);
         splitPane1.setBottomComponent(scrollPane1);
@@ -215,7 +215,7 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
         ustawNasluchZdarzen();
 	}
 	private void ustawNasluchZdarzen(){
-		jbZatwierdz.addActionListener(this);
+		jbPZ.addActionListener(this);
 		list.addListSelectionListener(this);
 		search.addKeyListener(this);
 	}
@@ -344,7 +344,17 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 			preparedStmt.setString (6,jtfUwagi.getText());
 			preparedStmt.execute();
 			
-			
+			String zapTowary= "SELECT * from zamowienie INNER JOIN zamowienietowar ON zamowienietowar.IdZamowienie=zamowienie.IdZamowienie INNER JOIN towar ON towar.IdTowar=zamowienietowar.IdTowar WHERE NumerZamowienia='"+jtfNrZam.getText()+"'";
+			System.out.println(zapTowary);
+			ResultSet rsTowary = poloczenie.sqlSelect(zapTowary);
+			while(rsTowary.next()) {
+				String updateTowary = "UPDATE towar set StanMagazynowyRzeczywisty= StanMagazynowyRzeczywisty + ? WHERE IdTowar=?";
+				System.out.println(updateTowary);
+				PreparedStatement psTowary = connection.prepareStatement(updateTowary);
+				psTowary.setInt(1, rsTowary.getInt("Ilosc"));
+				psTowary.setInt(2, rsTowary.getInt("IdTowar"));
+				psTowary.execute();
+			}
 			String query2= "UPDATE zamowienie set DataRealizacji = ? WHERE IdZamowienie=?";
 			PreparedStatement preparedStmt2 = connection.prepareStatement(query2);
 			preparedStmt2.setString(1,jtfDataWystawienia.getText());
@@ -466,15 +476,16 @@ public class OdbiorZamowien extends JPanel implements ListSelectionListener, Key
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		Object z = e.getSource();
-		if(z==jbZatwierdz) {
-			try {
-				dodajPZ();
-			} catch (ParseException | SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+//		Object z = e.getSource();
+//		if(z==jbPZ) {
+//			System.out.println("Dziala");
+//			try {
+//				dodajPZ();
+//			} catch (ParseException | SQLException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//		}
 }
 }
 
